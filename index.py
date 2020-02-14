@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
-from apps import appinverse, appkinematics
+from apps import appinverse, appkinematics, appmeasurements
 
 # --------------
 # Navigation bar partial
@@ -31,7 +31,7 @@ app.layout = html.Div([
 PAGES = {
   '/inverse-kinematics': appinverse.layout,
   '/kinematics': appkinematics.layout,
-  '/': "Hello World!"
+  '/': appmeasurements.layout
 }
 
 # --------------
