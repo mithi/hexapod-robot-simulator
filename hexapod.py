@@ -240,7 +240,6 @@ class HexapodPlot:
         'aspectmode': 'manual',
         'aspectratio': go.layout.scene.Aspectratio(x=1, y=1, z=1)
       },
-      transition={'duration': 500}
     )
         
   def _draw_lines(self, _name, _points, _size, _color, _is_name_visible=True):
