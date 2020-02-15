@@ -51,30 +51,18 @@ SLIDERS = [
 # -----------
 # PARTIALS
 # -----------
+def make_thirds_div(name1, name2, name3, div1, div2, div3):
+  return html.Div([
+    html.Div([html.Label(name1), div1], style={'width': '33%'}),
+    html.Div([html.Label(name2), div2], style={'width': '33%'}),
+    html.Div([html.Label(name3), div3], style={'width': '33%'}),
+    ],
+    style={'display': 'flex'}
+  )
 
-section_input_up = html.Div([
-  html.Div([html.Label('up x'), NUMBER_INPUT_UP_X], style={'width': '33%'}),
-  html.Div([html.Label('up y'), NUMBER_INPUT_UP_Y], style={'width': '33%'}),
-  html.Div([html.Label('up z'), NUMBER_INPUT_UP_Z], style={'width': '33%'}),
-  ],
-  style={'display': 'flex'}
-)
-
-section_input_center = html.Div([
-  html.Div([html.Label('center x'), NUMBER_INPUT_CENTER_X], style={'width': '33%'}),
-  html.Div([html.Label('center y'), NUMBER_INPUT_CENTER_Y], style={'width': '33%'}),
-  html.Div([html.Label('center z'), NUMBER_INPUT_CENTER_Z], style={'width': '33%'}),
-  ],
-  style={'display': 'flex'}
-)
-
-section_input_eye = html.Div([
-  html.Div([html.Label('eye x'), NUMBER_INPUT_EYE_X], style={'width': '33%'}),
-  html.Div([html.Label('eye y'), NUMBER_INPUT_EYE_Y], style={'width': '33%'}),
-  html.Div([html.Label('eye z'), NUMBER_INPUT_EYE_Z], style={'width': '33%'}),
-  ],
-  style={'display': 'flex'}
-)
+section_input_up = make_thirds_div('up x', 'up y', 'up z', NUMBER_INPUT_UP_X, NUMBER_INPUT_UP_Y, NUMBER_INPUT_UP_Z)
+section_input_center = make_thirds_div('center x', 'center y', 'center z', NUMBER_INPUT_CENTER_X, NUMBER_INPUT_CENTER_Y, NUMBER_INPUT_CENTER_Z)
+section_input_eye = make_thirds_div('eye x', 'eye y', 'eye z', NUMBER_INPUT_EYE_X, NUMBER_INPUT_EYE_Y, NUMBER_INPUT_EYE_Z)
 
 section_input_camera = html.Div([
   html.Div(section_input_up, style={'width': '33%'}),
