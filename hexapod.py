@@ -228,6 +228,10 @@ class HexapodPlot:
     self.draw()
     self._configure()
 
+  def change_camera_view(self, camera):
+    self.fig['layout']['scene_camera'] = camera
+    return self.fig
+
   def _configure(self):
     fig = go.FigureWidget()
     s = 1.4
