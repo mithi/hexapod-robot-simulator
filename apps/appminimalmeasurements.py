@@ -60,17 +60,22 @@ def make_thirds_div(name1, name2, name3, div1, div2, div3):
     style={'display': 'flex'}
   )
 
+def make_fourths_div(name1, name2, name3, name4, div1, div2, div3, div4):
+  return html.Div([
+    html.Div([html.Label(name1), div1], style={'width': '10%'}),
+    html.Div([html.Label(name2), div2], style={'width': '30%'}),
+    html.Div([html.Label(name3), div3], style={'width': '30%'}),
+    html.Div([html.Label(name4), div4], style={'width': '30%'}),
+    ],
+    style={'display': 'flex'}
+  )
+
 section_input_up = make_thirds_div('up x', 'up y', 'up z', NUMBER_INPUT_UP_X, NUMBER_INPUT_UP_Y, NUMBER_INPUT_UP_Z)
 section_input_center = make_thirds_div('center x', 'center y', 'center z', NUMBER_INPUT_CENTER_X, NUMBER_INPUT_CENTER_Y, NUMBER_INPUT_CENTER_Z)
 section_input_eye = make_thirds_div('eye x', 'eye y', 'eye z', NUMBER_INPUT_EYE_X, NUMBER_INPUT_EYE_Y, NUMBER_INPUT_EYE_Z)
+section_input_camera = make_thirds_div('', '', '', section_input_up, section_input_center, section_input_eye)
 
-section_input_camera = html.Div([
-  html.Div(section_input_up, style={'width': '33%'}),
-  html.Div(section_input_center, style={'width': '33%'}),
-  html.Div(section_input_eye, style={'width': '33%'}),
-  ],
-  style={'display': 'flex'}
-)
+section_sliders = make_fourths_div('', 'alpha', 'beta', 'gamma', html.H6('Leg Angles'), SLIDER_ALPHA, SLIDER_BETA, SLIDER_GAMMA)
 
 # -----------
 # LAYOUT
@@ -82,9 +87,8 @@ layout = html.Div([
   html.H4('Camera View Controls'),
   section_input_camera, 
   html.Br(),
-
-  html.H4('Leg Angles'),
-  html.Div(id='2-sliders', children=SLIDERS),
+  
+  section_sliders,
   html.Br(),
 ])
 
