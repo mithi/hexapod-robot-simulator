@@ -133,12 +133,9 @@ class Linkage:
     self.p3 = p3.get_point_wrt(new_frame)
 
   def change_pose(self, alpha=None, beta=None, gamma=None):
-    if alpha is None:
-      alpha = self._alpha
-    if beta is None:
-      beta = self._beta
-    if gamma is None:
-      gamma = self._gamma
+    alpha = alpha or self._alpha
+    beta = beta or self._beta
+    gamma = gamma or self._gamma
     self.save_new_pose(alpha, beta, gamma)
 
 # MEASUREMENTS f, s, and m
@@ -166,19 +163,19 @@ class Linkage:
 #
 # Relative x-axis, for each attached linkage
 #
-#        x2         x1
-#         \         /
-#          *---*---*
-#         /    |    \
-#        /     |     \
-#       /      |      \
-#  x3--*------cog------*--x0
-#       \      |      /
-#        \     |     /
-#         \    |    /
-#          *---*---*
-#         /        \
-#        x4        x5
+#         x2          x1
+#          \         /
+#           *---*---*
+#          /    |    \
+#         /     |     \
+#        /      |      \
+#  x3 --*------cog------*-- x0
+#        \      |      /
+#         \     |     /
+#          \    |    /
+#           *---*---*
+#          /         \
+#         x4         x5
 #
 class Hexagon:
   def __init__(self, f, m, s):
