@@ -223,8 +223,8 @@ class HexapodPlot:
   LEG_COLOR = '#2c3e50'
 
   def __init__(self, _hexapod):
-    self.fig = self._configure()
     self.hexapod = _hexapod
+    self.fig = self._configure()
     self.draw()
     self._configure()
 
@@ -233,6 +233,13 @@ class HexapodPlot:
     return self.fig
 
   def _configure(self):
+    
+    f, m, s = self.hexapod.body_measurements
+    a, b, c = self.hexapod.linkage_measurements
+    # RANGE = 300
+    RANGE = (f + m + s + a + b + c)
+    AXIS_RANGE = [-RANGE, RANGE]
+
     fig = go.FigureWidget()
     s = 1.4
     camera = {
@@ -240,15 +247,15 @@ class HexapodPlot:
     'center': {'x':-0.05, 'y':0, 'z':-0.1},
     'eye': {'x':s * 0.25, 'y':s * 0.5, 'z':s * 0.35}
     }
-
+  
     fig['layout'] = {
       'legend': {'x': 0, 'y': 0},
       'scene_camera': camera,
       'margin': {'l': 10, 'b': 20, 't': 20, 'r': 10},
       'scene': {
-        'xaxis': {'nticks': 1, 'range': [-300, 300], 'showbackground': False},
-        'yaxis': {'nticks': 1, 'range': [-300, 300], 'showbackground': False},
-        'zaxis': {'nticks': 1, 'range': [-300, 300], 'backgroundcolor': 'rgb(230, 230, 2005)', 'showbackground': True},
+        'xaxis': {'nticks': 1, 'range': AXIS_RANGE, 'showbackground': False},
+        'yaxis': {'nticks': 1, 'range': AXIS_RANGE, 'showbackground': False},
+        'zaxis': {'nticks': 1, 'range': AXIS_RANGE, 'backgroundcolor': 'rgb(230, 230, 2005)', 'showbackground': True},
         'aspectmode': 'manual',
         'aspectratio': {'x':1, 'y': 1, 'z': 1}
       }
