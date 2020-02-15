@@ -1,0 +1,10 @@
+__pycache__/app.cpython-38.pyc
+__pycache__/hexapod.cpython-38.pyc
+apps/__pycache__/__init__.cpython-38.pyc
+apps/__pycache__/appinverse.cpython-38.pyc
+apps/notworking.py
+apps/__pycache__/appkinematics.cpython-38.pyc
+apps/.DS_Store
+apps/__pycache__/appmeasurements.cpython-38.pyc
+.DS_Store
+apps/__pycache__/appminimalmeasurements.cpython-38.pyc
