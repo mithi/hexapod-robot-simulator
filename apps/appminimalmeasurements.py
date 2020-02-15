@@ -29,19 +29,6 @@ SLIDER_ALPHA = dcc.Slider(id='2-slider-alpha', min=-90, max=90, marks=SLIDER_ANG
 SLIDER_BETA = dcc.Slider(id='2-slider-beta', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
 SLIDER_GAMMA = dcc.Slider(id='2-slider-gamma', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
 
-NUMBER_INPUT_UP_X = dcc.Input(id='camera-up-x', type='number', value=0.0, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-NUMBER_INPUT_UP_Y = dcc.Input(id='camera-up-y', type='number', value=0.0, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-NUMBER_INPUT_UP_Z = dcc.Input(id='camera-up-z', type='number', value=1.0, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-
-NUMBER_INPUT_CENTER_X = dcc.Input(id='camera-center-x', type='number', value=-0.05, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-NUMBER_INPUT_CENTER_Y = dcc.Input(id='camera-center-y', type='number', value=0.0, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-NUMBER_INPUT_CENTER_Z = dcc.Input(id='camera-center-z', type='number', value=-0.1, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-
-NUMBER_INPUT_EYE_X = dcc.Input(id='camera-eye-x', type='number', value=0.35, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-NUMBER_INPUT_EYE_Y = dcc.Input(id='camera-eye-y', type='number', value=0.7, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-NUMBER_INPUT_EYE_Z = dcc.Input(id='camera-eye-z', type='number', value=0.5, step=0.005, style={'marginRight': '5%', 'width': '95%'})
-
-
 SLIDERS = [
   SLIDER_ALPHA,
   SLIDER_BETA,
@@ -49,17 +36,54 @@ SLIDERS = [
 ]
 
 # -----------
-# PARTIALS
+# CAMERA
 # -----------
-def make_thirds_div(name1, name2, name3, div1, div2, div3):
+def make_number_input(_name, _value):
+  return dcc.Input(id=_name, type='number', value=_value, step=0.005, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
+
+# Camera view adjustment inputs
+INPUT_CAMVIEW = {
+  'up-x': make_number_input('input-view-up-x', 0.0),
+  'up-y': make_number_input('input-view-up-y', 0.0),
+  'up-z': make_number_input('input-view-up-z', 1.0),
+
+  'center-x': make_number_input('input-view-center-x', -0.05),
+  'center-y': make_number_input('input-view-center-y', 0.0),
+  'center-z': make_number_input('input-view-center-z', -0.1),
+
+  'eye-x': make_number_input('input-view-eye-x', 0.35),
+  'eye-y': make_number_input('input-view-eye-y', 0.7),
+  'eye-z': make_number_input('input-view-eye-z', 0.5),
+}
+
+def make_section_type4(div1, div2, div3, div4):
   return html.Div([
-    html.Div([html.Label(name1), div1], style={'width': '33%'}),
-    html.Div([html.Label(name2), div2], style={'width': '33%'}),
-    html.Div([html.Label(name3), div3], style={'width': '33%'}),
+    html.Div(div1, style={'width': '13%'}),
+    html.Div(div2, style={'width': '29%'}),
+    html.Div(div3, style={'width': '29%'}),
+    html.Div(div4, style={'width': '29%'}),
     ],
     style={'display': 'flex'}
   )
 
+# section for camera view adjustments
+section_input_up = make_section_type4(dcc.Markdown('`(UP)`'), INPUT_CAMVIEW['up-x'], INPUT_CAMVIEW['up-y'], INPUT_CAMVIEW['up-z'])
+section_input_center = make_section_type4(dcc.Markdown('`(CNTR)`'), INPUT_CAMVIEW['center-x'], INPUT_CAMVIEW['center-y'], INPUT_CAMVIEW['center-z'])
+section_input_eye = make_section_type4(dcc.Markdown('`(EYE)`'), INPUT_CAMVIEW['eye-x'], INPUT_CAMVIEW['eye-y'], INPUT_CAMVIEW['eye-z'])
+SECTION_INPUT_CAMVIEW = html.Div([
+  html.Div(section_input_up, style={'width': '33%'}),
+  html.Div(section_input_center, style={'width': '33%'}),
+  html.Div(section_input_eye, style={'width': '33%'}),
+  ],
+  style={'display': 'flex'}
+)
+
+
+html.Div([section_input_up, section_input_center, section_input_eye])
+
+# -----------
+# PARTIALS
+# -----------
 def make_fourths_div(name1, name2, name3, name4, div1, div2, div3, div4):
   return html.Div([
     html.Div([html.Label(name1), div1], style={'width': '10%'}),
@@ -70,11 +94,6 @@ def make_fourths_div(name1, name2, name3, name4, div1, div2, div3, div4):
     style={'display': 'flex'}
   )
 
-section_input_up = make_thirds_div('up x', 'up y', 'up z', NUMBER_INPUT_UP_X, NUMBER_INPUT_UP_Y, NUMBER_INPUT_UP_Z)
-section_input_center = make_thirds_div('center x', 'center y', 'center z', NUMBER_INPUT_CENTER_X, NUMBER_INPUT_CENTER_Y, NUMBER_INPUT_CENTER_Z)
-section_input_eye = make_thirds_div('eye x', 'eye y', 'eye z', NUMBER_INPUT_EYE_X, NUMBER_INPUT_EYE_Y, NUMBER_INPUT_EYE_Z)
-section_input_camera = make_thirds_div('', '', '', section_input_up, section_input_center, section_input_eye)
-
 section_sliders = make_fourths_div('', 'alpha', 'beta', 'gamma', html.H6('Leg Angles'), SLIDER_ALPHA, SLIDER_BETA, SLIDER_GAMMA)
 
 # -----------
@@ -84,47 +103,57 @@ layout = html.Div([
   dcc.Graph(id='2-hexapod-plot'),
   html.Br(),
 
-  html.H4('Camera View Controls'),
-  section_input_camera, 
+  html.H4('Camera View Adjustment Controls'),
+  SECTION_INPUT_CAMVIEW,
   html.Br(),
-  
+
   section_sliders,
   html.Br(),
+
+  html.Div(id='camera-view-values', style={'display': 'none'}),
 ])
 
 # -----------
 # CALLBACKS
 # -----------
+
 INPUT_IDs = [
-  'camera-up-x',
-  'camera-up-y',
-  'camera-up-z',
+  'input-view-up-x',
+  'input-view-up-y',
+  'input-view-up-z',
 
-  'camera-center-x',
-  'camera-center-y',
-  'camera-center-z',
+  'input-view-center-x',
+  'input-view-center-y',
+  'input-view-center-z',
 
-  'camera-eye-x',
-  'camera-eye-y',
-  'camera-eye-z',
-
-  '2-slider-alpha', 
-  '2-slider-beta', 
-  '2-slider-gamma',
+  'input-view-eye-x',
+  'input-view-eye-y',
+  'input-view-eye-z',
 ]
 @app.callback(
-  Output('2-hexapod-plot', 'figure'),
-  [Input(slider_id, 'value') for slider_id in INPUT_IDs]
+  Output('camera-view-values', 'children'),
+  [Input(input_id, 'value') for input_id in INPUT_IDs]
 )
-def update_hexapod_plot(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, eye_y, eye_z, alpha, beta, gamma):
-  
+def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, eye_y, eye_z):
   camera = {
     'up': {'x': up_x or 0, 'y': up_y or 0, 'z': up_z or 0},
     'center': {'x': center_x or 0, 'y': center_y or 0, 'z': center_z or 0},
     'eye': {'x': (eye_x or 0), 'y': (eye_y or 0), 'z': (eye_z or 0)}
   }
 
-  hexaplot.change_camera_view(camera)
+  return json.dumps(camera)
+
+INPUT_IDs = [
+  '2-slider-alpha', 
+  '2-slider-beta', 
+  '2-slider-gamma',
+]
+@app.callback(
+  Output('2-hexapod-plot', 'figure'),
+  [Input(input_id, 'value') for input_id in INPUT_IDs] + [Input('camera-view-values', 'children')]
+)
+def update_hexapod_plot(alpha, beta, gamma, camera):
+  hexaplot.change_camera_view(json.loads(camera))
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
