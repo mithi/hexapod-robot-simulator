@@ -12,7 +12,6 @@ from app import HEXAPOD_MEASUREMENTS
 NAMES_LEG = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back', 'right-back']
 NAMES_JOINT = ['coxia', 'femur', 'tibia']
 
-
 def make_slider(name):
   slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
   return dcc.Slider(id=name, min=-135, max=135, marks=slider_marks, value=0, step=5)
@@ -39,6 +38,38 @@ def make_sliders():
 # 'slider' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
 SLIDERS = make_sliders()
 
+# -----------
+# NUMBER INPUTS
+# -----------
+
+def make_number_input(_name, _value):
+  return dcc.Input(id=_name, type='number', value=_value, step=0.005, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
+
+# Camera inputs
+INPUT_CAMVIEW = {
+  'up-x': make_number_input('input-view-up-x', 0.0),
+  'up-y': make_number_input('input-view-up-y', 0.0),
+  'up-z': make_number_input('input-view-up-z', 1.0),
+
+  'center-x': make_number_input('input-view-center-x', -0.05),
+  'center-y': make_number_input('input-view-center-y', 0.0),
+  'center-z': make_number_input('input-view-center-z', -0.1),
+
+  'eye-x': make_number_input('input-view-eye-x', 0.35),
+  'eye-y': make_number_input('input-view-eye-y', 0.7),
+  'eye-z': make_number_input('input-view-eye-z', 0.5),
+}
+
+# Hexapod Inputs
+'''
+HEXYLENGTH_INPUT_FRONT = make_number_input('hexapod-length-front', -0.05)
+HEXYLENGTH_INPUT_SIDE = make_number_input('hexapod-length-side', 0.0)
+HEXYLENGTH_INPUT_MIDDLE = make_number_input('hexapod-length-middle', -0.1)
+
+HEXYLENGTH_INPUT_COXIA = make_number_input('hexapod-length-front', 0.35)
+HEXYLENGTH_INPUT_FEMUR = make_number_input('hexapod-length-front', 0.7)
+HEXYLENGTH_INPUT_TIBIA = make_number_input('hexapod-length-front', 0.5)
+'''
 # -----------
 # PARTIALS
 # -----------
@@ -73,7 +104,20 @@ SECTION_LEG_SLIDERS = make_leg_sections()
 # hidden values of legs
 SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
 
-# section for camera view adjustments 
+# section for camera view adjustments
+
+section_input_up = make_section_type4(dcc.Markdown('`(UP)`'), INPUT_CAMVIEW['up-x'], INPUT_CAMVIEW['up-y'], INPUT_CAMVIEW['up-z'])
+section_input_center = make_section_type4(dcc.Markdown('`(CNTR)`'), INPUT_CAMVIEW['center-x'], INPUT_CAMVIEW['center-y'], INPUT_CAMVIEW['center-z'])
+section_input_eye = make_section_type4(dcc.Markdown('`(EYE)`'), INPUT_CAMVIEW['eye-x'], INPUT_CAMVIEW['eye-y'], INPUT_CAMVIEW['eye-z'])
+SECTION_INPUT_CAMVIEW = html.Div([
+    html.Div(section_input_up, style={'width': '33%'}),
+    html.Div(section_input_center, style={'width': '33%'}),
+    html.Div(section_input_eye, style={'width': '33%'}),
+    ],
+    style={'display': 'flex'}
+  )
+
+html.Div([section_input_up, section_input_center, section_input_eye])
 # section for hexapod measurement adjustments
 
 
@@ -86,11 +130,45 @@ layout = html.Div([
     html.Div(SECTION_LEG_SLIDERS, style={'width': '55%'}),
     ], style={'display': 'flex'}
   ),
-  SECTION_LEG_POSES  
+  html.H1('Camera View Controls'),
+  SECTION_INPUT_CAMVIEW,
+  SECTION_LEG_POSES, 
+  html.Div(id='camera-view-values', style={'display': 'none'})
 ])
 
 # -----------
-# CALLBACKS
+# CAMERA VIEW CALLBACK
+# -----------
+INPUT_IDs = [
+  'input-view-up-x',
+  'input-view-up-y',
+  'input-view-up-z',
+
+  'input-view-center-x',
+  'input-view-center-y',
+  'input-view-center-z',
+
+  'input-view-eye-x',
+  'input-view-eye-y',
+  'input-view-eye-z',
+]
+@app.callback(
+  Output('camera-view-values', 'children'),
+  [Input(input_id, 'value') for input_id in INPUT_IDs]
+)
+def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, eye_y, eye_z):
+  
+  camera = {
+    'up': {'x': up_x or 0, 'y': up_y or 0, 'z': up_z or 0},
+    'center': {'x': center_x or 0, 'y': center_y or 0, 'z': center_z or 0},
+    'eye': {'x': (eye_x or 0), 'y': (eye_y or 0), 'z': (eye_z or 0)}
+  }
+
+  return json.dumps(camera)
+
+
+# -----------
+# LEG CALLBACKS
 # -----------
 # front          x2          x1
 #                 \         /
@@ -158,9 +236,9 @@ def update_right_back(coxia, femur, tibia):
 # All poses
 @app.callback(
   Output('display-pose', 'children'),
-  [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG]
+  [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + [Input('camera-view-values', 'children')]
 )
-def display_pose(rm, rf, lf, lm, lb, rb):
+def display_pose(rm, rf, lf, lm, lb, rb, camera_view):
   poses = [rm, rf, lf, lm, lb, rb]
   text = '\n'
   for leg_name, leg_pose in zip(NAMES_LEG, poses):
@@ -174,4 +252,4 @@ def display_pose(rm, rf, lf, lm, lb, rb):
     except:
       print("ERROR:", leg_name)
 
-  return dcc.Markdown(text)
+  return dcc.Markdown(text + str(camera_view))
