@@ -65,16 +65,16 @@ INPUT_CAMVIEW = {
 
 # Hexapod measured lengths inputs
 INPUT_LENGTHS = { 
-  'front': make_positive_number_input('hexapod-length-front', 100),
-  'side': make_positive_number_input('hexapod-length-side', 100),
-  'middle': make_positive_number_input('hexapod-length-middle', 100),
-  'coxia': make_positive_number_input('hexapod-length-coxia', 100),
-  'femur': make_positive_number_input('hexapod-length-femur', 100),
-  'tibia': make_positive_number_input('hexapod-length-tibia', 100),
+  'front': make_positive_number_input('input-length-front', 100),
+  'side': make_positive_number_input('input-length-side', 100),
+  'middle': make_positive_number_input('input-length-middle', 100),
+  'coxia': make_positive_number_input('input-length-coxia', 100),
+  'femur': make_positive_number_input('input-length-femur', 100),
+  'tibia': make_positive_number_input('input-length-tibia', 100),
 }
 
 # -----------
-# PARTIALS
+# HELPERS TO MAKE PARTIAL SECTIONS
 # -----------
 def make_section_type3(div1, div2, div3, div4, name1='', name2='', name3='', name4=''):
   return html.Div([
@@ -110,6 +110,9 @@ def make_leg_sections():
 
   return html.Div(sections)
 
+# -----------
+# PARTIAL SECTIONS
+# -----------
 # section displaying all legs
 SECTION_LEG_SLIDERS = make_leg_sections()
 
@@ -147,13 +150,13 @@ SECTION_INPUT_LENGTHS = html.Div([
 layout = html.Div([
   html.Div([
     html.Div(id='display-pose', style={'width': '45%'}),
+
     html.Div([
-      html.H3('Joint Angles (Pose of each Leg)'),
+      html.H4('Joint Angles (Pose of each Leg)'),
       SECTION_LEG_SLIDERS,
       html.Br(),
       html.H4('Hexapod Robot Measurements'),
-      SECTION_INPUT_LENGTHS
-      
+      SECTION_INPUT_LENGTHS  
       ], style={'width': '55%'}),
     ], style={'display': 'flex'}
   ),
@@ -162,12 +165,42 @@ layout = html.Div([
   SECTION_INPUT_CAMVIEW,
   html.Br(),
 
-  SECTION_LEG_POSES, 
+  SECTION_LEG_POSES, # hidden
+  html.Div(id='hexapod-measurements-values', style={'display': 'none'}),
   html.Div(id='camera-view-values', style={'display': 'none'})
 ])
 
 # -----------
-# CAMERA VIEW CALLBACK
+# Hexapod Measurements CALLBACK
+# -----------
+INPUT_LENGTHS_IDs = [
+  'input-length-front',
+  'input-length-side',
+  'input-length-middle',
+
+  'input-length-coxia',
+  'input-length-femur',
+  'input-length-tibia',
+]
+@app.callback(
+  Output('hexapod-measurements-values', 'children'),
+  [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
+)
+def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
+  measurements = {
+    'front': fro,
+    'side': sid,
+    'middle': mid,
+
+    'coxia': cox,
+    'femur': fem,
+    'tibia': tib, 
+  }
+
+  return json.dumps(measurements)
+
+# -----------
+# CameraCALLBACK
 # -----------
 INPUT_IDs = [
   'input-view-up-x',
@@ -195,9 +228,7 @@ def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, ey
   }
 
   return json.dumps(camera)
-
-
-# -----------
+# -------
 # LEG CALLBACKS
 # -----------
 # front          x2          x1
@@ -263,12 +294,14 @@ def update_left_back(coxia, femur, tibia):
 def update_right_back(coxia, femur, tibia):
   return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
 
+INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
+  [Input(name, 'children') for name in ['camera-view-values', 'hexapod-measurements-values']]
 # All poses
 @app.callback(
   Output('display-pose', 'children'),
-  [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + [Input('camera-view-values', 'children')]
+  INPUT_ALL
 )
-def display_pose(rm, rf, lf, lm, lb, rb, camera_view):
+def display_pose(rm, rf, lf, lm, lb, rb, cam_view, measurements):
   poses = [rm, rf, lf, lm, lb, rb]
   text = '\n'
   for leg_name, leg_pose in zip(NAMES_LEG, poses):
@@ -282,4 +315,4 @@ def display_pose(rm, rf, lf, lm, lb, rb, camera_view):
     except:
       print("ERROR:", leg_name)
 
-  return dcc.Markdown(text + str(camera_view))
+  return dcc.Markdown(text + str(cam_view) + str(measurements))
