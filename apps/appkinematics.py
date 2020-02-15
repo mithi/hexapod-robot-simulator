@@ -6,6 +6,8 @@ import json
 from app import app
 from app import HEXAPOD_MEASUREMENTS
 
+from hexapod import Point, Linkage, Hexagon, VirtualHexapod, HexapodPlot
+
 # -----------
 # SLIDERS FOR JOINTS
 # -----------
@@ -149,7 +151,7 @@ SECTION_INPUT_LENGTHS = html.Div([
 # -----------
 layout = html.Div([
   html.Div([
-    html.Div(id='display-pose', style={'width': '45%'}),
+    dcc.Graph(id='graph-hexapod', style={'width': '45%'}),
 
     html.Div([
       html.H4('Joint Angles (Pose of each Leg)'),
@@ -165,7 +167,8 @@ layout = html.Div([
   SECTION_INPUT_CAMVIEW,
   html.Br(),
 
-  SECTION_LEG_POSES, # hidden
+  # HIDDEN SECTIONS
+  SECTION_LEG_POSES, 
   html.Div(id='hexapod-measurements-values', style={'display': 'none'}),
   html.Div(id='camera-view-values', style={'display': 'none'})
 ])
@@ -188,13 +191,13 @@ INPUT_LENGTHS_IDs = [
 )
 def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
   measurements = {
-    'front': fro,
-    'side': sid,
-    'middle': mid,
+    'front': fro or 0,
+    'side': sid or 0,
+    'middle': mid or 0,
 
-    'coxia': cox,
-    'femur': fem,
-    'tibia': tib, 
+    'coxia': cox or 0,
+    'femur': fem or 0,
+    'tibia': tib or 0, 
   }
 
   return json.dumps(measurements)
@@ -294,25 +297,36 @@ def update_left_back(coxia, femur, tibia):
 def update_right_back(coxia, femur, tibia):
   return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
 
+# -------
+# FIGURE/GRAPH CALLBACK
+# -----------
 INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   [Input(name, 'children') for name in ['camera-view-values', 'hexapod-measurements-values']]
-# All poses
 @app.callback(
-  Output('display-pose', 'children'),
+  Output('graph-hexapod', 'figure'),
   INPUT_ALL
 )
-def display_pose(rm, rf, lf, lm, lb, rb, cam_view, measurements):
-  poses = [rm, rf, lf, lm, lb, rb]
-  text = '\n'
-  for leg_name, leg_pose in zip(NAMES_LEG, poses):
-    try:
-      leg = json.loads(leg_pose or '')
-      header = '\n **{}** '.format(leg_name)
-      coxia = ' `coxia: {}` '.format(leg['coxia'])
-      femur = ' `femur: {}` '.format(leg['femur'])
-      tibia = ' `tibia: {}` \n'.format(leg['tibia'])
-      text += (header + coxia + femur + tibia)
-    except:
-      print("ERROR:", leg_name)
+def update_graph(rm, rf, lf, lm, lb, rb, cam_view, measurements):
 
-  return dcc.Markdown(text + str(cam_view) + str(measurements))
+  measurements = json.loads(measurements)
+  cam_view = json.loads(cam_view)
+
+  f, s, m = measurements['front'], measurements['side'], measurements['middle'],
+  h, k, a = measurements['coxia'], measurements['femur'], measurements['tibia'],
+
+  virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
+  hexaplot = HexapodPlot(virtual_hexapod)
+  
+  poses = [rm, rf, lf, lm, lb, rb]
+  for leg, pose in zip(virtual_hexapod.legs, poses):
+    try:
+      pose = json.loads(pose)
+      alpha, beta, gamma = pose['coxia'], pose['femur'], pose['tibia']
+      leg.change_pose(alpha, beta, gamma)
+    except:
+      print(pose)
+      
+  hexaplot.change_camera_view(cam_view)
+  fig = hexaplot.update(virtual_hexapod)
+
+  return fig
