@@ -28,9 +28,8 @@ SLIDER_FEMUR = dcc.Slider(id='slider-femur', min=20, max=100, marks=SLIDER_MARKS
 SLIDER_TIBIA = dcc.Slider(id='slider-tibia', min=20, max=100, marks=SLIDER_MARKS, value=70, step=5)
 
 # -----------
-# LAYOUT
+# SECTION AND LAYOUT
 # -----------
-
 section_sliders_body = html.Div([
   html.Div([ html.Label('Front Length'), SLIDER_FRONT], style={'width': '33%'}),
   html.Div([ html.Label('Side Length'), SLIDER_SIDE], style={'width': '33%'}),
@@ -61,6 +60,7 @@ section_hexapod = html.Div([
   style={'display': 'flex'})
 
 layout = html.Div([
+  html.H3('Customization'),
   section_hexapod,
   html.Div(id='variables', style={'display': 'none'}),
 ])
@@ -79,7 +79,6 @@ SLIDER_IDs = [
   'slider-femur', 
   'slider-tibia',
 ]
-
 @app.callback(
   Output('variables', 'children'),
   [Input(i, 'value') for i in SLIDER_IDs]
@@ -114,7 +113,7 @@ def display_variables(pose_params):
   [Input(slider_id, 'value') for slider_id in SLIDER_IDs]
 )
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a):
-  virtual_hexapod = VirtualHexapod(h, k, a, f, s, m)
+  virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
   hexaplot = HexapodPlot(virtual_hexapod)
 
   for leg in virtual_hexapod.legs:
