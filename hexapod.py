@@ -223,25 +223,33 @@ class HexapodPlot:
   LEG_COLOR = '#2c3e50'
 
   def __init__(self, _hexapod):
-    self.fig = go.FigureWidget()
+    self.fig = self._configure()
     self.hexapod = _hexapod
     self.draw()
     self._configure()
 
   def _configure(self):
-    self.fig.update_layout(
-      autosize=False,
-      width=700,
-      height=700,
-      scene={
-        'xaxis': { 'range': [-200, 200] },
-        'yaxis': { 'range': [-200, 200] },
-        'zaxis': { 'range': [-200, 200] },
+    fig = go.FigureWidget()
+    s = 1.4
+    camera = {
+    'up': {'x':0, 'y':0, 'z':1},
+    'center': {'x':-0.05, 'y':0, 'z':-0.1},
+    'eye': {'x':s * 0.25, 'y':s * 0.5, 'z':s * 0.35}
+    }
+
+    fig['layout'] = {
+      'scene_camera': camera,
+      'margin': {'l': 10, 'b': 20, 't': 20, 'r': 10},
+      'scene': {
+        'xaxis': {'nticks': 1, 'range': [-300, 300], 'showbackground': False },
+        'yaxis': {'nticks': 1, 'range': [-300, 300], 'showbackground': False },
+        'zaxis': {'nticks': 1, 'range': [-300, 300], 'backgroundcolor': 'rgb(230, 230, 2005)', 'showbackground': True },
         'aspectmode': 'manual',
-        'aspectratio': go.layout.scene.Aspectratio(x=1, y=1, z=1)
-      },
-    )
-        
+        'aspectratio': {'x':1, 'y': 1, 'z': 1}
+      }
+    }
+    return fig
+
   def _draw_lines(self, _name, _points, _size, _color, _is_name_visible=True):
     self.fig.add_trace(go.Scatter3d(
       name=_name,
