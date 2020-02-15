@@ -45,7 +45,10 @@ SLIDERS = make_sliders()
 def make_number_input(_name, _value):
   return dcc.Input(id=_name, type='number', value=_value, step=0.005, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
 
-# Camera inputs
+def make_positive_number_input(_name, _value):
+  return dcc.Input(id=_name, type='number', value=_value, step=5, min=0, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
+
+# Camera view adjustment inputs
 INPUT_CAMVIEW = {
   'up-x': make_number_input('input-view-up-x', 0.0),
   'up-y': make_number_input('input-view-up-y', 0.0),
@@ -60,32 +63,41 @@ INPUT_CAMVIEW = {
   'eye-z': make_number_input('input-view-eye-z', 0.5),
 }
 
-# Hexapod Inputs
-
-HEXYLENGTH_INPUT_FRONT = make_number_input('hexapod-length-front', -0.05)
-HEXYLENGTH_INPUT_SIDE = make_number_input('hexapod-length-side', 0.0)
-HEXYLENGTH_INPUT_MIDDLE = make_number_input('hexapod-length-middle', -0.1)
-
-HEXYLENGTH_INPUT_COXIA = make_number_input('hexapod-length-front', 0.35)
-HEXYLENGTH_INPUT_FEMUR = make_number_input('hexapod-length-front', 0.7)
-HEXYLENGTH_INPUT_TIBIA = make_number_input('hexapod-length-front', 0.5)
+# Hexapod measured lengths inputs
+INPUT_LENGTHS = { 
+  'front': make_positive_number_input('hexapod-length-front', 100),
+  'side': make_positive_number_input('hexapod-length-side', 100),
+  'middle': make_positive_number_input('hexapod-length-middle', 100),
+  'coxia': make_positive_number_input('hexapod-length-coxia', 100),
+  'femur': make_positive_number_input('hexapod-length-femur', 100),
+  'tibia': make_positive_number_input('hexapod-length-tibia', 100),
+}
 
 # -----------
 # PARTIALS
 # -----------
-def make_section_type4(div1, div2, div3, div4, name1='', name2='', name3='', name4=''):
+def make_section_type3(div1, div2, div3, div4, name1='', name2='', name3='', name4=''):
   return html.Div([
-    html.Div([html.Label(name1), div1], style={'width': '13%'}),
-    html.Div([html.Label(name2), div2], style={'width': '29%'}),
-    html.Div([html.Label(name3), div3], style={'width': '29%'}),
-    html.Div([html.Label(name4), div4], style={'width': '29%'}),
+    html.Div([html.Label(name1), div1], style={'width': '33%'}),
+    html.Div([html.Label(name2), div2], style={'width': '33%'}),
+    html.Div([html.Label(name3), div3], style={'width': '33%'}),
+    ],
+    style={'display': 'flex'}
+  )
+
+def make_section_type4(div1, div2, div3, div4):
+  return html.Div([
+    html.Div(div1, style={'width': '13%'}),
+    html.Div(div2, style={'width': '29%'}),
+    html.Div(div3, style={'width': '29%'}),
+    html.Div(div4, style={'width': '29%'}),
     ],
     style={'display': 'flex'}
   )
 
 def make_leg_sections():
   sections = []
-  header_section = make_section_type4('', html.H4('coxia'), html.H4('femur'), html.H4('tibia'))
+  header_section = make_section_type4('', html.H5('coxia'), html.H5('femur'), html.H5('tibia'))
   sections.append(header_section)
 
   for leg in NAMES_LEG:
@@ -105,21 +117,29 @@ SECTION_LEG_SLIDERS = make_leg_sections()
 SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
 
 # section for camera view adjustments
-
 section_input_up = make_section_type4(dcc.Markdown('`(UP)`'), INPUT_CAMVIEW['up-x'], INPUT_CAMVIEW['up-y'], INPUT_CAMVIEW['up-z'])
 section_input_center = make_section_type4(dcc.Markdown('`(CNTR)`'), INPUT_CAMVIEW['center-x'], INPUT_CAMVIEW['center-y'], INPUT_CAMVIEW['center-z'])
 section_input_eye = make_section_type4(dcc.Markdown('`(EYE)`'), INPUT_CAMVIEW['eye-x'], INPUT_CAMVIEW['eye-y'], INPUT_CAMVIEW['eye-z'])
 SECTION_INPUT_CAMVIEW = html.Div([
-    html.Div(section_input_up, style={'width': '33%'}),
-    html.Div(section_input_center, style={'width': '33%'}),
-    html.Div(section_input_eye, style={'width': '33%'}),
-    ],
-    style={'display': 'flex'}
-  )
+  html.Div(section_input_up, style={'width': '33%'}),
+  html.Div(section_input_center, style={'width': '33%'}),
+  html.Div(section_input_eye, style={'width': '33%'}),
+  ],
+  style={'display': 'flex'}
+)
 
 html.Div([section_input_up, section_input_center, section_input_eye])
-# section for hexapod measurement adjustments
 
+# section for hexapod measurement adjustments
+section_input_body = make_section_type3(INPUT_LENGTHS['front'], INPUT_LENGTHS['middle'], INPUT_LENGTHS['side'], '', 'front', 'middle', 'side')
+section_input_leg = make_section_type3(INPUT_LENGTHS['coxia'], INPUT_LENGTHS['femur'], INPUT_LENGTHS['tibia'], '', 'coxia', 'femur', 'tibia')
+
+SECTION_INPUT_LENGTHS = html.Div([
+  html.Div(section_input_body, style={'width':  '50%'}),
+  html.Div(section_input_leg, style={'width': '50%'}),
+  ],
+  style={'display': 'flex'}
+)
 
 # -----------
 # LAYOUT
@@ -127,11 +147,21 @@ html.Div([section_input_up, section_input_center, section_input_eye])
 layout = html.Div([
   html.Div([
     html.Div(id='display-pose', style={'width': '45%'}),
-    html.Div(SECTION_LEG_SLIDERS, style={'width': '55%'}),
+    html.Div([
+      html.H3('Joint Angles (Pose of each Leg)'),
+      SECTION_LEG_SLIDERS,
+      html.Br(),
+      html.H4('Hexapod Robot Measurements'),
+      SECTION_INPUT_LENGTHS
+      
+      ], style={'width': '55%'}),
     ], style={'display': 'flex'}
   ),
+
   html.H4('Camera View Adjustment Controls'),
   SECTION_INPUT_CAMVIEW,
+  html.Br(),
+
   SECTION_LEG_POSES, 
   html.Div(id='camera-view-values', style={'display': 'none'})
 ])
