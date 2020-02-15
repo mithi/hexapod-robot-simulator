@@ -15,8 +15,9 @@ NAMES_JOINT = ['coxia', 'femur', 'tibia']
 
 def make_slider(name):
   slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
-  return dcc.Slider(id=name, min=-135, max=135, marks=slider_marks, value=0)
+  return dcc.Slider(id=name, min=-135, max=135, marks=slider_marks, value=0, step=5)
 
+# EXAMPLE:
 # SLIDERS['left-front'] = {'coxia' : {'slider': SLIDER, 'id': 'slider-left-front-coxia'}}
 # SLIDERS['right-middle'] = {'femur' : {'slider': SLIDER, 'id': 'slider-right-middle-femur'}}
 def make_sliders():
@@ -43,16 +44,19 @@ SLIDERS = make_sliders()
 # -----------
 def make_section_type4(div1, div2, div3, div4, name1='', name2='', name3='', name4=''):
   return html.Div([
-    html.Div([html.Label(name1), div1], style={'width': '10%'}),
-    html.Div([html.Label(name2), div2], style={'width': '30%'}),
-    html.Div([html.Label(name3), div3], style={'width': '30%'}),
-    html.Div([html.Label(name4), div4], style={'width': '30%'}),
+    html.Div([html.Label(name1), div1], style={'width': '13%'}),
+    html.Div([html.Label(name2), div2], style={'width': '29%'}),
+    html.Div([html.Label(name3), div3], style={'width': '29%'}),
+    html.Div([html.Label(name4), div4], style={'width': '29%'}),
     ],
     style={'display': 'flex'}
   )
 
 def make_leg_sections():
   sections = []
+  header_section = make_section_type4('', html.H4('coxia'), html.H4('femur'), html.H4('tibia'))
+  sections.append(header_section)
+
   for leg in NAMES_LEG:
     header = html.Label(leg)
     coxia = SLIDERS[leg]['coxia']['slider']
@@ -63,17 +67,25 @@ def make_leg_sections():
 
   return html.Div(sections)
 
+# section displaying all legs
 SECTION_LEG_SLIDERS = make_leg_sections()
 
 # hidden values of legs
 SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
 
+# section for camera view adjustments 
+# section for hexapod measurement adjustments
+
+
 # -----------
 # LAYOUT
 # -----------
 layout = html.Div([
-  SECTION_LEG_SLIDERS, 
-  html.Div(id='display-pose'),
+  html.Div([
+    html.Div(id='display-pose', style={'width': '45%'}),
+    html.Div(SECTION_LEG_SLIDERS, style={'width': '55%'}),
+    ], style={'display': 'flex'}
+  ),
   SECTION_LEG_POSES  
 ])
 
@@ -152,11 +164,14 @@ def display_pose(rm, rf, lf, lm, lb, rb):
   poses = [rm, rf, lf, lm, lb, rb]
   text = '\n'
   for leg_name, leg_pose in zip(NAMES_LEG, poses):
-    leg = json.loads(leg_pose or '')
-    header = '\n **{}** \n'.format(leg_name)
-    coxia = ' - `coxia: {}`\n '.format(leg['coxia'])
-    femur = ' - `femur: {}`\n '.format(leg['femur'])
-    tibia = ' - `tibia: {}`\n '.format(leg['tibia'])
-    text += (header + coxia + femur + tibia)
+    try:
+      leg = json.loads(leg_pose or '')
+      header = '\n **{}** '.format(leg_name)
+      coxia = ' `coxia: {}` '.format(leg['coxia'])
+      femur = ' `femur: {}` '.format(leg['femur'])
+      tibia = ' `tibia: {}` \n'.format(leg['tibia'])
+      text += (header + coxia + femur + tibia)
+    except:
+      print("ERROR:", leg_name)
 
   return dcc.Markdown(text)
