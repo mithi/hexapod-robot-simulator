@@ -24,8 +24,8 @@ div_nav = html.Div([
 # --------------
 app.layout = html.Div([
   dcc.Location(id='url', refresh=False),
+  html.Div(id='page-content'),
   div_nav,
-  html.Div(id='page-content')
 ])
 
 # --------------
