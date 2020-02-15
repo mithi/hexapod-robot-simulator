@@ -44,26 +44,8 @@ SLIDERS = make_sliders()
 # NUMBER INPUTS
 # -----------
 
-def make_number_input(_name, _value):
-  return dcc.Input(id=_name, type='number', value=_value, step=0.005, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
-
 def make_positive_number_input(_name, _value):
   return dcc.Input(id=_name, type='number', value=_value, step=5, min=0, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
-
-# Camera view adjustment inputs
-INPUT_CAMVIEW = {
-  'up-x': make_number_input('input-view-up-x', 0.0),
-  'up-y': make_number_input('input-view-up-y', 0.0),
-  'up-z': make_number_input('input-view-up-z', 1.0),
-
-  'center-x': make_number_input('input-view-center-x', -0.05),
-  'center-y': make_number_input('input-view-center-y', 0.0),
-  'center-z': make_number_input('input-view-center-z', -0.1),
-
-  'eye-x': make_number_input('input-view-eye-x', 0.35),
-  'eye-y': make_number_input('input-view-eye-y', 0.7),
-  'eye-z': make_number_input('input-view-eye-z', 0.5),
-}
 
 # Hexapod measured lengths inputs
 INPUT_LENGTHS = { 
@@ -121,20 +103,6 @@ SECTION_LEG_SLIDERS = make_leg_sections()
 # hidden values of legs
 SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
 
-# section for camera view adjustments
-section_input_up = make_section_type4(dcc.Markdown('`(UP)`'), INPUT_CAMVIEW['up-x'], INPUT_CAMVIEW['up-y'], INPUT_CAMVIEW['up-z'])
-section_input_center = make_section_type4(dcc.Markdown('`(CNTR)`'), INPUT_CAMVIEW['center-x'], INPUT_CAMVIEW['center-y'], INPUT_CAMVIEW['center-z'])
-section_input_eye = make_section_type4(dcc.Markdown('`(EYE)`'), INPUT_CAMVIEW['eye-x'], INPUT_CAMVIEW['eye-y'], INPUT_CAMVIEW['eye-z'])
-SECTION_INPUT_CAMVIEW = html.Div([
-  html.Div(section_input_up, style={'width': '33%'}),
-  html.Div(section_input_center, style={'width': '33%'}),
-  html.Div(section_input_eye, style={'width': '33%'}),
-  ],
-  style={'display': 'flex'}
-)
-
-html.Div([section_input_up, section_input_center, section_input_eye])
-
 # section for hexapod measurement adjustments
 section_input_body = make_section_type3(INPUT_LENGTHS['front'], INPUT_LENGTHS['middle'], INPUT_LENGTHS['side'], '', 'front', 'middle', 'side')
 section_input_leg = make_section_type3(INPUT_LENGTHS['coxia'], INPUT_LENGTHS['femur'], INPUT_LENGTHS['tibia'], '', 'coxia', 'femur', 'tibia')
@@ -163,14 +131,13 @@ layout = html.Div([
     ], style={'display': 'flex'}
   ),
 
-  html.H4('Camera View Adjustment Controls'),
-  SECTION_INPUT_CAMVIEW,
   html.Br(),
 
   # HIDDEN SECTIONS
+  #html.Div(id='camera-values-from-graph'),  
   SECTION_LEG_POSES, 
   html.Div(id='hexapod-measurements-values', style={'display': 'none'}),
-  html.Div(id='camera-view-values', style={'display': 'none'})
+  #html.Div(id='camera-view-values', style={'display': 'none'})
 ])
 
 # -----------
@@ -202,53 +169,9 @@ def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
 
   return json.dumps(measurements)
 
-# -----------
-# CameraCALLBACK
-# -----------
-INPUT_IDs = [
-  'input-view-up-x',
-  'input-view-up-y',
-  'input-view-up-z',
-
-  'input-view-center-x',
-  'input-view-center-y',
-  'input-view-center-z',
-
-  'input-view-eye-x',
-  'input-view-eye-y',
-  'input-view-eye-z',
-]
-@app.callback(
-  Output('camera-view-values', 'children'),
-  [Input(input_id, 'value') for input_id in INPUT_IDs]
-)
-def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, eye_y, eye_z):
-  
-  camera = {
-    'up': {'x': up_x or 0, 'y': up_y or 0, 'z': up_z or 0},
-    'center': {'x': center_x or 0, 'y': center_y or 0, 'z': center_z or 0},
-    'eye': {'x': (eye_x or 0), 'y': (eye_y or 0), 'z': (eye_z or 0)}
-  }
-
-  return json.dumps(camera)
 # -------
 # LEG CALLBACKS
 # -----------
-# front          x2          x1
-#                 \         /
-#                  *---*---*
-#                 /    |    \
-#                /     |     \
-#               /      |      \
-# middle  x3 --*------cog------*-- x0
-#               \      |      /
-#                \     |     /
-#                 \    |    /
-# back             *---*---*
-#                 /         \
-#                x4         x5
-#               left       right
-
 # 0
 @app.callback(
   Output('pose-right-middle', 'children'),
@@ -297,19 +220,32 @@ def update_left_back(coxia, femur, tibia):
 def update_right_back(coxia, femur, tibia):
   return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
 
+# front          x2          x1
+#                 \         /
+#                  *---*---*
+#                 /    |    \
+#                /     |     \
+#               /      |      \
+# middle  x3 --*------cog------*-- x0
+#               \      |      /
+#                \     |     /
+#                 \    |    /
+# back             *---*---*
+#                 /         \
+#                x4         x5
+#               left       right
 # -------
 # FIGURE/GRAPH CALLBACK
 # -----------
 INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
-  [Input(name, 'children') for name in ['camera-view-values', 'hexapod-measurements-values']]
+  [Input(name, 'children') for name in ['hexapod-measurements-values']]
 @app.callback(
   Output('graph-hexapod', 'figure'),
   INPUT_ALL
 )
-def update_graph(rm, rf, lf, lm, lb, rb, cam_view, measurements):
+def update_graph(rm, rf, lf, lm, lb, rb, measurements):
 
   measurements = json.loads(measurements)
-  cam_view = json.loads(cam_view)
 
   f, s, m = measurements['front'], measurements['side'], measurements['middle'],
   h, k, a = measurements['coxia'], measurements['femur'], measurements['tibia'],
@@ -325,8 +261,25 @@ def update_graph(rm, rf, lf, lm, lb, rb, cam_view, measurements):
       leg.change_pose(alpha, beta, gamma)
     except:
       print(pose)
-      
-  hexaplot.change_camera_view(cam_view)
+
   fig = hexaplot.update(virtual_hexapod)
 
   return fig
+
+# -------
+# FIGURE/GRAPH CALLBACK
+# -----------
+'''
+@app.callback(
+  Output('camera-values-from-graph', 'children'),
+  [State('graph-hexapod', 'relayoutData'), Input('camera-view-values', 'children')]
+)
+def update_camview(layout_data, user_data):
+  if layout_data and 'scene.camera' in layout_data:
+      print('yes-')
+      return str(json.dumps(camera))
+  else:
+    print('no')
+    return ''
+'''
+
