@@ -14,7 +14,7 @@ NAMES_JOINT = ['coxia', 'femur', 'tibia']
 
 def make_slider(name):
   slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
-  return dcc.Slider(id=name, min=-135, max=135, marks=slider_marks, value=0, step=5)
+  return dcc.Slider(id=name, min=-105, max=105, marks=slider_marks, value=0, step=5)
 
 # EXAMPLE:
 # SLIDERS['left-front'] = {'coxia' : {'slider': SLIDER, 'id': 'slider-left-front-coxia'}}
@@ -61,7 +61,7 @@ INPUT_CAMVIEW = {
 }
 
 # Hexapod Inputs
-'''
+
 HEXYLENGTH_INPUT_FRONT = make_number_input('hexapod-length-front', -0.05)
 HEXYLENGTH_INPUT_SIDE = make_number_input('hexapod-length-side', 0.0)
 HEXYLENGTH_INPUT_MIDDLE = make_number_input('hexapod-length-middle', -0.1)
@@ -69,7 +69,7 @@ HEXYLENGTH_INPUT_MIDDLE = make_number_input('hexapod-length-middle', -0.1)
 HEXYLENGTH_INPUT_COXIA = make_number_input('hexapod-length-front', 0.35)
 HEXYLENGTH_INPUT_FEMUR = make_number_input('hexapod-length-front', 0.7)
 HEXYLENGTH_INPUT_TIBIA = make_number_input('hexapod-length-front', 0.5)
-'''
+
 # -----------
 # PARTIALS
 # -----------
@@ -89,7 +89,7 @@ def make_leg_sections():
   sections.append(header_section)
 
   for leg in NAMES_LEG:
-    header = html.Label(leg)
+    header = html.Label(dcc.Markdown('**`{}`**'.format(leg)))
     coxia = SLIDERS[leg]['coxia']['slider']
     femur = SLIDERS[leg]['femur']['slider']
     tibia = SLIDERS[leg]['tibia']['slider']
@@ -130,7 +130,7 @@ layout = html.Div([
     html.Div(SECTION_LEG_SLIDERS, style={'width': '55%'}),
     ], style={'display': 'flex'}
   ),
-  html.H1('Camera View Controls'),
+  html.H4('Camera View Adjustment Controls'),
   SECTION_INPUT_CAMVIEW,
   SECTION_LEG_POSES, 
   html.Div(id='camera-view-values', style={'display': 'none'})
