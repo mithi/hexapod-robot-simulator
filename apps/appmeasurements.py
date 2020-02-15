@@ -27,31 +27,41 @@ SLIDER_COXIA = dcc.Slider(id='slider-coxia', min=20, max=100, marks=SLIDER_MARKS
 SLIDER_FEMUR = dcc.Slider(id='slider-femur', min=20, max=100, marks=SLIDER_MARKS, value=70, step=5)
 SLIDER_TIBIA = dcc.Slider(id='slider-tibia', min=20, max=100, marks=SLIDER_MARKS, value=70, step=5)
 
-SLIDERS = [
-  SLIDER_ALPHA,
-  SLIDER_BETA,
-  SLIDER_GAMMA,
-  SLIDER_FRONT,
-  SLIDER_SIDE,
-  SLIDER_MIDDLE,
-  SLIDER_COXIA,
-  SLIDER_FEMUR,
-  SLIDER_TIBIA,
-]
-
-
 # -----------
 # LAYOUT
 # -----------
 
-section_hexapod = html.Div(style={'display': 'flex'}, children = [
+section_sliders_body = html.Div([
+  html.Div([ html.Label('Front Length'), SLIDER_FRONT], style={'width': '33%'}),
+  html.Div([ html.Label('Side Length'), SLIDER_SIDE], style={'width': '33%'}),
+  html.Div([ html.Label('Middle Length'), SLIDER_MIDDLE], style={'width': '33%'}),
+  ],
+  style={'display': 'flex'})
+
+section_sliders_leg = html.Div([
+  html.Div([ html.Label('Coxia Length'), SLIDER_COXIA], style={'width': '33%'}),
+  html.Div([ html.Label('Femur Length'), SLIDER_FEMUR], style={'width': '33%'}),
+  html.Div([ html.Label('Tibia Length'), SLIDER_TIBIA], style={'width': '33%'}),
+  ],
+  style={'display': 'flex'})
+
+section_sliders_angles = html.Div([
+  html.Div([ html.Label('Alpha'), SLIDER_ALPHA], style={'width': '33%'}),
+  html.Div([ html.Label('Beta'), SLIDER_BETA], style={'width': '33%'}),
+  html.Div([ html.Label('Gamma'), SLIDER_GAMMA], style={'width': '33%'}),
+  ],
+  style={'display': 'flex'})
+
+
+section_hexapod = html.Div([
   html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
-  html.Div(id='sliders', children=SLIDERS, style={'width': '50%'}),
-])
+  html.Div([section_sliders_body, section_sliders_leg, section_sliders_angles], style={'width': '40%'}),
+  html.Div(id='display-variables', style={'width': '10%'}),
+  ], 
+  style={'display': 'flex'})
 
 layout = html.Div([
   section_hexapod,
-  html.Div(id='display-variables'),
   html.Div(id='variables', style={'display': 'none'}),
 ])
 
@@ -95,7 +105,7 @@ def display_variables(pose_params):
   p = json.loads(pose_params)
   s = ""
   for k, v in p.items():
-    s += "- {} {} \n".format(k, v)
+    s += "- `{}: {}` \n".format(k, v)
   
   return dcc.Markdown(s)
 
