@@ -7,11 +7,11 @@ import plotly.graph_objs as go
 from hexapod import Point, Linkage, Hexagon, VirtualHexapod, HexapodPlot
 from app import app
 
-FRONT_LENGTH = 20
-SIDE_LENGTH = 30
-MID_LENGTH = 40
-HIP_LENGTH = 25
-KNEE_LENGTH = 40
+FRONT_LENGTH = 60
+SIDE_LENGTH = 60
+MID_LENGTH = 90
+HIP_LENGTH = 60
+KNEE_LENGTH = 60
 ANKLE_LENGTH = 60
 
 virtual_hexapod = VirtualHexapod(HIP_LENGTH, KNEE_LENGTH, ANKLE_LENGTH, FRONT_LENGTH, MID_LENGTH, SIDE_LENGTH)
@@ -20,11 +20,11 @@ hexaplot = HexapodPlot(virtual_hexapod)
 # -----------
 # Sliders 
 # -----------
-SLIDER_ANGLE_MARKS = {tick: str(tick) for tick in [-135, -90, -45, 0, 45, 90, 135]}
+SLIDER_ANGLE_MARKS = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
 
-SLIDER_ALPHA = dcc.Slider(id='2-slider-alpha', min=-135, max=135, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
-SLIDER_BETA = dcc.Slider(id='2-slider-beta', min=-135, max=135, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
-SLIDER_GAMMA = dcc.Slider(id='2-slider-gamma', min=-135, max=135, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
+SLIDER_ALPHA = dcc.Slider(id='2-slider-alpha', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
+SLIDER_BETA = dcc.Slider(id='2-slider-beta', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
+SLIDER_GAMMA = dcc.Slider(id='2-slider-gamma', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
 
 
 SLIDERS = [
