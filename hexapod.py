@@ -238,12 +238,13 @@ class HexapodPlot:
     }
 
     fig['layout'] = {
+      'legend': {'x': 0, 'y': 0},
       'scene_camera': camera,
       'margin': {'l': 10, 'b': 20, 't': 20, 'r': 10},
       'scene': {
-        'xaxis': {'nticks': 1, 'range': [-300, 300], 'showbackground': False },
-        'yaxis': {'nticks': 1, 'range': [-300, 300], 'showbackground': False },
-        'zaxis': {'nticks': 1, 'range': [-300, 300], 'backgroundcolor': 'rgb(230, 230, 2005)', 'showbackground': True },
+        'xaxis': {'nticks': 1, 'range': [-300, 300], 'showbackground': False},
+        'yaxis': {'nticks': 1, 'range': [-300, 300], 'showbackground': False},
+        'zaxis': {'nticks': 1, 'range': [-300, 300], 'backgroundcolor': 'rgb(230, 230, 2005)', 'showbackground': True},
         'aspectmode': 'manual',
         'aspectratio': {'x':1, 'y': 1, 'z': 1}
       }
