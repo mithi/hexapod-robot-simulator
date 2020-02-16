@@ -6,8 +6,10 @@ import dash_daq as daq
 import json
 import plotly.graph_objs as go
 
-from hexapod import VirtualHexapod, BASE_HEXAPOD
-from hexaplot import HexapodPlot, BASE_HEXAPLOT
+from hexapod import VirtualHexapod
+from hexaplot import HexapodPlot
+
+from const import BASE_HEXAPOD, BASE_HEXAPLOT
 from app import app
 
 hexaplot = BASE_HEXAPLOT

@@ -5,8 +5,10 @@ import json
 import plotly.graph_objs as go
 
 from hexapod import VirtualHexapod
-from hexaplot import HexapodPlot, BASE_HEXAPLOT
+from hexaplot import HexapodPlot
 from sectioning import make_section_type3
+
+from const import BASE_HEXAPLOT
 
 from app import app
 

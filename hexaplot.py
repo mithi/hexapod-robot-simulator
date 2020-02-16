@@ -1,5 +1,4 @@
 import plotly.graph_objects as go
-from hexapod import BASE_HEXAPOD
 
 class HexapodPlot:
   LINE_SIZE = 10
@@ -124,5 +123,3 @@ class HexapodPlot:
   def change_camera_view(self, camera, fig):
     fig['layout']['scene_camera'] = camera
     return fig
-
-BASE_HEXAPLOT = HexapodPlot(BASE_HEXAPOD)
