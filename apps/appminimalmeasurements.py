@@ -8,6 +8,7 @@ import plotly.graph_objs as go
 
 from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
+from sectioning import make_section_type4, make_section_type3
 
 from const import BASE_HEXAPOD, BASE_HEXAPLOT
 from app import app
@@ -54,27 +55,11 @@ INPUT_CAMVIEW = {
   'eye-z': make_number_input('input-view-eye-z', 0.5),
 }
 
-def make_section_type4(div1, div2, div3, div4):
-  return html.Div([
-    html.Div(div1, style={'width': '13%'}),
-    html.Div(div2, style={'width': '29%'}),
-    html.Div(div3, style={'width': '29%'}),
-    html.Div(div4, style={'width': '29%'}),
-    ],
-    style={'display': 'flex'}
-  )
-
 # section for camera view adjustments
 section_input_up = make_section_type4(dcc.Markdown('`(UP)`'), INPUT_CAMVIEW['up-x'], INPUT_CAMVIEW['up-y'], INPUT_CAMVIEW['up-z'])
 section_input_center = make_section_type4(dcc.Markdown('`(CNTR)`'), INPUT_CAMVIEW['center-x'], INPUT_CAMVIEW['center-y'], INPUT_CAMVIEW['center-z'])
 section_input_eye = make_section_type4(dcc.Markdown('`(EYE)`'), INPUT_CAMVIEW['eye-x'], INPUT_CAMVIEW['eye-y'], INPUT_CAMVIEW['eye-z'])
-SECTION_INPUT_CAMVIEW = html.Div([
-  html.Div(section_input_up, style={'width': '33%'}),
-  html.Div(section_input_center, style={'width': '33%'}),
-  html.Div(section_input_eye, style={'width': '33%'}),
-  ],
-  style={'display': 'flex'}
-)
+SECTION_INPUT_CAMVIEW = make_section_type3(section_input_up, section_input_center, section_input_eye)
 
 # -----------
 # LAYOUT

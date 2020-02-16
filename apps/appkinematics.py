@@ -10,13 +10,12 @@ from app import HEXAPOD_MEASUREMENTS
 
 from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
-from sectioning import make_section_type4,make_section_type3
+from sectioning import make_section_type4, make_section_type3
+from const import NAMES_LEG, NAMES_JOINT
 
 # -----------
 # SLIDERS FOR JOINTS
 # -----------
-NAMES_LEG = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back', 'right-back']
-NAMES_JOINT = ['coxia', 'femur', 'tibia']
 
 def make_slider(name):
   slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}

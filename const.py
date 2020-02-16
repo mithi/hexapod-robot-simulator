@@ -1,12 +1,9 @@
 from hexaplot import HexapodPlot
 from hexapod import VirtualHexapod
 
-FRONT_LENGTH = 60
-SIDE_LENGTH = 60
-MID_LENGTH = 90
-HIP_LENGTH = 60
-KNEE_LENGTH = 60
-ANKLE_LENGTH = 60
+NAMES_LEG = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back', 'right-back']
+NAMES_JOINT = ['coxia', 'femur', 'tibia']
 
-BASE_HEXAPOD = VirtualHexapod(HIP_LENGTH, KNEE_LENGTH, ANKLE_LENGTH, FRONT_LENGTH, MID_LENGTH, SIDE_LENGTH)
+BASE_HEXAPOD = VirtualHexapod(100, 100, 100, 100, 100, 100)
 BASE_HEXAPLOT = HexapodPlot(BASE_HEXAPOD)
+
