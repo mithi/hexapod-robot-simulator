@@ -8,11 +8,10 @@ from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
-from hexapod.const import BASE_HEXAPLOT
+from hexapod.const import BASE_PLOTTER
+from hexapod.figure_template import HEXAPOD_FIGURE
 
 import json
-from copy import deepcopy
-
 from app import app
 
 # -----------
@@ -64,13 +63,15 @@ def display_variables(pose_params):
   
   return dcc.Markdown(s)
 
-PLOTTER = deepcopy(BASE_HEXAPLOT)
 @app.callback(
   Output('hexapod-plot', 'figure'),
   [Input(i, 'value') for i in INPUT_IDs],
   [State('hexapod-plot', 'figure')]
 )
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, figure):
+  if figure is None:
+    return HEXAPOD_FIGURE
+
   virtual_hexapod = VirtualHexapod(
     h or 0, 
     k or 0, 
@@ -82,4 +83,4 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, figure):
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
   
-  return PLOTTER.update(virtual_hexapod, figure or PLOTTER.fig)
+  return BASE_PLOTTER.update(virtual_hexapod, figure)

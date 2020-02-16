@@ -5,15 +5,14 @@ from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
-from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_HEXAPLOT
+from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_PLOTTER
+from hexapod.figure_template import HEXAPOD_FIGURE
 
 from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
 from widgets.jointsliders import SECTION_LEG_SLIDERS
 from widgets.sectioning import make_section_type4, make_section_type3
 
 import json
-from copy import deepcopy
-
 from app import app
 
 # -----------
@@ -111,7 +110,6 @@ def update_left_back(coxia, femur, tibia):
 def update_right_back(coxia, femur, tibia):
   return leg_json(coxia, femur, tibia)
 
-PLOTTER = deepcopy(BASE_HEXAPLOT)
 INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   [Input(name, 'children') for name in ['hexapod-measurements-values']]
 @app.callback(
@@ -122,7 +120,7 @@ INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
 def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, state_fig):
 
   if state_fig is None:
-    return PLOTTER.fig
+    return HEXAPOD_FIGURE
 
   if measurements is None:
     raise PreventUpdate
@@ -143,11 +141,11 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, state_fig)
     except:
       print(pose)
 
-  state_figure = PLOTTER.update(virtual_hexapod, state_fig)
+  state_figure = BASE_PLOTTER.update(virtual_hexapod, state_fig)
 
   if relayout_data and 'scene.camera' in relayout_data:
     camera = relayout_data['scene.camera']
-    state_figure = PLOTTER.change_camera_view(camera, state_figure)
+    state_figure = BASE_PLOTTER.change_camera_view(camera, state_figure)
 
   return state_figure
 

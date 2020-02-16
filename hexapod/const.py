@@ -18,5 +18,5 @@ NAMES_LEG = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-b
 NAMES_JOINT = ['coxia', 'femur', 'tibia']
 
 BASE_HEXAPOD = VirtualHexapod(100, 100, 100, 100, 100, 100)
-BASE_HEXAPLOT = HexapodPlot(BASE_HEXAPOD)
+BASE_PLOTTER = HexapodPlot()
 

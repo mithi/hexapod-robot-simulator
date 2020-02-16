@@ -1,4 +1,4 @@
-import plotly.graph_objects as go
+from .figure_template import HEXAPOD_FIGURE
 
 class HexapodPlot:
   LINE_SIZE = 10
@@ -8,85 +8,9 @@ class HexapodPlot:
   COG_COLOR = '#e74c3c'
   LEG_COLOR = '#2c3e50'
 
-  def __init__(self, _hexapod):
-    self.hexapod = _hexapod
-    self.fig = self._configure()
-    self.draw()
+  def __init__(self):
+    self.fig = HEXAPOD_FIGURE
   
-  def _configure(self):
-
-    f, m, s = self.hexapod.body_measurements
-    a, b, c = self.hexapod.linkage_measurements
-    RANGE = (f + m + s + a + b + c)
-    AXIS_RANGE = [-RANGE, RANGE]
-
-    fig = go.FigureWidget()
-    s = 1.4
-    camera = {
-    'up': {'x':0, 'y':0, 'z':1},
-    'center': {'x':-0.05, 'y':0, 'z':-0.1},
-    'eye': {'x':s * 0.25, 'y':s * 0.5, 'z':s * 0.35}
-    }
-  
-    fig['layout'] = {
-      'legend': {'x': 0, 'y': 0},
-      'scene_camera': camera,
-      'margin': {'l': 10, 'b': 20, 't': 20, 'r': 10},
-      'scene': {
-        'xaxis': {'nticks': 1, 'range': AXIS_RANGE, 'showbackground': False},
-        'yaxis': {'nticks': 1, 'range': AXIS_RANGE, 'showbackground': False},
-        'zaxis': {'nticks': 1, 'range': AXIS_RANGE, 'backgroundcolor': 'rgb(230, 230, 2005)', 'showbackground': True},
-        'aspectmode': 'manual',
-        'aspectratio': {'x':1, 'y': 1, 'z': 1}
-      }
-    }
-    return fig
-
-  def _draw_lines(self, _name, _points, _size, _color, _is_name_visible=True):
-    self.fig.add_trace(go.Scatter3d(
-      name=_name,
-      x=[point.x for point in _points],
-      y=[point.y for point in _points],
-      z=[point.z for point in _points],
-      line={
-        'color': _color,
-        'width': _size
-      },
-      showlegend=_is_name_visible
-    ))
-
-  def _draw_point(self, _name, _point, _size, _color):
-    self.fig.add_trace(go.Scatter3d(
-      name=_name,
-      x=[_point.x],
-      y=[_point.y],
-      z=[_point.z],
-      mode='markers',
-      marker={
-        'size': _size,
-        'color': _color,
-        'opacity': 1.0
-      }
-    ))
-
-  def draw(self):
-    # Add body outline
-    points = self.hexapod.body.vertices
-    self._draw_lines('body', points + [points[0]], HexapodPlot.LINE_SIZE, HexapodPlot.BODY_COLOR)
-
-    # Add head and center of gravity
-    self._draw_point('cog', self.hexapod.body.cog, HexapodPlot.COG_SIZE, HexapodPlot.COG_COLOR)
-    self._draw_point('head', self.hexapod.body.head, HexapodPlot.HEAD_SIZE, HexapodPlot.BODY_COLOR)
-
-    # Draw legs
-    for leg in self.hexapod.legs:
-      points = [leg.p0, leg.p1, leg.p2, leg.p3]
-      self._draw_lines('leg', points, HexapodPlot.LINE_SIZE, HexapodPlot.LEG_COLOR, False)
-    return self.fig
-  
-  def figure(self):
-    return self.fig
-
   def update(self, hexapod, fig):
     #body
     points = hexapod.body.vertices + [hexapod.body.vertices[0]]
