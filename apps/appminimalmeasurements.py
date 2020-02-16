@@ -29,14 +29,16 @@ SLIDER_ALPHA = dcc.Slider(id='2-slider-alpha', min=-90, max=90, marks=SLIDER_ANG
 SLIDER_BETA = dcc.Slider(id='2-slider-beta', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
 SLIDER_GAMMA = dcc.Slider(id='2-slider-gamma', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
 
-SLIDERS = [
-  SLIDER_ALPHA,
-  SLIDER_BETA,
-  SLIDER_GAMMA,
-]
-
+SECTION_SLIDERS = html.Div([
+  html.Div(html.H6('Leg Angles'), style={'width': '10%'}),
+  html.Div([html.Label('alpha'), SLIDER_ALPHA], style={'width': '30%'}),
+  html.Div([html.Label('beta'), SLIDER_BETA], style={'width': '30%'}),
+  html.Div([html.Label('gamma'), SLIDER_GAMMA], style={'width': '30%'}),
+  ],
+  style={'display': 'flex'}
+)
 # -----------
-# CAMERA
+# CAMERA VIEW
 # -----------
 def make_number_input(_name, _value):
   return dcc.Input(id=_name, type='number', value=_value, step=0.005, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
@@ -78,24 +80,6 @@ SECTION_INPUT_CAMVIEW = html.Div([
   style={'display': 'flex'}
 )
 
-
-html.Div([section_input_up, section_input_center, section_input_eye])
-
-# -----------
-# PARTIALS
-# -----------
-def make_fourths_div(name1, name2, name3, name4, div1, div2, div3, div4):
-  return html.Div([
-    html.Div([html.Label(name1), div1], style={'width': '10%'}),
-    html.Div([html.Label(name2), div2], style={'width': '30%'}),
-    html.Div([html.Label(name3), div3], style={'width': '30%'}),
-    html.Div([html.Label(name4), div4], style={'width': '30%'}),
-    ],
-    style={'display': 'flex'}
-  )
-
-section_sliders = make_fourths_div('', 'alpha', 'beta', 'gamma', html.H6('Leg Angles'), SLIDER_ALPHA, SLIDER_BETA, SLIDER_GAMMA)
-
 # -----------
 # LAYOUT
 # -----------
@@ -107,7 +91,7 @@ layout = html.Div([
   SECTION_INPUT_CAMVIEW,
   html.Br(),
 
-  section_sliders,
+  SECTION_SLIDERS,
   html.Br(),
 
   html.Div(id='camera-view-values', style={'display': 'none'}),
@@ -157,5 +141,6 @@ def update_hexapod_plot(alpha, beta, gamma, camera):
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
+
   fig = hexaplot.update(virtual_hexapod)
   return fig
