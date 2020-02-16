@@ -44,14 +44,12 @@ layout = html.Div([
 
   html.Br(),
 
-  #html.Div(id='camera-values-from-graph'),  
   SECTION_LEG_POSES, 
-  html.Div(id='hexapod-measurements-values', style={'display': 'none'}),
-  #html.Div(id='camera-view-values', style={'display': 'none'})
+  html.Div(id='hexapod-measurements-values', style={'display': 'none'})
 ])
 
 # -----------
-# Hexapod Measurements CALLBACK
+#  CALLBACKS
 # -----------
 @app.callback(
   Output('hexapod-measurements-values', 'children'),
@@ -70,74 +68,53 @@ def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
 
   return json.dumps(measurements)
 
-# -------
-# LEG CALLBACKS
-# -----------
-# 0
-@app.callback(
-  Output('pose-right-middle', 'children'),
-  [Input('slider-right-middle-{}'.format(joint), 'value') for joint in NAMES_JOINT]
-)
+#         x2          x1
+#          \         /
+#           *---*---*
+#          /    |    \
+#         /     |     \
+#        /      |      \
+#  x3 --*------cog------*-- x0
+#        \      |      /
+#         \     |     /
+#          \    |    /
+#           *---*---*
+#          /         \
+#         x4         x5
+def leg_inputs(prefix):
+  return [Input('slider-{}-{}'.format(prefix, joint), 'value') for joint in NAMES_JOINT]
+
+def leg_output(prefix):
+  return Output('pose-{}'.format(prefix), 'children')
+
+def leg_json(coxia, femur, tibia):
+  return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
+
+@app.callback(leg_output('right-middle'), leg_inputs('right-middle'))
 def update_right_middle(coxia, femur, tibia):
-  return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
+  print('here')
+  return leg_json(coxia, femur, tibia)
 
-# 1
-@app.callback(
-  Output('pose-right-front', 'children'),
-  [Input('slider-right-front-{}'.format(joint), 'value') for joint in NAMES_JOINT]
-)
+@app.callback(leg_output('right-front'), leg_inputs('right-front'))
 def update_right_front(coxia, femur, tibia):
-  return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
+  return leg_json(coxia, femur, tibia)
 
-# 2
-@app.callback(
-  Output('pose-left-front', 'children'),
-  [Input('slider-left-front-{}'.format(joint), 'value') for joint in NAMES_JOINT]
-)
+@app.callback(leg_output('left-front'), leg_inputs('left-front'))
 def update_left_front(coxia, femur, tibia):
-  return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
+  return leg_json(coxia, femur, tibia)
 
-# 3
-@app.callback(
-  Output('pose-left-middle', 'children'),
-  [Input('slider-left-middle-{}'.format(joint), 'value') for joint in NAMES_JOINT]
-)
+@app.callback(leg_output('left-middle'), leg_inputs('left-middle'))
 def update_left_middle(coxia, femur, tibia):
-  return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
+  return leg_json(coxia, femur, tibia)
 
-# 4
-@app.callback(
-  Output('pose-left-back', 'children'),
-  [Input('slider-left-back-{}'.format(joint), 'value') for joint in NAMES_JOINT]
-)
+@app.callback(leg_output('left-back'), leg_inputs('left-back'))
 def update_left_back(coxia, femur, tibia):
-  return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
+  return leg_json(coxia, femur, tibia)
 
-# 5
-@app.callback(
-  Output('pose-right-back', 'children'),
-  [Input('slider-right-back-{}'.format(joint), 'value') for joint in NAMES_JOINT]
-)
+@app.callback(leg_output('right-back'), leg_inputs('right-back'))
 def update_right_back(coxia, femur, tibia):
-  return json.dumps({'coxia': coxia, 'femur': femur, 'tibia': tibia})
+  return leg_json(coxia, femur, tibia)
 
-# front          x2          x1
-#                 \         /
-#                  *---*---*
-#                 /    |    \
-#                /     |     \
-#               /      |      \
-# middle  x3 --*------cog------*-- x0
-#               \      |      /
-#                \     |     /
-#                 \    |    /
-# back             *---*---*
-#                 /         \
-#                x4         x5
-#               left       right
-# -------
-# FIGURE/GRAPH CALLBACK
-# -----------
 INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   [Input(name, 'children') for name in ['hexapod-measurements-values']]
 @app.callback(
@@ -170,7 +147,6 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data):
 
   if relayout_data and 'scene.camera' in relayout_data:
     camera = relayout_data['scene.camera']
-    print(camera)
     fig = PLOTTER.change_camera_view(camera, fig)
 
   return fig
