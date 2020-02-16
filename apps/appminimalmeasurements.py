@@ -18,7 +18,6 @@ from app import app
 hexaplot = BASE_HEXAPLOT
 virtual_hexapod = BASE_HEXAPOD
 
-
 # -----------
 # LAYOUT
 # -----------
@@ -61,7 +60,7 @@ def update_hexapod_plot(alpha, beta, gamma, camera):
   fig = hexaplot.fig
 
   if camera is not None:
-    hexaplot.change_camera_view(json.loads(camera), fig)
+    fig = hexaplot.change_camera_view(json.loads(camera), fig)
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
