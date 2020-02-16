@@ -11,10 +11,9 @@ from hexapod.plotter import HexapodPlot
 from hexapod.const import BASE_HEXAPOD, BASE_HEXAPLOT
 
 import json
-from app import app
+from copy import deepcopy
 
-hexaplot = BASE_HEXAPLOT
-virtual_hexapod = BASE_HEXAPOD
+from app import app
 
 # -----------
 # LAYOUT
@@ -48,18 +47,20 @@ def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, ey
   }
   return json.dumps(camera)
 
+HEXAPLOT = deepcopy(BASE_HEXAPLOT)
+HEXAPOD = deepcopy(BASE_HEXAPOD)
 @app.callback(
   Output('2-hexapod-plot', 'figure'),
   [Input(input_id, 'value') for input_id in SLIDERS_TEST_IDs] + [Input('camera-view-values', 'children')]
 )
 def update_hexapod_plot(alpha, beta, gamma, camera):
-  fig = hexaplot.fig
+  fig = HEXAPLOT.fig
 
   if camera is not None:
-    fig = hexaplot.change_camera_view(json.loads(camera), fig)
+    fig = HEXAPLOT.change_camera_view(json.loads(camera), fig)
 
-  for leg in virtual_hexapod.legs:
+  for leg in HEXAPOD.legs:
     leg.change_pose(alpha, beta, gamma)
 
-  fig = hexaplot.update(virtual_hexapod, fig)
+  fig = HEXAPLOT.update(HEXAPOD, fig)
   return fig

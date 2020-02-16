@@ -3,10 +3,6 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-import json
-
-from app import app
-
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_HEXAPLOT
@@ -15,14 +11,17 @@ from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LEN
 from widgets.jointsliders import SECTION_LEG_SLIDERS
 from widgets.sectioning import make_section_type4, make_section_type3
 
-PLOTTER = BASE_HEXAPLOT
+import json
+from copy import deepcopy
 
-# hidden values of legs
-SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
+from app import app
 
 # -----------
 # LAYOUT
 # -----------
+# hidden values of legs
+SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
+
 layout = html.Div([
 
   html.Div([
@@ -41,8 +40,6 @@ layout = html.Div([
       ], style={'width': '55%'}),
     ], style={'display': 'flex'}
   ),
-
-  html.Br(),
 
   SECTION_LEG_POSES, 
   html.Div(id='hexapod-measurements-values', style={'display': 'none'})
@@ -115,6 +112,7 @@ def update_left_back(coxia, femur, tibia):
 def update_right_back(coxia, femur, tibia):
   return leg_json(coxia, femur, tibia)
 
+PLOTTER = deepcopy(BASE_HEXAPLOT)
 INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   [Input(name, 'children') for name in ['hexapod-measurements-values']]
 @app.callback(

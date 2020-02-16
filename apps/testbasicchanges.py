@@ -11,9 +11,9 @@ from hexapod.plotter import HexapodPlot
 from hexapod.const import BASE_HEXAPLOT
 
 import json
-from app import app
+from copy import deepcopy
 
-plotter = BASE_HEXAPLOT
+from app import app
 
 # -----------
 # LAYOUT
@@ -64,16 +64,17 @@ def display_variables(pose_params):
   
   return dcc.Markdown(s)
 
+PLOTTER = deepcopy(BASE_HEXAPLOT)
 @app.callback(
   Output('hexapod-plot', 'figure'),
   [Input(i, 'value') for i in INPUT_IDs]
 )
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a):
   virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
-  fig = plotter.fig
+  fig = PLOTTER.fig
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
 
-  fig = plotter.update(virtual_hexapod, fig)
+  fig = PLOTTER.update(virtual_hexapod, fig)
   return fig
