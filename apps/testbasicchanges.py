@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
 from widgets.sectioning import make_section_type3
-from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
+from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS_IDs
 from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 
 from hexapod.models import VirtualHexapod
@@ -19,13 +19,12 @@ from app import app
 # -----------
 section_hexapod = html.Div([
   html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
-  html.Div([SECTION_INPUT_LENGTHS, SECTION_SLIDERS_TEST], style={'width': '40%'}),
-  html.Div(id='display-variables', style={'width': '10%'}),
-  ], 
-  style={'display': 'flex'})
+  html.Div([SECTION_LENGTHS_CONTROL, SECTION_SLIDERS_TEST], style={'width': '40%'}),
+  html.Div(id='display-variables', style={'width': '10%'})], 
+  style={'display': 'flex'}
+)
 
 layout = html.Div([
-  html.H3('Customization'),
   section_hexapod,
   html.Div(id='variables', style={'display': 'none'}),
 ])

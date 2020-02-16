@@ -8,45 +8,35 @@ from hexapod.plotter import HexapodPlot
 from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_PLOTTER
 from hexapod.figure_template import HEXAPOD_FIGURE
 
-from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
-from widgets.jointsliders import SECTION_LEG_SLIDERS
+from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
+from widgets.jointsliders import SECTION_POSE_CONTROL
 from widgets.sectioning import make_section_type4, make_section_type3
 
 import json
 from app import app
 
-# -----------
-# LAYOUT
-# -----------
-# hidden values of legs
-SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
+# *********************
+# *  LAYOUT           *
+# *********************
+HIDDEN_LEG_POSES = [html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG]
+HIDDEN_DIVS = HIDDEN_LEG_POSES + [html.Div(id='hexapod-measurements-values', style={'display': 'none'})]
 
 layout = html.Div([
-
+  html.Div(HIDDEN_DIVS),
   html.Div([
     dcc.Graph(id='graph-hexapod', style={'width': '45%'}),
-
-    html.Div([
-
-      html.H4('Joint Angles (Pose of each Leg)'),
-      SECTION_LEG_SLIDERS,
-      html.Br(),
-
-      html.H4('Hexapod Robot Measurements'),
-      SECTION_INPUT_LENGTHS,
-      html.Br(),
-
-      ], style={'width': '55%'}),
-    ], style={'display': 'flex'}
-  ),
-
-  SECTION_LEG_POSES, 
-  html.Div(id='hexapod-measurements-values', style={'display': 'none'})
+    html.Div([SECTION_POSE_CONTROL, SECTION_LENGTHS_CONTROL], style={'width': '55%'})],
+    style={'display': 'flex'}
+  )
 ])
 
-# -----------
-#  CALLBACKS
-# -----------
+# *********************
+# *  CALLBACKS        *
+# *********************
+
+# -------------------
+# Listen if the robot measurements are updated
+# -------------------
 @app.callback(
   Output('hexapod-measurements-values', 'children'),
   [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
@@ -77,6 +67,10 @@ def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
 #           *---*---*
 #          /         \
 #         x4         x5
+
+# -------------------
+# Listen if a leg pose is updated
+# -------------------
 def leg_inputs(prefix):
   return [Input('slider-{}-{}'.format(prefix, joint), 'value') for joint in NAMES_JOINT]
 
@@ -110,6 +104,9 @@ def update_left_back(coxia, femur, tibia):
 def update_right_back(coxia, femur, tibia):
   return leg_json(coxia, femur, tibia)
 
+# -------------------
+# Listen if we need to update Graph
+# -------------------
 INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   [Input(name, 'children') for name in ['hexapod-measurements-values']]
 @app.callback(

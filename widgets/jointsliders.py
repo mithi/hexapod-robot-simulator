@@ -55,3 +55,9 @@ def make_leg_sections():
 # -----------
 # section displaying all legs
 SECTION_LEG_SLIDERS = make_leg_sections()
+
+SECTION_POSE_CONTROL = html.Div([
+  html.H4('Joint Angles (pose of each leg)'),
+  SECTION_LEG_SLIDERS,
+  html.Br()
+])

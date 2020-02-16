@@ -43,3 +43,9 @@ SECTION_INPUT_LENGTHS = html.Div([
   ],
   style={'display': 'flex'}
 )
+
+SECTION_LENGTHS_CONTROL = html.Div([
+  html.H4('Hexapod Robot Measurements'),
+  SECTION_INPUT_LENGTHS,
+  html.Br(),
+])
