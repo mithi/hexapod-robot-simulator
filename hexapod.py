@@ -210,3 +210,12 @@ class VirtualHexapod:
     for point, theta in zip(self.body.vertices, self.body.new_x_axes):
       linkage = Linkage(a, b, c, new_x_axis=theta, new_origin=point)
       self.legs.append(linkage)
+
+FRONT_LENGTH = 60
+SIDE_LENGTH = 60
+MID_LENGTH = 90
+HIP_LENGTH = 60
+KNEE_LENGTH = 60
+ANKLE_LENGTH = 60
+
+BASE_HEXAPOD = VirtualHexapod(HIP_LENGTH, KNEE_LENGTH, ANKLE_LENGTH, FRONT_LENGTH, MID_LENGTH, SIDE_LENGTH)

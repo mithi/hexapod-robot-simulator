@@ -99,8 +99,9 @@ def display_variables(pose_params):
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a):
   virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
   hexaplot = HexapodPlot(virtual_hexapod)
+  fig = hexaplot.fig
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
-  fig = hexaplot.update(virtual_hexapod)
+  fig = hexaplot.update(virtual_hexapod, fig)
   return fig

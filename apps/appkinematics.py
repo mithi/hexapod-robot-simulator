@@ -247,7 +247,7 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements):
     except:
       print(pose)
 
-  fig = hexaplot.update(virtual_hexapod)
+  fig = hexaplot.update(virtual_hexapod, hexaplot.fig)
 
   return fig
 

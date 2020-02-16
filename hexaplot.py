@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+from hexapod import BASE_HEXAPOD
 
 class HexapodPlot:
   LINE_SIZE = 10
@@ -14,15 +15,10 @@ class HexapodPlot:
     self.draw()
     self._configure()
 
-  def change_camera_view(self, camera):
-    self.fig['layout']['scene_camera'] = camera
-    return self.fig
-
   def _configure(self):
     
     f, m, s = self.hexapod.body_measurements
     a, b, c = self.hexapod.linkage_measurements
-    # RANGE = 300
     RANGE = (f + m + s + a + b + c)
     AXIS_RANGE = [-RANGE, RANGE]
 
@@ -93,26 +89,40 @@ class HexapodPlot:
   def figure(self):
     return self.fig
 
-  def update(self, _hexapod):
-    self.hexapod = _hexapod
-    
+  def update(self, hexapod, fig):
     #body
-    points = self.hexapod.body.vertices + [self.hexapod.body.vertices[0]]
-    self.fig['data'][0]['x'] = [point.x for point in points]
-    self.fig['data'][0]['y'] = [point.y for point in points]
-    self.fig['data'][0]['z'] = [point.z for point in points]
+    points = hexapod.body.vertices + [hexapod.body.vertices[0]]
+    fig['data'][0]['x'] = [point.x for point in points]
+    fig['data'][0]['y'] = [point.y for point in points]
+    fig['data'][0]['z'] = [point.z for point in points]
 
-    self.fig['data'][2]['x'] = [self.hexapod.body.head.x]
-    self.fig['data'][2]['y'] = [self.hexapod.body.head.y]
-    self.fig['data'][2]['z'] = [self.hexapod.body.head.z]
+    fig['data'][2]['x'] = [hexapod.body.head.x]
+    fig['data'][2]['y'] = [hexapod.body.head.y]
+    fig['data'][2]['z'] = [hexapod.body.head.z]
     
     # legs
     n = [i for i in range(3, 9)]
     
-    for n, leg in zip(n, self.hexapod.legs):
+    for n, leg in zip(n, hexapod.legs):
       points = [leg.p0, leg.p1, leg.p2, leg.p3]
-      self.fig['data'][n]['x'] = [point.x for point in points]
-      self.fig['data'][n]['y'] = [point.y for point in points]
-      self.fig['data'][n]['z'] = [point.z for point in points]    
-    
-    return self.fig
+      fig['data'][n]['x'] = [point.x for point in points]
+      fig['data'][n]['y'] = [point.y for point in points]
+      fig['data'][n]['z'] = [point.z for point in points]    
+
+    # Change range of view for all axes
+    f, m, s = hexapod.body_measurements
+    a, b, c = hexapod.linkage_measurements
+    RANGE = (f + m + s + a + b + c)
+    AXIS_RANGE = [-RANGE, RANGE]
+
+    fig['layout']['scene']['xaxis']['range'] = AXIS_RANGE
+    fig['layout']['scene']['yaxis']['range'] = AXIS_RANGE
+    fig['layout']['scene']['zaxis']['range'] = AXIS_RANGE
+
+    return fig
+
+  def change_camera_view(self, camera, fig):
+    fig['layout']['scene_camera'] = camera
+    return fig
+
+BASE_HEXAPLOT = HexapodPlot(BASE_HEXAPOD)

@@ -6,19 +6,12 @@ import dash_daq as daq
 import json
 import plotly.graph_objs as go
 
-from hexapod import VirtualHexapod
-from hexaplot import HexapodPlot
+from hexapod import VirtualHexapod, BASE_HEXAPOD
+from hexaplot import HexapodPlot, BASE_HEXAPLOT
 from app import app
 
-FRONT_LENGTH = 60
-SIDE_LENGTH = 60
-MID_LENGTH = 90
-HIP_LENGTH = 60
-KNEE_LENGTH = 60
-ANKLE_LENGTH = 60
-
-virtual_hexapod = VirtualHexapod(HIP_LENGTH, KNEE_LENGTH, ANKLE_LENGTH, FRONT_LENGTH, MID_LENGTH, SIDE_LENGTH)
-hexaplot = HexapodPlot(virtual_hexapod)
+hexaplot = BASE_HEXAPLOT
+virtual_hexapod = BASE_HEXAPOD
 
 # -----------
 # INPUTS
@@ -138,10 +131,12 @@ INPUT_IDs = [
   [Input(input_id, 'value') for input_id in INPUT_IDs] + [Input('camera-view-values', 'children')]
 )
 def update_hexapod_plot(alpha, beta, gamma, camera):
-  hexaplot.change_camera_view(json.loads(camera))
+  fig = hexaplot.fig
+
+  hexaplot.change_camera_view(json.loads(camera), fig)
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
 
-  fig = hexaplot.update(virtual_hexapod)
+  fig = hexaplot.update(virtual_hexapod, fig)
   return fig
