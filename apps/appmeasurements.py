@@ -5,10 +5,12 @@ import json
 import plotly.graph_objs as go
 
 from hexapod import VirtualHexapod
-from hexaplot import HexapodPlot
+from hexaplot import HexapodPlot, BASE_HEXAPLOT
 from sectioning import make_section_type3
 
 from app import app
+
+plotter = BASE_HEXAPLOT
 
 # -----------
 # Sliders 
@@ -98,10 +100,10 @@ def display_variables(pose_params):
 )
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a):
   virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
-  hexaplot = HexapodPlot(virtual_hexapod)
-  fig = hexaplot.fig
+  fig = plotter.fig
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
-  fig = hexaplot.update(virtual_hexapod, fig)
+
+  fig = plotter.update(virtual_hexapod, fig)
   return fig
