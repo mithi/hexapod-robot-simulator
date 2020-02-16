@@ -12,7 +12,7 @@ from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
 from sectioning import make_section_type4, make_section_type3
 from const import NAMES_LEG, NAMES_JOINT
-from measurementwidgets import INPUT_LENGTHS, SECTION_INPUT_LENGTHS
+from measurementwidgets import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
 
 # -----------
 # SLIDERS FOR JOINTS
@@ -98,15 +98,6 @@ layout = html.Div([
 # -----------
 # Hexapod Measurements CALLBACK
 # -----------
-INPUT_LENGTHS_IDs = [
-  'input-length-front',
-  'input-length-side',
-  'input-length-middle',
-
-  'input-length-coxia',
-  'input-length-femur',
-  'input-length-tibia',
-]
 @app.callback(
   Output('hexapod-measurements-values', 'children'),
   [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
