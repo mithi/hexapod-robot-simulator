@@ -54,6 +54,7 @@ HEXAPOD = deepcopy(BASE_HEXAPOD)
   [Input(input_id, 'value') for input_id in SLIDERS_TEST_IDs] + [Input('camera-view-values', 'children')]
 )
 def update_hexapod_plot(alpha, beta, gamma, camera):
+  HEXAPOD = deepcopy(BASE_HEXAPOD)
   fig = HEXAPLOT.fig
 
   if camera is not None:
