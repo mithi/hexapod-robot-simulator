@@ -4,12 +4,13 @@ from dash.dependencies import Input, Output
 import json
 import plotly.graph_objs as go
 
-from hexapod import VirtualHexapod
-from hexaplot import HexapodPlot
-from sectioning import make_section_type3
+from hexapod.models import VirtualHexapod
+from hexapod.plotter import HexapodPlot
+from hexapod.const import BASE_HEXAPLOT
 from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
 
-from const import BASE_HEXAPLOT
+from sectioning import make_section_type3
+
 
 from app import app
 
