@@ -2,6 +2,16 @@ import dash_core_components as dcc
 import dash_html_components as html
 from sectioning import make_section_type3
 
+INPUT_LENGTHS_IDs = [
+  'input-length-front',
+  'input-length-side',
+  'input-length-middle',
+
+  'input-length-coxia',
+  'input-length-femur',
+  'input-length-tibia',
+]
+
 # -----------
 # NUMBER INPUTS
 # -----------
