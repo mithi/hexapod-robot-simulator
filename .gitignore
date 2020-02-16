@@ -8,3 +8,4 @@ apps/.DS_Store
 apps/__pycache__/appmeasurements.cpython-38.pyc
 .DS_Store
 apps/__pycache__/appminimalmeasurements.cpython-38.pyc
+__pycache__/hexaplot.cpython-38.pyc

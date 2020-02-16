@@ -6,7 +6,8 @@ import json
 from app import app
 from app import HEXAPOD_MEASUREMENTS
 
-from hexapod import Point, Linkage, Hexagon, VirtualHexapod, HexapodPlot
+from hexapod import VirtualHexapod
+from hexaplot import HexapodPlot
 
 # -----------
 # SLIDERS FOR JOINTS

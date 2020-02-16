@@ -4,9 +4,9 @@ from dash.dependencies import Input, Output
 import json
 import plotly.graph_objs as go
 
-from hexapod import Point, Linkage, Hexagon, VirtualHexapod, HexapodPlot
+from hexapod import VirtualHexapod
+from hexaplot import HexapodPlot
 from app import app
-
 
 # -----------
 # Sliders 
