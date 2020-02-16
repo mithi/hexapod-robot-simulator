@@ -7,7 +7,7 @@ import plotly.graph_objs as go
 from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
 from sectioning import make_section_type3
-from measurementwidgets import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
+from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
 
 from const import BASE_HEXAPLOT
 
