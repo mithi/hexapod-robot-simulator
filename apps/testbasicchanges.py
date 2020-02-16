@@ -83,4 +83,4 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, figure):
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
   
-  return BASE_PLOTTER.update(virtual_hexapod, figure)
+  return BASE_PLOTTER.update(figure, virtual_hexapod)

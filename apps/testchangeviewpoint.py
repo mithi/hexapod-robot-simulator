@@ -63,6 +63,6 @@ def update_hexapod_plot(alpha, beta, gamma, camera, figure):
     leg.change_pose(alpha, beta, gamma)
 
   if camera is not None:
-    figure = BASE_PLOTTER.change_camera_view(json.loads(camera), figure)
+    figure = BASE_PLOTTER.change_camera_view(figure, json.loads(camera))
 
-  return BASE_PLOTTER.update(virtual_hexapod, figure)
+  return BASE_PLOTTER.update(figure, virtual_hexapod)

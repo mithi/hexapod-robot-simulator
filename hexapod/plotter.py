@@ -11,7 +11,7 @@ class HexapodPlot:
   def __init__(self):
     self.fig = HEXAPOD_FIGURE
   
-  def update(self, hexapod, fig):
+  def update(self, fig, hexapod):
     #body
     points = hexapod.body.vertices + [hexapod.body.vertices[0]]
     fig['data'][0]['x'] = [point.x for point in points]
@@ -43,6 +43,6 @@ class HexapodPlot:
 
     return fig
 
-  def change_camera_view(self, camera, fig):
+  def change_camera_view(self, fig, camera):
     fig['layout']['scene']['camera'] = camera
     return fig

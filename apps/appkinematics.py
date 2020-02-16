@@ -117,9 +117,9 @@ INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   INPUT_ALL, 
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
-def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, state_fig):
+def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, figure):
 
-  if state_fig is None:
+  if figure is None:
     return HEXAPOD_FIGURE
 
   if measurements is None:
@@ -141,11 +141,11 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, state_fig)
     except:
       print(pose)
 
-  state_figure = BASE_PLOTTER.update(virtual_hexapod, state_fig)
+  figure = BASE_PLOTTER.update(figure, virtual_hexapod)
 
   if relayout_data and 'scene.camera' in relayout_data:
     camera = relayout_data['scene.camera']
-    state_figure = BASE_PLOTTER.change_camera_view(camera, state_figure)
+    figure = BASE_PLOTTER.change_camera_view(figure, camera)
 
-  return state_figure
+  return figure
 
