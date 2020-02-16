@@ -9,3 +9,15 @@ apps/__pycache__/appmeasurements.cpython-38.pyc
 .DS_Store
 apps/__pycache__/appminimalmeasurements.cpython-38.pyc
 __pycache__/hexaplot.cpython-38.pyc
+__pycache__/sectioning.cpython-38.pyc
+__pycache__/const.cpython-38.pyc
+__pycache__/measurementwidgets.cpython-38.pyc
+__pycache__/camviewwidgets.cpython-38.pyc
+widgets/__pycache__/__init__.cpython-38.pyc
+widgets/__pycache__/camview.cpython-38.pyc
+widgets/__pycache__/measurements.cpython-38.pyc
+widgets/__pycache__/jointsliders.cpython-38.pyc
+hexapod/__pycache__/__init__.cpython-38.pyc
+hexapod/__pycache__/const.cpython-38.pyc
+hexapod/__pycache__/models.cpython-38.pyc
+hexapod/__pycache__/plotter.cpython-38.pyc
