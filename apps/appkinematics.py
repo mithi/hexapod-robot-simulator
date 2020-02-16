@@ -59,9 +59,6 @@ INPUT_LENGTHS = {
   'tibia': make_positive_number_input('input-length-tibia', 100),
 }
 
-
-
-
 def make_leg_sections():
   sections = []
   header_section = make_section_type4('', html.H5('coxia'), html.H5('femur'), html.H5('tibia'))
@@ -87,8 +84,8 @@ SECTION_LEG_SLIDERS = make_leg_sections()
 SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
 
 # section for hexapod measurement adjustments
-section_input_body = make_section_type3(INPUT_LENGTHS['front'], INPUT_LENGTHS['middle'], INPUT_LENGTHS['side'], '', 'front', 'middle', 'side')
-section_input_leg = make_section_type3(INPUT_LENGTHS['coxia'], INPUT_LENGTHS['femur'], INPUT_LENGTHS['tibia'], '', 'coxia', 'femur', 'tibia')
+section_input_body = make_section_type3(INPUT_LENGTHS['front'], INPUT_LENGTHS['middle'], INPUT_LENGTHS['side'], 'front', 'middle', 'side')
+section_input_leg = make_section_type3(INPUT_LENGTHS['coxia'], INPUT_LENGTHS['femur'], INPUT_LENGTHS['tibia'], 'coxia', 'femur', 'tibia')
 
 SECTION_INPUT_LENGTHS = html.Div([
   html.Div(section_input_body, style={'width':  '50%'}),
