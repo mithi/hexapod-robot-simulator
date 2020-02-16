@@ -12,59 +12,9 @@ from hexaplot import HexapodPlot
 from sectioning import make_section_type4, make_section_type3
 from const import NAMES_LEG, NAMES_JOINT, BASE_HEXAPLOT
 from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
+from widgets.jointsliders import SECTION_LEG_SLIDERS
 
 PLOTTER = BASE_HEXAPLOT
-
-# -----------
-# SLIDERS FOR JOINTS
-# -----------
-
-def make_slider(name):
-  slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
-  return dcc.Slider(id=name, min=-105, max=105, marks=slider_marks, value=0, step=5)
-
-# EXAMPLE:
-# SLIDERS['left-front'] = {'coxia' : {'slider': SLIDER, 'id': 'slider-left-front-coxia'}}
-# SLIDERS['right-middle'] = {'femur' : {'slider': SLIDER, 'id': 'slider-right-middle-femur'}}
-def make_sliders():
-  sliders_leg = {}
-
-  for leg_name in NAMES_LEG:
-    sliders_joint = {}
-    
-    for joint_name in NAMES_JOINT:
-      slider_name = 'slider-' + leg_name + '-' + joint_name
-      slider = make_slider(slider_name)
-      sliders_joint[joint_name] = { 'slider': slider, 'id': slider_name }
-    
-    sliders_leg[leg_name] = sliders_joint
-
-  return sliders_leg
-
-# format:
-# 'slider' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
-SLIDERS = make_sliders()
-
-def make_leg_sections():
-  sections = []
-  header_section = make_section_type4('', html.H5('coxia'), html.H5('femur'), html.H5('tibia'))
-  sections.append(header_section)
-
-  for leg in NAMES_LEG:
-    header = html.Label(dcc.Markdown('**`{}`**'.format(leg)))
-    coxia = SLIDERS[leg]['coxia']['slider']
-    femur = SLIDERS[leg]['femur']['slider']
-    tibia = SLIDERS[leg]['tibia']['slider']
-    section = make_section_type4(header, coxia, femur, tibia)
-    sections.append(section)
-
-  return html.Div(sections)
-
-# -----------
-# PARTIAL SECTIONS
-# -----------
-# section displaying all legs
-SECTION_LEG_SLIDERS = make_leg_sections()
 
 # hidden values of legs
 SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG])
@@ -80,6 +30,7 @@ layout = html.Div([
       html.H4('Joint Angles (Pose of each Leg)'),
       SECTION_LEG_SLIDERS,
       html.Br(),
+
       html.H4('Hexapod Robot Measurements'),
       SECTION_INPUT_LENGTHS  
       ], style={'width': '55%'}),
@@ -88,7 +39,6 @@ layout = html.Div([
 
   html.Br(),
 
-  # HIDDEN SECTIONS
   #html.Div(id='camera-values-from-graph'),  
   SECTION_LEG_POSES, 
   html.Div(id='hexapod-measurements-values', style={'display': 'none'}),
