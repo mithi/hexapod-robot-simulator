@@ -7,30 +7,23 @@ import plotly.graph_objs as go
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import BASE_HEXAPLOT
+
 from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
 from widgets.sectioning import make_section_type3
+from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 
 from app import app
 
 plotter = BASE_HEXAPLOT
 
-# -----------
-# Sliders 
-# -----------
-SLIDER_ANGLE_MARKS = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
-
-SLIDER_ALPHA = dcc.Slider(id='slider-alpha', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
-SLIDER_BETA = dcc.Slider(id='slider-beta', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
-SLIDER_GAMMA = dcc.Slider(id='slider-gamma', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
 
 # -----------
 # SECTIONS AND LAYOUT
 # -----------
-section_sliders_angles = make_section_type3(SLIDER_ALPHA, SLIDER_BETA, SLIDER_GAMMA, 'Alpha', 'Beta', 'Gamma')
 
 section_hexapod = html.Div([
   html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
-  html.Div([SECTION_INPUT_LENGTHS, section_sliders_angles], style={'width': '40%'}),
+  html.Div([SECTION_INPUT_LENGTHS, SECTION_SLIDERS_TEST], style={'width': '40%'}),
   html.Div(id='display-variables', style={'width': '10%'}),
   ], 
   style={'display': 'flex'})
@@ -44,7 +37,7 @@ layout = html.Div([
 # -----------
 # CALLBACKS
 # -----------
-INPUT_IDs = ['slider-alpha', 'slider-beta', 'slider-gamma'] + INPUT_LENGTHS_IDs
+INPUT_IDs = SLIDERS_TEST_IDs + INPUT_LENGTHS_IDs
 @app.callback(
   Output('variables', 'children'),
   [Input(i, 'value') for i in INPUT_IDs]

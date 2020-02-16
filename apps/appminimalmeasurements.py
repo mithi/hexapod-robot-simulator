@@ -12,30 +12,13 @@ from hexapod.const import BASE_HEXAPOD, BASE_HEXAPLOT
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from widgets.sectioning import make_section_type4, make_section_type3
-
+from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 from app import app
 
 hexaplot = BASE_HEXAPLOT
 virtual_hexapod = BASE_HEXAPOD
 
-# -----------
-# INPUTS
-# -----------
 
-SLIDER_ANGLE_MARKS = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
-
-SLIDER_ALPHA = dcc.Slider(id='2-slider-alpha', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
-SLIDER_BETA = dcc.Slider(id='2-slider-beta', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
-SLIDER_GAMMA = dcc.Slider(id='2-slider-gamma', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
-
-SECTION_SLIDERS = html.Div([
-  html.Div(html.H6('Leg Angles'), style={'width': '10%'}),
-  html.Div([html.Label('alpha'), SLIDER_ALPHA], style={'width': '30%'}),
-  html.Div([html.Label('beta'), SLIDER_BETA], style={'width': '30%'}),
-  html.Div([html.Label('gamma'), SLIDER_GAMMA], style={'width': '30%'}),
-  ],
-  style={'display': 'flex'}
-)
 # -----------
 # LAYOUT
 # -----------
@@ -47,7 +30,7 @@ layout = html.Div([
   SECTION_INPUT_CAMVIEW,
   html.Br(),
 
-  SECTION_SLIDERS,
+  SECTION_SLIDERS_TEST,
   html.Br(),
 
   html.Div(id='camera-view-values', style={'display': 'none'}),
@@ -70,19 +53,15 @@ def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, ey
 
   return json.dumps(camera)
 
-INPUT_IDs = [
-  '2-slider-alpha', 
-  '2-slider-beta', 
-  '2-slider-gamma',
-]
 @app.callback(
   Output('2-hexapod-plot', 'figure'),
-  [Input(input_id, 'value') for input_id in INPUT_IDs] + [Input('camera-view-values', 'children')]
+  [Input(input_id, 'value') for input_id in SLIDERS_TEST_IDs] + [Input('camera-view-values', 'children')]
 )
 def update_hexapod_plot(alpha, beta, gamma, camera):
   fig = hexaplot.fig
 
-  hexaplot.change_camera_view(json.loads(camera), fig)
+  if camera is not None:
+    hexaplot.change_camera_view(json.loads(camera), fig)
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
