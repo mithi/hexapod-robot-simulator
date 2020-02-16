@@ -6,6 +6,8 @@ import plotly.graph_objs as go
 
 from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
+from sectioning import make_section_type3
+
 from app import app
 
 # -----------
@@ -28,29 +30,11 @@ SLIDER_FEMUR = dcc.Slider(id='slider-femur', min=20, max=100, marks=SLIDER_MARKS
 SLIDER_TIBIA = dcc.Slider(id='slider-tibia', min=20, max=100, marks=SLIDER_MARKS, value=70, step=5)
 
 # -----------
-# SECTION AND LAYOUT
+# SECTIONS AND LAYOUT
 # -----------
-section_sliders_body = html.Div([
-  html.Div([ html.Label('Front Length'), SLIDER_FRONT], style={'width': '33%'}),
-  html.Div([ html.Label('Side Length'), SLIDER_SIDE], style={'width': '33%'}),
-  html.Div([ html.Label('Middle Length'), SLIDER_MIDDLE], style={'width': '33%'}),
-  ],
-  style={'display': 'flex'})
-
-section_sliders_leg = html.Div([
-  html.Div([ html.Label('Coxia Length'), SLIDER_COXIA], style={'width': '33%'}),
-  html.Div([ html.Label('Femur Length'), SLIDER_FEMUR], style={'width': '33%'}),
-  html.Div([ html.Label('Tibia Length'), SLIDER_TIBIA], style={'width': '33%'}),
-  ],
-  style={'display': 'flex'})
-
-section_sliders_angles = html.Div([
-  html.Div([ html.Label('Alpha'), SLIDER_ALPHA], style={'width': '33%'}),
-  html.Div([ html.Label('Beta'), SLIDER_BETA], style={'width': '33%'}),
-  html.Div([ html.Label('Gamma'), SLIDER_GAMMA], style={'width': '33%'}),
-  ],
-  style={'display': 'flex'})
-
+section_sliders_body = make_section_type3(SLIDER_FRONT, SLIDER_SIDE, SLIDER_MIDDLE, 'Front Length', 'Side Length', 'Middle Length')
+section_sliders_leg = make_section_type3(SLIDER_COXIA, SLIDER_FEMUR, SLIDER_TIBIA, 'Coxia Length', 'Femur Length', 'Tibia Length')
+section_sliders_angles = make_section_type3(SLIDER_ALPHA, SLIDER_BETA, SLIDER_GAMMA, 'Alpha', 'Beta', 'Gamma')
 
 section_hexapod = html.Div([
   html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
