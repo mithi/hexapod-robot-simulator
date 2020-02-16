@@ -11,7 +11,7 @@ from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
 from sectioning import make_section_type4, make_section_type3
 from const import NAMES_LEG, NAMES_JOINT, BASE_HEXAPLOT
-from measurementwidgets import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
+from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
 
 PLOTTER = BASE_HEXAPLOT
 
