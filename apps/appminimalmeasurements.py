@@ -1,18 +1,16 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-import dash_daq as daq
 
-import json
-import plotly.graph_objs as go
-
+from widgets.sectioning import make_section_type4, make_section_type3
 from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUT_IDs
+from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 
-from hexapod.const import BASE_HEXAPOD, BASE_HEXAPLOT
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
-from widgets.sectioning import make_section_type4, make_section_type3
-from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
+from hexapod.const import BASE_HEXAPOD, BASE_HEXAPLOT
+
+import json
 from app import app
 
 hexaplot = BASE_HEXAPLOT
@@ -38,7 +36,6 @@ layout = html.Div([
 # -----------
 # CALLBACKS
 # -----------
-
 @app.callback(
   Output('camera-view-values', 'children'),
   [Input(input_id, 'value') for input_id in CAMVIEW_INPUT_IDs]
@@ -49,7 +46,6 @@ def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, ey
     'center': {'x': center_x or 0, 'y': center_y or 0, 'z': center_z or 0},
     'eye': {'x': (eye_x or 0), 'y': (eye_y or 0), 'z': (eye_z or 0)}
   }
-
   return json.dumps(camera)
 
 @app.callback(

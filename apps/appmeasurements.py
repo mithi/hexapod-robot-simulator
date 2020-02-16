@@ -1,26 +1,23 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-import json
-import plotly.graph_objs as go
+
+from widgets.sectioning import make_section_type3
+from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
+from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import BASE_HEXAPLOT
 
-from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
-from widgets.sectioning import make_section_type3
-from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
-
+import json
 from app import app
 
 plotter = BASE_HEXAPLOT
 
-
 # -----------
-# SECTIONS AND LAYOUT
+# LAYOUT
 # -----------
-
 section_hexapod = html.Div([
   html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
   html.Div([SECTION_INPUT_LENGTHS, SECTION_SLIDERS_TEST], style={'width': '40%'}),
