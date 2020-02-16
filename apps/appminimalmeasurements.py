@@ -11,8 +11,7 @@ from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUT_IDs
 from hexapod.const import BASE_HEXAPOD, BASE_HEXAPLOT
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
-
-from sectioning import make_section_type4, make_section_type3
+from widgets.sectioning import make_section_type4, make_section_type3
 
 from app import app
 

@@ -1,5 +1,5 @@
 import dash_core_components as dcc
-from sectioning import make_section_type4, make_section_type3
+from .sectioning import make_section_type4, make_section_type3
 
 CAMVIEW_INPUT_IDs = [
   'input-view-up-x',

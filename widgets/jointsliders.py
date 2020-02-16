@@ -1,7 +1,6 @@
-
-from sectioning import make_section_type3, make_section_type4
 import dash_core_components as dcc
 import dash_html_components as html
+from .sectioning import make_section_type3, make_section_type4
 
 NAMES_LEG = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back', 'right-back']
 NAMES_JOINT = ['coxia', 'femur', 'tibia']

@@ -13,8 +13,7 @@ from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_HEXAPLOT
 
 from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
 from widgets.jointsliders import SECTION_LEG_SLIDERS
-
-from sectioning import make_section_type4, make_section_type3
+from widgets.sectioning import make_section_type4, make_section_type3
 
 PLOTTER = BASE_HEXAPLOT
 
