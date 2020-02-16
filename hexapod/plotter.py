@@ -12,10 +12,9 @@ class HexapodPlot:
     self.hexapod = _hexapod
     self.fig = self._configure()
     self.draw()
-    self._configure()
-
+  
   def _configure(self):
-    
+
     f, m, s = self.hexapod.body_measurements
     a, b, c = self.hexapod.linkage_measurements
     RANGE = (f + m + s + a + b + c)
