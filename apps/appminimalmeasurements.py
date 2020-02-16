@@ -10,7 +10,7 @@ from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
 from sectioning import make_section_type4, make_section_type3
 
-from camviewwidgets import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUT_IDs
+from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUT_IDs
 from const import BASE_HEXAPOD, BASE_HEXAPLOT
 from app import app
 
