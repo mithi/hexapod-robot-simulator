@@ -8,6 +8,7 @@ from app import HEXAPOD_MEASUREMENTS
 
 from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
+from sectioning import make_section_type4,make_section_type3
 
 # -----------
 # SLIDERS FOR JOINTS
@@ -58,27 +59,8 @@ INPUT_LENGTHS = {
   'tibia': make_positive_number_input('input-length-tibia', 100),
 }
 
-# -----------
-# HELPERS TO MAKE PARTIAL SECTIONS
-# -----------
-def make_section_type3(div1, div2, div3, div4, name1='', name2='', name3='', name4=''):
-  return html.Div([
-    html.Div([html.Label(name1), div1], style={'width': '33%'}),
-    html.Div([html.Label(name2), div2], style={'width': '33%'}),
-    html.Div([html.Label(name3), div3], style={'width': '33%'}),
-    ],
-    style={'display': 'flex'}
-  )
 
-def make_section_type4(div1, div2, div3, div4):
-  return html.Div([
-    html.Div(div1, style={'width': '13%'}),
-    html.Div(div2, style={'width': '29%'}),
-    html.Div(div3, style={'width': '29%'}),
-    html.Div(div4, style={'width': '29%'}),
-    ],
-    style={'display': 'flex'}
-  )
+
 
 def make_leg_sections():
   sections = []
