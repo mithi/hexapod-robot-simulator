@@ -13,9 +13,8 @@ INPUT_LENGTHS_IDs = [
 ]
 
 # -----------
-# NUMBER INPUTS
+# NUMBER INPUTS FOR HEXAPOD MEASUREMENTS
 # -----------
-
 def make_positive_number_input(_name, _value):
   return dcc.Input(id=_name, type='number', value=_value, step=5, min=0, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
 
@@ -32,7 +31,6 @@ INPUT_LENGTHS = {
 # -----------
 # PARTIAL SECTIONS
 # -----------
-
 # section for hexapod measurement adjustments
 section_input_body = make_section_type3(INPUT_LENGTHS['front'], INPUT_LENGTHS['middle'], INPUT_LENGTHS['side'], 'front', 'middle', 'side')
 section_input_leg = make_section_type3(INPUT_LENGTHS['coxia'], INPUT_LENGTHS['femur'], INPUT_LENGTHS['tibia'], 'coxia', 'femur', 'tibia')

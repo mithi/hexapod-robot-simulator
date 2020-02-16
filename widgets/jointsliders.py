@@ -1,21 +1,21 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from .sectioning import make_section_type3, make_section_type4
-
-NAMES_LEG = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back', 'right-back']
-NAMES_JOINT = ['coxia', 'femur', 'tibia']
+from hexapod.const import NAMES_JOINT, NAMES_LEG
 
 # -----------
 # SLIDERS FOR JOINTS
 # -----------
-
 def make_slider(name):
   slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
   return dcc.Slider(id=name, min=-105, max=105, marks=slider_marks, value=0, step=5)
 
-# EXAMPLE:
-# SLIDERS['left-front'] = {'coxia' : {'slider': SLIDER, 'id': 'slider-left-front-coxia'}}
-# SLIDERS['right-middle'] = {'femur' : {'slider': SLIDER, 'id': 'slider-right-middle-femur'}}
+# slider id format:
+# 'slider' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
+
+# Sliders dictionary structure
+# SLIDERS['left-front']['coxia'] =  {'slider': SLIDER, 'id': 'slider-left-front-coxia'}
+# SLIDERS['right-middle']['femur'] = {'slider': SLIDER, 'id': 'slider-right-middle-femur'}
 def make_sliders():
   sliders_leg = {}
 
@@ -31,8 +31,6 @@ def make_sliders():
 
   return sliders_leg
 
-# format:
-# 'slider' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
 SLIDERS = make_sliders()
 
 def make_leg_sections():
