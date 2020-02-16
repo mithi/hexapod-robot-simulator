@@ -1,5 +1,4 @@
 import numpy as np
-import plotly.graph_objects as go
 
 # rotate about y, translate in x
 def frame_yrotate_xtranslate(theta, x):
