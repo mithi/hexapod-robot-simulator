@@ -1,6 +1,8 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+from dash.exceptions import PreventUpdate
+
 import json
 
 from app import app
@@ -224,6 +226,9 @@ INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   INPUT_ALL
 )
 def update_graph(rm, rf, lf, lm, lb, rb, measurements):
+
+  if measurements is None:
+    raise PreventUpdate
 
   measurements = json.loads(measurements)
 
