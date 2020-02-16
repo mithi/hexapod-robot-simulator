@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 import json
@@ -24,16 +24,20 @@ SECTION_LEG_POSES = html.Div([html.Div(id='pose-{}'.format(leg_name), style={'di
 # LAYOUT
 # -----------
 layout = html.Div([
+
   html.Div([
     dcc.Graph(id='graph-hexapod', style={'width': '45%'}),
 
     html.Div([
+
       html.H4('Joint Angles (Pose of each Leg)'),
       SECTION_LEG_SLIDERS,
       html.Br(),
 
       html.H4('Hexapod Robot Measurements'),
-      SECTION_INPUT_LENGTHS  
+      SECTION_INPUT_LENGTHS,
+      html.Br(),
+
       ], style={'width': '55%'}),
     ], style={'display': 'flex'}
   ),
@@ -138,9 +142,10 @@ INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   [Input(name, 'children') for name in ['hexapod-measurements-values']]
 @app.callback(
   Output('graph-hexapod', 'figure'),
-  INPUT_ALL
+  INPUT_ALL, 
+  [State('graph-hexapod', 'relayoutData')]
 )
-def update_graph(rm, rf, lf, lm, lb, rb, measurements):
+def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data):
 
   if measurements is None:
     raise PreventUpdate
@@ -163,22 +168,9 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements):
 
   fig = PLOTTER.update(virtual_hexapod, PLOTTER.fig)
 
+  if relayout_data and 'scene.camera' in relayout_data:
+    camera = relayout_data['scene.camera']
+    print(camera)
+    fig = PLOTTER.change_camera_view(camera, fig)
+
   return fig
-
-# -------
-# FIGURE/GRAPH CALLBACK
-# -----------
-'''
-@app.callback(
-  Output('camera-values-from-graph', 'children'),
-  [State('graph-hexapod', 'relayoutData'), Input('camera-view-values', 'children')]
-)
-def update_camview(layout_data, user_data):
-  if layout_data and 'scene.camera' in layout_data:
-      print('yes-')
-      return str(json.dumps(camera))
-  else:
-    print('no')
-    return ''
-'''
-
