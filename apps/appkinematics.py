@@ -6,13 +6,14 @@ from dash.exceptions import PreventUpdate
 import json
 
 from app import app
-from app import HEXAPOD_MEASUREMENTS
 
 from hexapod import VirtualHexapod
 from hexaplot import HexapodPlot
 from sectioning import make_section_type4, make_section_type3
-from const import NAMES_LEG, NAMES_JOINT
+from const import NAMES_LEG, NAMES_JOINT, BASE_HEXAPLOT
 from measurementwidgets import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
+
+PLOTTER = BASE_HEXAPLOT
 
 # -----------
 # SLIDERS FOR JOINTS
@@ -43,7 +44,6 @@ def make_sliders():
 # format:
 # 'slider' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
 SLIDERS = make_sliders()
-
 
 def make_leg_sections():
   sections = []
@@ -200,7 +200,6 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements):
   h, k, a = measurements['coxia'], measurements['femur'], measurements['tibia'],
 
   virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
-  hexaplot = HexapodPlot(virtual_hexapod)
   
   poses = [rm, rf, lf, lm, lb, rb]
   for leg, pose in zip(virtual_hexapod.legs, poses):
@@ -211,7 +210,7 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements):
     except:
       print(pose)
 
-  fig = hexaplot.update(virtual_hexapod, hexaplot.fig)
+  fig = PLOTTER.update(virtual_hexapod, PLOTTER.fig)
 
   return fig
 
