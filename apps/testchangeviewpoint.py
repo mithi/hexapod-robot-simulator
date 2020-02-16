@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 from widgets.sectioning import make_section_type4, make_section_type3
 from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUT_IDs
@@ -47,21 +47,21 @@ def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, ey
   }
   return json.dumps(camera)
 
-HEXAPLOT = deepcopy(BASE_HEXAPLOT)
-HEXAPOD = deepcopy(BASE_HEXAPOD)
+PLOTTER = deepcopy(BASE_HEXAPLOT)
 @app.callback(
   Output('2-hexapod-plot', 'figure'),
-  [Input(input_id, 'value') for input_id in SLIDERS_TEST_IDs] + [Input('camera-view-values', 'children')]
+  [Input(input_id, 'value') for input_id in SLIDERS_TEST_IDs] + [Input('camera-view-values', 'children')],
+  [State('2-hexapod-plot', 'figure')]
 )
-def update_hexapod_plot(alpha, beta, gamma, camera):
-  HEXAPOD = deepcopy(BASE_HEXAPOD)
-  fig = HEXAPLOT.fig
+def update_hexapod_plot(alpha, beta, gamma, camera, figure):
+  virtual_hexapod = deepcopy(BASE_HEXAPOD)
 
-  if camera is not None:
-    fig = HEXAPLOT.change_camera_view(json.loads(camera), fig)
-
-  for leg in HEXAPOD.legs:
+  for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
 
-  fig = HEXAPLOT.update(HEXAPOD, fig)
-  return fig
+  fig = figure or PLOTTER.fig
+
+  if camera is not None:
+    fig = PLOTTER.change_camera_view(json.loads(camera), fig)
+
+  return PLOTTER.update(virtual_hexapod, fig)

@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 from widgets.sectioning import make_section_type3
 from widgets.measurements import INPUT_LENGTHS, SECTION_INPUT_LENGTHS, INPUT_LENGTHS_IDs
@@ -67,14 +67,19 @@ def display_variables(pose_params):
 PLOTTER = deepcopy(BASE_HEXAPLOT)
 @app.callback(
   Output('hexapod-plot', 'figure'),
-  [Input(i, 'value') for i in INPUT_IDs]
+  [Input(i, 'value') for i in INPUT_IDs],
+  [State('hexapod-plot', 'figure')]
 )
-def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a):
-  virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
-  fig = PLOTTER.fig
+def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, figure):
+  virtual_hexapod = VirtualHexapod(
+    h or 0, 
+    k or 0, 
+    a or 0, 
+    f or 0, 
+    m or 0, 
+    s or 0)
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
-
-  fig = PLOTTER.update(virtual_hexapod, fig)
-  return fig
+  
+  return PLOTTER.update(virtual_hexapod, figure or PLOTTER.fig)
