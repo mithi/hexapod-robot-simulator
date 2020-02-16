@@ -89,7 +89,6 @@ def leg_json(coxia, femur, tibia):
 
 @app.callback(leg_output('right-middle'), leg_inputs('right-middle'))
 def update_right_middle(coxia, femur, tibia):
-  print('here')
   return leg_json(coxia, femur, tibia)
 
 @app.callback(leg_output('right-front'), leg_inputs('right-front'))
@@ -118,9 +117,12 @@ INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
 @app.callback(
   Output('graph-hexapod', 'figure'),
   INPUT_ALL, 
-  [State('graph-hexapod', 'relayoutData')]
+  [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
-def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data):
+def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, state_fig):
+
+  if state_fig is None:
+    return PLOTTER.fig
 
   if measurements is None:
     raise PreventUpdate
@@ -141,10 +143,11 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data):
     except:
       print(pose)
 
-  fig = PLOTTER.update(virtual_hexapod, PLOTTER.fig)
+  state_figure = PLOTTER.update(virtual_hexapod, state_fig)
 
   if relayout_data and 'scene.camera' in relayout_data:
     camera = relayout_data['scene.camera']
-    fig = PLOTTER.change_camera_view(camera, fig)
+    state_figure = PLOTTER.change_camera_view(camera, state_figure)
 
-  return fig
+  return state_figure
+
