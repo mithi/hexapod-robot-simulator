@@ -14,16 +14,27 @@ class HexapodPlot:
   def update(self, fig, hexapod):
     #body
     points = hexapod.body.vertices + [hexapod.body.vertices[0]]
+
+    # body surface Mesh
     fig['data'][0]['x'] = [point.x for point in points]
     fig['data'][0]['y'] = [point.y for point in points]
     fig['data'][0]['z'] = [point.z for point in points]
 
-    fig['data'][2]['x'] = [hexapod.body.head.x]
-    fig['data'][2]['y'] = [hexapod.body.head.y]
-    fig['data'][2]['z'] = [hexapod.body.head.z]
+    # body outline
+    fig['data'][1]['x'] = fig['data'][0]['x'] 
+    fig['data'][1]['y'] = fig['data'][0]['y']
+    fig['data'][1]['z'] = fig['data'][0]['z']
+
+    fig['data'][2]['x'] = [hexapod.body.cog.x]
+    fig['data'][2]['y'] = [hexapod.body.cog.y]
+    fig['data'][2]['z'] = [hexapod.body.cog.z]
+
+    fig['data'][3]['x'] = [hexapod.body.head.x]
+    fig['data'][3]['y'] = [hexapod.body.head.y]
+    fig['data'][3]['z'] = [hexapod.body.head.z]
     
     # legs
-    n = [i for i in range(3, 9)]
+    n = [i for i in range(4, 10)]
     
     for n, leg in zip(n, hexapod.legs):
       points = [leg.p0, leg.p1, leg.p2, leg.p3]
