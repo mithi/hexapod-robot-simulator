@@ -1,5 +1,5 @@
 from .plotter import HexapodPlot
-from .models import VirtualHexapod
+from .models import VirtualHexapod, Hexagon, Linkage
 
 #         x2          x1
 #          \         /
@@ -14,8 +14,8 @@ from .models import VirtualHexapod
 #           *---*---*
 #          /         \
 #         x4         x5
-NAMES_LEG = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back', 'right-back']
-NAMES_JOINT = ['coxia', 'femur', 'tibia']
+NAMES_LEG = Hexagon.VERTEX_NAMES
+NAMES_JOINT = Linkage.POINT_NAMES
 
 BASE_HEXAPOD = VirtualHexapod(100, 100, 100, 100, 100, 100)
 BASE_PLOTTER = HexapodPlot()

@@ -27,10 +27,11 @@ def frame_zrotate_xytranslate(theta, x, y):
   ])
 
 class Point:
-  def __init__(self, x, y, z):
+  def __init__(self, x, y, z, name=None):
     self.x = x
     self.y = y
     self.z = z
+    self.name = name
 
   def get_point_wrt(self, reference_frame):
     # given frame_ab which is the pose of frame_b wrt frame_a
@@ -94,7 +95,9 @@ class Point:
 #               |      *----------------
 #
 class Linkage:
-  def __init__(self, a, b, c, alpha=0, beta=0, gamma=0, new_x_axis=0, new_origin=Point(0, 0, 0)):
+  POINT_NAMES = ['coxia', 'femur', 'tibia']
+  def __init__(self, a, b, c, alpha=0, beta=0, gamma=0, new_x_axis=0, new_origin=Point(0, 0, 0), name=None):
+    self.name = name
     self.store_linkage_attributes(a, b, c, new_x_axis, new_origin)
     self.save_new_pose(alpha, beta, gamma)
 
@@ -131,11 +134,42 @@ class Linkage:
     self.p2 = p2.get_point_wrt(new_frame)
     self.p3 = p3.get_point_wrt(new_frame)
 
+    self.p1.name = 'body_contact'
+    self.p1.name = 'coxia'
+    self.p2.name = 'femur'
+    self.p3.name = 'tibia'
+
   def change_pose(self, alpha=None, beta=None, gamma=None):
     alpha = alpha or self._alpha
     beta = beta or self._beta
     gamma = gamma or self._gamma
     self.save_new_pose(alpha, beta, gamma)
+
+  def toe(self):
+    return self.p3
+
+  def floor_height(self):
+    #
+    #              /*
+    #             //\\        
+    #            //  \\        
+    #           //    \\        
+    #          //      \\        
+    # *=======* ---->   \\ ---------       
+    #                    \\       |
+    #                     \\      floor height
+    #                      \\     |
+    #                       \\ -----
+    #
+    # |--a--|---b----|
+    # *=====*=========* 
+    #               | \\
+    #               |  \\
+    #               |   \\
+    #      floor height  \\
+    #               |     \\
+    #               -      *----------------
+    return -self.p3.z
 
 # MEASUREMENTS f, s, and m
 #
@@ -177,6 +211,8 @@ class Linkage:
 #         x4         x5
 #
 class Hexagon:
+  VERTEX_NAMES = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back', 'right-back']
+  NEW_X_AXES = [0, 45, 135, 180, 225, 315]
   def __init__(self, f, m, s):
     self.f = f
     self.m = m
@@ -193,10 +229,6 @@ class Hexagon:
       Point(f, -s, 0),
     ]
 
-    self.new_x_axes = [
-      0, 45, 135, 180, 225, 315
-    ]
-
 class VirtualHexapod:
   def __init__(self, a=0, b=0, c=0, f=0, m=0, s=0):
     self.linkage_measurements = [a, b, c]
@@ -206,6 +238,58 @@ class VirtualHexapod:
 
   def store_neutral_legs(self, a, b, c):
     self.legs = []
-    for point, theta in zip(self.body.vertices, self.body.new_x_axes):
-      linkage = Linkage(a, b, c, new_x_axis=theta, new_origin=point)
+    for point, theta, name in zip(self.body.vertices, Hexagon.NEW_X_AXES, Hexagon.VERTEX_NAMES):
+      linkage = Linkage(a, b, c, new_x_axis=theta, new_origin=point, name=name)
       self.legs.append(linkage)
+
+  def find_feet_on_ground(self):
+
+    def within(x, y, tol=1):
+      return np.abs(x - y) <= tol
+
+    def take_floor_height(leg):
+      return leg.floor_height()
+
+    sorted_legs = sorted(self.legs, key=take_floor_height, reverse=True)
+    sorted_floor_heights = [leg.floor_height() for leg in sorted_legs]
+    
+    # floor height is negative if the body contact point is touching the ground
+    if sorted_floor_heights[0] <= 0:
+      return None, None
+    
+    # find top n=3 unique values
+    top_n_unique = [sorted_floor_heights[0]]
+    n = 3
+    for value in sorted_floor_heights[1:]:
+
+      if len(top_n_unique) > n:
+        break 
+      
+      if value <= top_n_unique[-1]:
+        continue
+
+      top_n_unique.append(value)
+
+    # the 3rd highest value
+    threshold = top_n_unique[-1]
+
+    # Find feet on the floor 
+    # those which within top 3 highest distance from floor
+    # with tolerance plus/minus 1
+    feet_on_floor = []
+    for leg in sorted_legs:
+      if not within(leg.floor_height(), threshold, tol=1):
+        break
+      feet_on_floor.append(leg)
+
+    pivot_foot = feet_on_floor[0]
+
+    return feet_on_floor, pivot_foot
+
+
+
+
+
+
+
+

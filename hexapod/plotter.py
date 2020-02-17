@@ -1,13 +1,6 @@
 from .figure_template import HEXAPOD_FIGURE
 
 class HexapodPlot:
-  LINE_SIZE = 10
-  HEAD_SIZE = 15
-  COG_SIZE = 10
-  BODY_COLOR = '#8e44ad'
-  COG_COLOR = '#e74c3c'
-  LEG_COLOR = '#2c3e50'
-
   def __init__(self):
     self.fig = HEXAPOD_FIGURE
   
@@ -40,7 +33,14 @@ class HexapodPlot:
       points = [leg.p0, leg.p1, leg.p2, leg.p3]
       fig['data'][n]['x'] = [point.x for point in points]
       fig['data'][n]['y'] = [point.y for point in points]
-      fig['data'][n]['z'] = [point.z for point in points]    
+      fig['data'][n]['z'] = [point.z for point in points]
+
+    # draw a mesh for feet on floor
+    feet_on_ground, _ = hexapod.find_feet_on_ground()
+    if feet_on_ground is not None:
+      fig['data'][10]['x'] = [foot.toe().x for foot in feet_on_ground]
+      fig['data'][10]['y'] = [foot.toe().y for foot in feet_on_ground]
+      fig['data'][10]['z'] = [foot.toe().z for foot in feet_on_ground]
 
     # Change range of view for all axes
     f, m, s = hexapod.body_measurements
