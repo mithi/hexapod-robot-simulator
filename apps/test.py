@@ -1,6 +1,7 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
+from dash.exceptions import PreventUpdate
 
 from widgets.sectioning import make_section_type3
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS_IDs
@@ -30,6 +31,7 @@ layout = html.Div([
 
   html.H4('Camera View Adjustment Controls'),
   SECTION_INPUT_CAMVIEW,
+  html.P('Hover on any hexapod point/vertex to set current camera view as default'),
   html.Br(),
 
   html.Div(id='camera-view-values', style={'display': 'none'}),
@@ -39,6 +41,33 @@ layout = html.Div([
 # -----------
 # CALLBACKS
 # -----------
+@app.callback(
+  [Output(i, 'value') for i in CAMVIEW_INPUT_IDs],
+  [Input('hexapod-plot', 'hoverData')],
+  [State('hexapod-plot', 'relayoutData')]
+)
+def update_camera_inputs(hover_data, relayout_data):
+  # We're only using the hover_data to trigger events
+  # Using relayout_data to trigger events, causes the program
+  # to crash (too many callbacks at a short period of time)
+
+  if relayout_data is None:
+    raise PreventUpdate
+
+  if 'scene.camera' not in relayout_data: 
+    raise PreventUpdate
+
+  camera = relayout_data['scene.camera']
+  up = camera['up']
+  c = camera['center']
+  eye =  camera['eye']
+  ux, uy, uz = up['x'], up['y'], up['z']
+  cx, cy, cz = c['x'], c['y'], c['z']
+  ex, ey, ez = eye['x'], eye['y'], eye['z']
+
+  return ux, uy, uz, cx, cy, cz, ex, ey, ez
+
+
 @app.callback(
   Output('camera-view-values', 'children'),
   [Input(input_id, 'value') for input_id in CAMVIEW_INPUT_IDs]
@@ -69,6 +98,7 @@ def update_variable(alpha, beta, gamma, f, s, m, h, k, a):
     'tibia': a,
   })
 
+
 @app.callback(
   Output('display-variables', 'children'),
   [Input('variables', 'children')]
@@ -80,6 +110,7 @@ def display_variables(pose_params):
     s += "- `{}: {}` \n".format(k, v)
   
   return dcc.Markdown(s)
+
 
 @app.callback(
   Output('hexapod-plot', 'figure'),

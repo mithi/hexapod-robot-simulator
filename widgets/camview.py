@@ -19,7 +19,7 @@ CAMVIEW_INPUT_IDs = [
 # CAMERA VIEW
 # -----------
 def make_number_input(_name, _value):
-  return dcc.Input(id=_name, type='number', value=_value, step=0.005, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
+  return dcc.Input(id=_name, type='number', value=_value, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
 
 # Camera view adjustment inputs
 INPUT_CAMVIEW = {

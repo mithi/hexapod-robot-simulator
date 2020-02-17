@@ -76,6 +76,7 @@ data = [
 HEXAPOD_FIGURE = {
   'data': data,
   'layout': {
+    'hovermode': 'closest', #'hoverdistance': 1000 doesn't look like it's going anything
     'legend': {'x': 0, 'y': 0},
     'margin': {'b': 20, 'l': 10, 'r': 10, 't': 20},
     'scene': {
