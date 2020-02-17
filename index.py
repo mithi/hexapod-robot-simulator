@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
-from apps import appinverse, appkinematics, testchangeviewpoint, testbasicchanges
+from apps import appinverse, appkinematics, test
 # --------------
 # Navigation bar partial
 # --------------
@@ -14,8 +14,6 @@ div_nav = html.Div([
   dcc.Link('Inverse Kinematics', href='/inverse-kinematics'),
   html.Br(),
   
-  dcc.Link('Test: change viewpoint', href='/test-change-view-point'),
-  html.Br(),
 
   dcc.Link('Test: basic changes', href='/test-basic-changes'),
   html.Br(),
@@ -39,8 +37,7 @@ app.layout = html.Div([
 PAGES = {
   '/inverse-kinematics': appinverse.layout,
   '/kinematics': appkinematics.layout,
-  '/test-change-view-point': testchangeviewpoint.layout,
-  '/test-basic-changes': testbasicchanges.layout
+  '/test-basic-changes': test.layout
 }
 
 # --------------

@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output, State
 
 from widgets.sectioning import make_section_type3
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS_IDs
+from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUT_IDs
 from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 
 from hexapod.models import VirtualHexapod
@@ -26,12 +27,30 @@ section_hexapod = html.Div([
 
 layout = html.Div([
   section_hexapod,
+
+  html.H4('Camera View Adjustment Controls'),
+  SECTION_INPUT_CAMVIEW,
+  html.Br(),
+
+  html.Div(id='camera-view-values', style={'display': 'none'}),
   html.Div(id='variables', style={'display': 'none'}),
 ])
 
 # -----------
 # CALLBACKS
 # -----------
+@app.callback(
+  Output('camera-view-values', 'children'),
+  [Input(input_id, 'value') for input_id in CAMVIEW_INPUT_IDs]
+)
+def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, eye_y, eye_z):
+  camera = {
+    'up': {'x': up_x or 0, 'y': up_y or 0, 'z': up_z or 0},
+    'center': {'x': center_x or 0, 'y': center_y or 0, 'z': center_z or 0},
+    'eye': {'x': (eye_x or 0), 'y': (eye_y or 0), 'z': (eye_z or 0)}
+  }
+  return json.dumps(camera)
+
 INPUT_IDs = SLIDERS_TEST_IDs + INPUT_LENGTHS_IDs
 @app.callback(
   Output('variables', 'children'),
@@ -64,10 +83,10 @@ def display_variables(pose_params):
 
 @app.callback(
   Output('hexapod-plot', 'figure'),
-  [Input(i, 'value') for i in INPUT_IDs],
+  [Input(i, 'value') for i in INPUT_IDs] + [Input('camera-view-values', 'children')],
   [State('hexapod-plot', 'figure')]
 )
-def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, figure):
+def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
   if figure is None:
     return HEXAPOD_FIGURE
 
@@ -82,4 +101,7 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, figure):
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)
   
+  if camera is not None:
+    figure = BASE_PLOTTER.change_camera_view(figure, json.loads(camera))
+
   return BASE_PLOTTER.update(figure, virtual_hexapod)
