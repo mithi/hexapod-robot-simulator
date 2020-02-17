@@ -160,7 +160,11 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, figure):
     figure = BASE_PLOTTER.change_camera_view(figure, camera)
 
   # Get feet information
-  feet, _ = virtual_hexapod.find_feet_on_ground()
+  feet, _ = virtual_hexapod.feet_on_ground()
+
+  if feet is None:
+    return figure, None
+
   text ='\n'
   for foot in feet:
     text += '- **`{}`** ` height: {}` \n'.format(foot.name, -foot.toe().z)

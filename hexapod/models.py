@@ -1,46 +1,6 @@
 import numpy as np
-
-# rotate about y, translate in x
-def frame_yrotate_xtranslate(theta, x):
-  theta = np.radians(theta)
-  cos_theta = np.cos(theta)
-  sin_theta = np.sin(theta)
-
-  return np.array([
-    [cos_theta, 0, sin_theta, x],
-    [0, 1, 0, 0],
-    [-sin_theta, 0, cos_theta, 0],
-    [0, 0, 0, 1]
-  ])
-
-# rotate about z, translate in x and y
-def frame_zrotate_xytranslate(theta, x, y):
-  theta = np.radians(theta)
-  cos_theta = np.cos(theta)
-  sin_theta = np.sin(theta)
-
-  return np.array([
-    [cos_theta, -sin_theta, 0, x],
-    [sin_theta, cos_theta, 0, y],
-    [0, 0, 1, 0],
-    [0, 0, 0, 1]
-  ])
-
-class Point:
-  def __init__(self, x, y, z, name=None):
-    self.x = x
-    self.y = y
-    self.z = z
-    self.name = name
-
-  def get_point_wrt(self, reference_frame):
-    # given frame_ab which is the pose of frame_b wrt frame_a
-    # given a point as defined wrt to frame_b
-    # return point defined wrt to frame a
-    p = np.array([self.x, self.y, self.z, 1])
-    p = np.matmul(reference_frame, p)
-    return Point(p[0], p[1], p[2])
-
+from .feetcalculations import get_feet_on_ground
+from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate
 # -------------
 # LINKAGE
 # -------------
@@ -148,7 +108,7 @@ class Linkage:
   def toe(self):
     return self.p3
 
-  def floor_height(self):
+  def z_wrt_body_contact(self):
     #
     #              /*
     #             //\\        
@@ -242,34 +202,8 @@ class VirtualHexapod:
       linkage = Linkage(a, b, c, new_x_axis=theta, new_origin=point, name=name)
       self.legs.append(linkage)
 
-  def find_feet_on_ground(self):
-    # FIX ME: Not correct algorithm 
-
-    def take_floor_height(leg):
-      return leg.floor_height()
-
-    sorted_legs = sorted(self.legs, key=take_floor_height, reverse=True)
-
-    # floor height is negative if the body contact point is touching the ground
-    if sorted_legs[0].floor_height() <= 0:
-      return None, None
-
-    # Find feet on the floor 
-    tolerance = 2
-    threshold = sorted_legs[2].floor_height() - tolerance
-
-    feet_on_floor = []
-    for leg in sorted_legs:
-      if leg.floor_height() >= threshold:
-        feet_on_floor.append(leg)
-      else:
-        break
-
-    pivot_foot = None
-    if len(feet_on_floor) > 0:
-      pivot_foot = feet_on_floor[0]
-
-    return feet_on_floor, pivot_foot
+  def feet_on_ground(self):
+    return get_feet_on_ground(self.legs)
 
 
 
