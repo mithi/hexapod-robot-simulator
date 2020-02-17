@@ -243,46 +243,31 @@ class VirtualHexapod:
       self.legs.append(linkage)
 
   def find_feet_on_ground(self):
-
-    def within(x, y, tol=1):
-      return np.abs(x - y) <= tol
+    # FIX ME: Not correct algorithm 
 
     def take_floor_height(leg):
       return leg.floor_height()
 
     sorted_legs = sorted(self.legs, key=take_floor_height, reverse=True)
-    sorted_floor_heights = [leg.floor_height() for leg in sorted_legs]
-    
+
     # floor height is negative if the body contact point is touching the ground
-    if sorted_floor_heights[0] <= 0:
+    if sorted_legs[0].floor_height() <= 0:
       return None, None
-    
-    # find top n=3 unique values
-    top_n_unique = [sorted_floor_heights[0]]
-    n = 3
-    for value in sorted_floor_heights[1:]:
-
-      if len(top_n_unique) > n:
-        break 
-      
-      if value <= top_n_unique[-1]:
-        continue
-
-      top_n_unique.append(value)
-
-    # the 3rd highest value
-    threshold = top_n_unique[-1]
 
     # Find feet on the floor 
-    # those which within top 3 highest distance from floor
-    # with tolerance plus/minus 1
+    tolerance = 2
+    threshold = sorted_legs[2].floor_height() - tolerance
+
     feet_on_floor = []
     for leg in sorted_legs:
-      if not within(leg.floor_height(), threshold, tol=1):
+      if leg.floor_height() >= threshold:
+        feet_on_floor.append(leg)
+      else:
         break
-      feet_on_floor.append(leg)
 
-    pivot_foot = feet_on_floor[0]
+    pivot_foot = None
+    if len(feet_on_floor) > 0:
+      pivot_foot = feet_on_floor[0]
 
     return feet_on_floor, pivot_foot
 

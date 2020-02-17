@@ -163,7 +163,6 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, figure):
   feet, _ = virtual_hexapod.find_feet_on_ground()
   text ='\n'
   for foot in feet:
-    text += '- **`{}`** `x:{}, y: {} z: {}` \n'.format(
-      foot.name, foot.toe().x, foot.toe().y, foot.toe().z)
+    text += '- **`{}`** ` height: {}` \n'.format(foot.name, -foot.toe().z)
 
   return figure, json.dumps({'text': text})
