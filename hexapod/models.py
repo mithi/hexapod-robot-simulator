@@ -252,8 +252,10 @@ class VirtualHexapod:
       linkage = Linkage(a, b, c, new_x_axis=theta, new_origin=point, name=name, id_number=i)
       self.legs.append(linkage)
 
-  def feet_on_ground(self):
-    return get_legs_on_ground(self.legs)
+  def ground_contact_points(self):
+    legs = get_legs_on_ground(self.legs)
+    ground_contact = [leg.ground_contact() for leg in legs]
+    return ground_contact
   
   def update(self, poses):
     # pose = { 

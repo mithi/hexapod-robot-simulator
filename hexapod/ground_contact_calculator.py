@@ -92,7 +92,7 @@ def get_legs_on_ground(legs):
   trio = three_ids_of_ground_contacts(legs)
 
   if trio is None:
-    return None, None
+    return None
 
   p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
   n = get_unit_normal(p0, p1, p2)
@@ -107,5 +107,5 @@ def get_legs_on_ground(legs):
     if within_thresh(ground_contact, cog_from_ground):
       legs_on_ground.append(leg)
 
-  return legs_on_ground, None
+  return legs_on_ground
 
