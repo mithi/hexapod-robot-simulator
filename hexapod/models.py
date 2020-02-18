@@ -56,7 +56,8 @@ from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate
 #
 class Linkage:
   POINT_NAMES = ['coxia', 'femur', 'tibia']
-  def __init__(self, a, b, c, alpha=0, beta=0, gamma=0, new_x_axis=0, new_origin=Point(0, 0, 0), name=None):
+  def __init__(self, a, b, c, alpha=0, beta=0, gamma=0, new_x_axis=0, new_origin=Point(0, 0, 0), name=None, id_number=None):
+    self.id = id_number
     self.name = name
     self.store_linkage_attributes(a, b, c, new_x_axis, new_origin)
     self.save_new_pose(alpha, beta, gamma)
@@ -105,30 +106,38 @@ class Linkage:
     gamma = gamma or self._gamma
     self.save_new_pose(alpha, beta, gamma)
 
-  def toe(self):
+  def foot_tip(self):
     return self.p3
 
-  def z_wrt_body_contact(self):
+  def foot_tip_height(self):
     #
-    #              /*
-    #             //\\        
-    #            //  \\        
-    #           //    \\        
-    #          //      \\        
-    # *=======* ---->   \\ ---------       
-    #                    \\       |
-    #                     \\      floor height
-    #                      \\     |
-    #                       \\ -----
+    #          /*
+    #         //\\ 
+    #        //  \\
+    #       //    \\
+    #      //      \\
+    # *===* ---->   \\ ---------
+    #                \\       |
+    #                 \\   tip height (positive)
+    #                  \\     |
+    #                   \\ -----
     #
-    # |--a--|---b----|
-    # *=====*=========* 
-    #               | \\
-    #               |  \\
-    #               |   \\
-    #      floor height  \\
-    #               |     \\
-    #               -      *----------------
+    # 
+    # *===*=======* 
+    #           | \\
+    #           |  \\
+    # (positive)|   \\
+    #    tip height  \\
+    #           |     \\
+    #         ------    *----
+    #
+    #                *=========* -----
+    #               //             |
+    #              // (negative) tip height
+    #             //               |
+    #*===*=======*  -------------------
+    # Negative only if body contact point
+    # is touching the grou
     return -self.p3.z
 
 # MEASUREMENTS f, s, and m
@@ -198,8 +207,9 @@ class VirtualHexapod:
 
   def store_neutral_legs(self, a, b, c):
     self.legs = []
-    for point, theta, name in zip(self.body.vertices, Hexagon.NEW_X_AXES, Hexagon.VERTEX_NAMES):
-      linkage = Linkage(a, b, c, new_x_axis=theta, new_origin=point, name=name)
+    vertices, axes, names = self.body.vertices, Hexagon.NEW_X_AXES, Hexagon.VERTEX_NAMES
+    for i, point, theta, name in zip(range(6), vertices, axes, names):
+      linkage = Linkage(a, b, c, new_x_axis=theta, new_origin=point, name=name, id_number=i)
       self.legs.append(linkage)
 
   def feet_on_ground(self):
