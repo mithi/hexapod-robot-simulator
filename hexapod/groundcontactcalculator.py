@@ -2,40 +2,9 @@
 from itertools import combinations
 import numpy as np
 
-from .points import Point
-
-def cross(a, b):
-  x = a.y * b.z - a.z * b.y
-  y = a.z * b.x - a.x * b.z
-  z = a.x * b.y - a.y * b.x
-
-  return Point(x, y, z)
-
-# get vector pointing from point a to point b
-def vector_from_to(a, b):
-  return Point(b.x - a.x, b.y - a.y, b.z - a.z)
-
-def scale(v, d):
-  return Point(v.x / d, + v.y / d , v.z / d)
-
-def dot(a, b):
-  return a.x * b.x + a.y * b.y + a.z * b.z
-
-def length(v):
-  return np.sqrt(v.x**2 + v.y**2 + v.z**2)
-
-def add_vectors(a, b):
-  return Point(a.x + b.x, a.y + b.y, a.z + b.z)
-
-def subtract_vectors(a, b):
-  return Point(a.x - b.x, a.y - b.y, a.z - b.z)
-
-def get_unit_normal(a, b, c):
-  ab = subtract_vectors(b, a)
-  ac = subtract_vectors(c, a)
-  v = cross(ab, ac)
-  v = scale(v, length(v))
-  return v
+from .points import Point, cross, vector_from_to, scale, dot, length
+from .points import add_vectors, subtract_vectors, get_unit_normal
+from .points import is_point_inside_triangle
 
 def set_of_two_trios_from_six():
   # Get all combinations of a three-item-group given six items
@@ -53,49 +22,18 @@ def set_of_two_trios_from_six():
 
   return trios, other_trios
 
+
 def get_corresponding_foot_tips(ids, legs):
   i, j, k = ids
   return legs[i].foot_tip(), legs[j].foot_tip(), legs[k].foot_tip()
 
-# https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle
-# https://www.geeksforgeeks.org/check-whether-a-given-point-lies-inside-a-triangle-or-not/
-# It works like this:
-# - Walk clockwise or counterclockwise around the triangle
-# and project the point onto the segment we are crossing
-# by using the dot product.
-# - Check that the vector created is on the same side
-# for each of the triangle's segments
+
 def check_stability(a, b, c):
   # if the center of gravity p (0, 0) on xy plane
   # is inside projection (in the xy plane) of 
   # the triangle defined by point a, b, c, then this is stable
-
-  px, py = 0, 0
-  ab = (px - b.x) * (a.y - b.y) - (a.x - b.x) * (py - b.y)
-  bc = (px - c.x) * (b.y - c.y) - (b.x - c.x) * (py - c.y)
-  ca = (px - a.x) * (c.y - a.y) - (c.x - a.x) * (py - a.y)
-  # must be all positive or all negative
-  return (ab < 0.0) == (bc < 0.0) == (ca < 0.0)
-
-# Another way
-def check_stability2(p0, p1, p2):
   p = Point(0, 0, 0)
-  
-  a = p1.x - p0.x
-  b = p2.x - p0.x
-  c = p1.y - p0.y
-  d = p2.y - p0.y
-  e = p.x - p0.x
-  f = p.y - p0.y
-
-  det = a * d - b * c
-  
-  if det == 0:
-    return False
-  else:
-    x = (e * d - f * b) / det
-    y = (a * f - c * e) / det
-    return -0.01 <= x <= 1 and -0.01 <= y <= 1 and x + y <= 1
+  return is_point_inside_triangle(p, a, b, c)
 
 
 def three_ids_of_legs_on_ground(legs):
@@ -113,13 +51,11 @@ def three_ids_of_legs_on_ground(legs):
       # (and the legs in general)
       # starting from middle-right (id:0) to right back (id:5)
       # always towards one direction (ccw)
-      
       n = get_unit_normal(p0, p1, p2)
       
-      # p0 is vector from cog (0, 0, 0) to foot tip of leg
+      # p0 is vector from cog (0, 0, 0) to foot tip
       # dot product of this and normal we get the 
-      # hypothetical (negative) height
-      # z distance of foot_tip to cog
+      # hypothetical (negative) height of foot_tip to cog
       #
       #  cog *  ^ (normal_vector) ----
       #      \  |                  |

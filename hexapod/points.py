@@ -13,6 +13,7 @@ def frame_yrotate_xtranslate(theta, x):
     [0, 0, 0, 1]
   ])
 
+
 # rotate about z, translate in x and y
 def frame_zrotate_xytranslate(theta, x, y):
   theta = np.radians(theta)
@@ -25,6 +26,7 @@ def frame_zrotate_xytranslate(theta, x, y):
     [0, 0, 1, 0],
     [0, 0, 0, 1]
   ])
+
 
 class Point:
   def __init__(self, x, y, z, name=None):
@@ -40,3 +42,74 @@ class Point:
     p = np.array([self.x, self.y, self.z, 1])
     p = np.matmul(reference_frame, p)
     return Point(p[0], p[1], p[2])
+
+
+def cross(a, b):
+  x = a.y * b.z - a.z * b.y
+  y = a.z * b.x - a.x * b.z
+  z = a.x * b.y - a.y * b.x
+
+  return Point(x, y, z)
+
+# get vector pointing from point a to point b
+def vector_from_to(a, b):
+  return Point(b.x - a.x, b.y - a.y, b.z - a.z)
+
+def scale(v, d):
+  return Point(v.x / d, + v.y / d , v.z / d)
+
+def dot(a, b):
+  return a.x * b.x + a.y * b.y + a.z * b.z
+
+def length(v):
+  return np.sqrt(v.x**2 + v.y**2 + v.z**2)
+
+def add_vectors(a, b):
+  return Point(a.x + b.x, a.y + b.y, a.z + b.z)
+
+def subtract_vectors(a, b):
+  return Point(a.x - b.x, a.y - b.y, a.z - b.z)
+
+def get_unit_normal(a, b, c):
+  ab = subtract_vectors(b, a)
+  ac = subtract_vectors(c, a)
+  v = cross(ab, ac)
+  v = scale(v, length(v))
+  return v
+
+
+# https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle
+# https://www.geeksforgeeks.org/check-whether-a-given-point-lies-inside-a-triangle-or-not/
+# It works like this:
+# - Walk clockwise or counterclockwise around the triangle
+# and project the point onto the segment we are crossing
+# by using the dot product.
+# - Check that the vector created is on the same side
+# for each of the triangle's segments
+def is_point_inside_triangle(p, a, b, c):
+  ab = (p.x - b.x) * (a.y - b.y) - (a.x - b.x) * (p.y - b.y)
+  bc = (p.x - c.x) * (b.y - c.y) - (b.x - c.x) * (p.y - c.y)
+  ca = (p.x - a.x) * (c.y - a.y) - (c.x - a.x) * (p.y - a.y)
+  # must be all positive or all negative
+  return (ab < 0.0) == (bc < 0.0) == (ca < 0.0)
+
+
+# Another way
+def is_point_inside_triangle2(p, p0, p1, p2):
+  p = Point(0, 0, 0)
+  
+  a = p1.x - p0.x
+  b = p2.x - p0.x
+  c = p1.y - p0.y
+  d = p2.y - p0.y
+  e = p.x - p0.x
+  f = p.y - p0.y
+
+  det = a * d - b * c
+  
+  if det == 0:
+    return False
+  else:
+    x = (e * d - f * b) / det
+    y = (a * f - c * e) / det
+    return -0.01 <= x <= 1 and -0.01 <= y <= 1 and x + y <= 1
