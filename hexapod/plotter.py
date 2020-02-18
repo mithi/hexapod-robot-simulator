@@ -35,12 +35,12 @@ class HexapodPlot:
       fig['data'][n]['y'] = [point.y for point in points]
       fig['data'][n]['z'] = [point.z for point in points]
 
-    # draw a mesh for feet on ground
-    feet_on_ground, _ = hexapod.feet_on_ground()
-    if feet_on_ground is not None:
-      fig['data'][10]['x'] = [foot.toe().x for foot in feet_on_ground]
-      fig['data'][10]['y'] = [foot.toe().y for foot in feet_on_ground]
-      fig['data'][10]['z'] = [foot.toe().z for foot in feet_on_ground]
+    # draw a mesh for body contact on ground
+    ground_contacts, _ = hexapod.feet_on_ground()
+    if ground_contacts is not None:
+      fig['data'][10]['x'] = [leg.toe().x for leg in ground_contacts]
+      fig['data'][10]['y'] = [leg.toe().y for leg in ground_contacts]
+      fig['data'][10]['z'] = [leg.toe().z for leg in ground_contacts]
 
     # Change range of view for all axes
     f, m, s = hexapod.body_measurements
