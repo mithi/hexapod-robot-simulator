@@ -167,6 +167,6 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, figure):
 
   text ='\n'
   for leg in legs_on_ground:
-    text += '- **`{}`** ` height: {}` \n'.format(leg.name, -leg.toe().z)
+    text += '- **`{}`** ` height: {}` \n'.format(leg.name, -leg.foot_tip().z)
 
   return figure, json.dumps({'text': text})
