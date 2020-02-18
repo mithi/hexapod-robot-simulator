@@ -228,13 +228,22 @@ class Hexagon:
     ]
 
 class VirtualHexapod:
-  def __init__(self, a=0, b=0, c=0, f=0, m=0, s=0):
+  def __init__(self, measurements=None):
+    if measurements is None:
+      self.new()
+    else:
+      f, s, m = measurements['front'], measurements['side'], measurements['middle'],
+      h, k, a = measurements['coxia'], measurements['femur'], measurements['tibia']
+      self.new(f, m, s, h, k, a)
+
+  def new(self, f=0, m=0, s=0, a=0, b=0, c=0):
     # coxia length, femur length tibia length
     self.linkage_measurements = [a, b, c]
     # front length, middle length, side length
     self.body_measurements = [f, m, s]
     self.body = Hexagon(f, m, s)
     self.store_neutral_legs(a, b, c)
+    return self
 
   def store_neutral_legs(self, a, b, c):
     self.legs = []
@@ -263,6 +272,7 @@ class VirtualHexapod:
       beta = pose['femur']
       gamma = pose['tibia']
       self.legs[i].change_pose(alpha, beta, gamma)
+
 
 
 

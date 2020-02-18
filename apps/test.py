@@ -80,6 +80,7 @@ def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, ey
   }
   return json.dumps(camera)
 
+
 INPUT_IDs = SLIDERS_TEST_IDs + INPUT_LENGTHS_IDs
 @app.callback(
   Output('variables', 'children'),
@@ -121,13 +122,14 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
   if figure is None:
     return HEXAPOD_FIGURE
 
-  virtual_hexapod = VirtualHexapod(
-    h or 0, 
-    k or 0, 
-    a or 0, 
+  virtual_hexapod = VirtualHexapod().new( 
     f or 0, 
     m or 0, 
-    s or 0)
+    s or 0,
+    h or 0, 
+    k or 0, 
+    a or 0
+  )
 
   for leg in virtual_hexapod.legs:
     leg.change_pose(alpha, beta, gamma)

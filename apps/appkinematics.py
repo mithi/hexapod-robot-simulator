@@ -157,10 +157,7 @@ def update_graph(poses_json, measurements_json, relayout_data, figure):
   # make base hexapod model given body measurements
   measurements = json.loads(measurements_json)
 
-  f, s, m = measurements['front'], measurements['side'], measurements['middle'],
-  h, k, a = measurements['coxia'], measurements['femur'], measurements['tibia'],
-
-  virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
+  virtual_hexapod = VirtualHexapod(measurements)
   
   # Configure the pose of the hexapod given joint angles
   if poses_json is not None:
