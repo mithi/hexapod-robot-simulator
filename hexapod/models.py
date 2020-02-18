@@ -96,14 +96,13 @@ class Linkage:
 
     # find points wrt to center of gravity
     self.p0 = self._new_origin
-    self.p1 = p1.get_point_wrt(new_frame)
-    self.p2 = p2.get_point_wrt(new_frame)
-    self.p3 = p3.get_point_wrt(new_frame)
-
     self.p0.name = 'body_contact'
-    self.p1.name = 'coxia'
-    self.p2.name = 'femur'
-    self.p3.name = 'tibia'
+
+    self.p1 = p1.get_point_wrt(new_frame, name='coxia')
+    self.p2 = p2.get_point_wrt(new_frame, name='femur')
+    self.p3 = p3.get_point_wrt(new_frame, name='tibia')
+
+    self.ground_contact_point = self.compute_ground_contact()
 
   def change_pose(self, alpha=None, beta=None, gamma=None):
     alpha = alpha or self._alpha
@@ -120,7 +119,7 @@ class Linkage:
   def foot_tip(self):
     return self.p3
 
-  def foot_tip_height(self):
+  def tip_wrt_cog(self):
     #
     #          /*
     #         //\\ 
@@ -151,20 +150,24 @@ class Linkage:
     # is touching the ground
     return -self.foot_tip().z
   
-  def femur_point_height(self):
+  def femur_wrt_cog(self):
     return -self.femur_point().z
   
-  def ground_contact(self):
-    if self.foot_tip_height() <= 0:
-      if self.femur_point_height() <= 0:
+  def compute_ground_contact(self):
+    if self.tip_wrt_cog() <= 0:
+      if self.femur_wrt_cog() <= 0:
         return self.coxia_point()
       else:
         return self.femur_point()
 
-    if self.foot_tip_height() >= self.femur_point_height():
+    if self.tip_wrt_cog() >= self.femur_wrt_cog():
       return self.foot_tip()
     else:
       return self.femur_point()
+  
+  def ground_contact(self):
+    return self.ground_contact_point
+
 
 
 # MEASUREMENTS f, s, and m
@@ -227,7 +230,9 @@ class Hexagon:
 
 class VirtualHexapod:
   def __init__(self, a=0, b=0, c=0, f=0, m=0, s=0):
+    # coxia length, femur length tibia length
     self.linkage_measurements = [a, b, c]
+    # front length, middle length, side length
     self.body_measurements = [f, m, s]
     self.body = Hexagon(f, m, s)
     self.store_neutral_legs(a, b, c)

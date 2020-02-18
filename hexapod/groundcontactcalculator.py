@@ -36,7 +36,7 @@ def three_ids_of_ground_contacts(legs):
   trios, other_trios = set_of_two_trios_from_six()
 
   for trio, other_trio in zip(trios, other_trios):
-    # let p0 to p6 be the foot tip of each leg
+    # let p0 to p6 be leg ground contacts
     p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
 
     if check_stability(p0, p1, p2) == True:
@@ -70,7 +70,7 @@ def three_ids_of_ground_contacts(legs):
       for p in [p3, p4, p5]:
         h_ = dot(n, p)
 
-        # this combination of legs is wrong, check another
+        # Wrong leg combination, check another
         if h_ < h:
           condition_violated = True
           break
@@ -78,17 +78,16 @@ def three_ids_of_ground_contacts(legs):
       if condition_violated:
         continue
       else:
-        # All conditions are met! You've found it!
+        #  Found one!
         return trio
 
-  # nothing met the condition
+  # Nothing met the condition
   return None
  
 def get_legs_on_ground(legs):
 
   def within_thresh(a, b, tol=2):
     return np.abs(a - b) < 2
-
 
   trio = three_ids_of_ground_contacts(legs)
 
@@ -97,11 +96,12 @@ def get_legs_on_ground(legs):
 
   p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
   n = get_unit_normal(p0, p1, p2)
-  # using p0, p1 or p2 should yield the same result
+  # Note: using p0, p1 or p2 should yield the same result
   cog_from_ground= -dot(n, p0)
 
   legs_on_ground = []
 
+  # Get all contacts of the same height
   for leg in legs:
     ground_contact = -dot(n, leg.ground_contact())   
     if within_thresh(ground_contact, cog_from_ground):
