@@ -169,7 +169,6 @@ class Linkage:
     return self.ground_contact_point
 
 
-
 # MEASUREMENTS f, s, and m
 #
 #       |-f-|
@@ -246,6 +245,24 @@ class VirtualHexapod:
 
   def feet_on_ground(self):
     return get_legs_on_ground(self.legs)
+  
+  def update(self, poses):
+    # pose = { 
+    #   LEG_ID: {
+    #     'name': LEG_NAME, 
+    #     'id': LEG_ID
+    #     'coxia': ALPHA, 
+    #     'femur': BETA, 
+    #     'tibia': GAMMA}
+    #   }
+    #   ...
+    # }
+    for _, pose in poses.items():
+      i = pose['id']
+      alpha = pose['coxia']
+      beta = pose['femur']
+      gamma = pose['tibia']
+      self.legs[i].change_pose(alpha, beta, gamma)
 
 
 

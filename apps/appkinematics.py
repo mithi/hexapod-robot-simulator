@@ -21,8 +21,8 @@ from app import app
 HIDDEN_LEG_POSES = [html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG]
 HIDDEN_LENGTHS = [html.Div(id='hexapod-measurements-values', style={'display': 'none'})]
 HIDDEN_LEGS_ON_GROUND = [html.Div(id='legs-on-ground',  style={'display': 'none'})]
-
-HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS + HIDDEN_LEGS_ON_GROUND
+HIDDEN_LEG_POSES_ALL = [html.Div(id='hexapod-poses-values', style={'display': 'none'})]
+HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS + HIDDEN_LEGS_ON_GROUND + HIDDEN_LEG_POSES_ALL
 
 layout = html.Div([
   html.Div(HIDDEN_DIVS),
@@ -116,26 +116,46 @@ def display_ground_contact(legs_on_ground_json):
   legs_on_ground_text = json.loads(legs_on_ground_json)['text']
   return dcc.Markdown(legs_on_ground_text)
 
+INPUT_LEGS = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG]
+@app.callback(
+  Output('hexapod-poses-values', 'children'),
+  INPUT_LEGS
+)
+def update_hexapod_pose_values(rm, rf, lf, lm, lb, rb):
+  poses = [rm, rf, lf, lm, lb, rb]
+  poses_json = {}
+
+  for i, name, pose in zip(range(6), NAMES_LEG, poses):
+    try:
+      pose = json.loads(pose)
+      pose['name'] = name
+      pose['id'] = i
+      poses_json[i] = pose
+    except:
+      print("can't parse:", pose)
+
+  return json.dumps(poses_json)
+    
+
 # -------------------
 # Listen if we need to update Graph
 # -------------------
-INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
-  [Input(name, 'children') for name in ['hexapod-measurements-values']]
+INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexapod-measurements-values']]
 @app.callback(
   [Output('graph-hexapod', 'figure'), Output('legs-on-ground', 'children')],
   INPUT_ALL, 
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
-def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, figure):
+def update_graph(poses_json, measurements_json, relayout_data, figure):
 
   if figure is None:
     return HEXAPOD_FIGURE, None
 
-  if measurements is None:
+  if measurements_json is None:
     raise PreventUpdate
 
   # make base hexapod model given body measurements
-  measurements = json.loads(measurements)
+  measurements = json.loads(measurements_json)
 
   f, s, m = measurements['front'], measurements['side'], measurements['middle'],
   h, k, a = measurements['coxia'], measurements['femur'], measurements['tibia'],
@@ -143,15 +163,15 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, figure):
   virtual_hexapod = VirtualHexapod(h, k, a, f, m, s)
   
   # Configure the pose of the hexapod given joint angles
-  poses = [rm, rf, lf, lm, lb, rb]
-  for leg, pose in zip(virtual_hexapod.legs, poses):
+  if poses_json is not None:
     try:
-      pose = json.loads(pose)
-      alpha, beta, gamma = pose['coxia'], pose['femur'], pose['tibia']
-      leg.change_pose(alpha, beta, gamma)
+      poses = json.loads(poses_json)
     except:
-      print(pose)
+      print("can't parse:", poses)
+    
+    virtual_hexapod.update(poses)
 
+  # Update the plot to reflect pose of hexapod
   figure = BASE_PLOTTER.update(figure, virtual_hexapod)
 
   # Use current camera view to display plot
