@@ -20,9 +20,9 @@ from app import app
 # *********************
 HIDDEN_LEG_POSES = [html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG]
 HIDDEN_LENGTHS = [html.Div(id='hexapod-measurements-values', style={'display': 'none'})]
-HIDDEN_TOES = [html.Div(id='toes',  style={'display': 'none'})]
+HIDDEN_LEGS_ON_GROUND = [html.Div(id='legs-on-ground',  style={'display': 'none'})]
 
-HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS + HIDDEN_TOES
+HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS + HIDDEN_LEGS_ON_GROUND
 
 layout = html.Div([
   html.Div(HIDDEN_DIVS),
@@ -31,7 +31,7 @@ layout = html.Div([
     html.Div([SECTION_POSE_CONTROL, SECTION_LENGTHS_CONTROL], style={'width': '55%'})],
     style={'display': 'flex'}
   ),
-  html.Div(id='display-toes'),
+  html.Div(id='display-legs-on-ground'),
 ])
 
 # *********************
@@ -108,10 +108,10 @@ def update_left_back(coxia, femur, tibia):
 def update_right_back(coxia, femur, tibia):
   return leg_json(coxia, femur, tibia)
 
-@app.callback(Output('display-toes', 'children'), [Input('toes', 'children')])
-def display_toes(feet):
+@app.callback(Output('display-legs-on-ground', 'children'), [Input('legs-on-ground', 'children')])
+def display_ground_contactT(feet):
   if feet is None:
-    return html.H1('No toes to display')
+    return html.H1('No legs contacting ground to display')
   
   feet = json.loads(feet)['text']
   return dcc.Markdown(feet)
@@ -122,7 +122,7 @@ def display_toes(feet):
 INPUT_ALL = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG] + \
   [Input(name, 'children') for name in ['hexapod-measurements-values']]
 @app.callback(
-  [Output('graph-hexapod', 'figure'), Output('toes', 'children')],
+  [Output('graph-hexapod', 'figure'), Output('legs-on-ground', 'children')],
   INPUT_ALL, 
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
@@ -159,14 +159,14 @@ def update_graph(rm, rf, lf, lm, lb, rb, measurements, relayout_data, figure):
     camera = relayout_data['scene.camera']
     figure = BASE_PLOTTER.change_camera_view(figure, camera)
 
-  # Get feet information
-  feet, _ = virtual_hexapod.feet_on_ground()
+  # Get information of legs contacting ground
+  legs_on_ground, _ = virtual_hexapod.feet_on_ground()
 
-  if feet is None:
+  if legs_on_ground is None:
     return figure, None
 
   text ='\n'
-  for foot in feet:
-    text += '- **`{}`** ` height: {}` \n'.format(foot.name, -foot.toe().z)
+  for leg in legs_on_ground:
+    text += '- **`{}`** ` height: {}` \n'.format(leg.name, -leg.toe().z)
 
   return figure, json.dumps({'text': text})
