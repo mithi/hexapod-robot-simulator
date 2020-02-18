@@ -38,11 +38,11 @@ def get_unit_normal(a, b, c):
   return v
 
 def set_of_two_trios_from_six():
-  # Get all combinations of a three legs group given six legs
-  # (2, 3, 5) is a trio from leg set of ids [0, 1, 2, 3, 4, 5] 
+  # Get all combinations of a three-item-group given six items
   # 20 combinations total
-  # the other_trio of (2, 3, 5) is (0, 1, 4)
-  # order is not important so (2, 3, 5) is the same as (5, 3, 2)
+  # (2, 3, 5) is a trio from set [0, 1, 2, 3, 4, 5] 
+  # the corresponding other_trio of (2, 3, 5) is (0, 1, 4)
+  # order is not important ie (2, 3, 5) is the same as (5, 3, 2)
 
   trios = [trio for trio in combinations(range(6), 3)]
   other_trios = []
@@ -102,7 +102,6 @@ def three_ids_of_legs_on_ground(legs):
   trios, other_trios = set_of_two_trios_from_six()
 
   for i, trio, other_trio in zip(range(20), trios, other_trios):
-    print('{}: {} | {}'.format(i, trio, other_trio))
     # let p0 to p6 be the 'toes' or foot tip of each leg
     p0, p1, p2 = get_corresponding_toes(trio, legs)
 
@@ -112,8 +111,8 @@ def three_ids_of_legs_on_ground(legs):
       # IMPORTANT: Normal is always pointing up
       # because of how we specified the order of the trio
       # (and the legs in general)
-      # starting from middle-right (id:0) to right back(id:5)
-      # always towards one direction (counter clockwise)
+      # starting from middle-right (id:0) to right back (id:5)
+      # always towards one direction (ccw)
       
       n = get_unit_normal(p0, p1, p2)
       
@@ -150,6 +149,7 @@ def three_ids_of_legs_on_ground(legs):
         # All conditions are met! You've found it!
         return trio
 
+  # nothing met the condition
   return None
 
 

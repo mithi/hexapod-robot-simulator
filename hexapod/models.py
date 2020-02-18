@@ -1,5 +1,5 @@
 import numpy as np
-from .feetcalculations import get_legs_on_ground
+from .groundcontactcalculator import get_legs_on_ground
 from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate
 # -------------
 # LINKAGE
