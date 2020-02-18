@@ -109,12 +109,12 @@ def update_right_back(coxia, femur, tibia):
   return leg_json(coxia, femur, tibia)
 
 @app.callback(Output('display-legs-on-ground', 'children'), [Input('legs-on-ground', 'children')])
-def display_ground_contactT(feet):
-  if feet is None:
+def display_ground_contact(legs_on_ground_json):
+  if legs_on_ground_json is None:
     return html.H1('No legs contacting ground to display')
   
-  feet = json.loads(feet)['text']
-  return dcc.Markdown(feet)
+  legs_on_ground_text = json.loads(legs_on_ground_json)['text']
+  return dcc.Markdown(legs_on_ground_text)
 
 # -------------------
 # Listen if we need to update Graph
