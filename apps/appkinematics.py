@@ -20,9 +20,8 @@ from app import app
 # *********************
 HIDDEN_LEG_POSES = [html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG]
 HIDDEN_LENGTHS = [html.Div(id='hexapod-measurements-values', style={'display': 'none'})]
-HIDDEN_LEGS_ON_GROUND = [html.Div(id='legs-on-ground',  style={'display': 'none'})]
 HIDDEN_LEG_POSES_ALL = [html.Div(id='hexapod-poses-values', style={'display': 'none'})]
-HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS + HIDDEN_LEGS_ON_GROUND + HIDDEN_LEG_POSES_ALL
+HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS +  HIDDEN_LEG_POSES_ALL
 
 layout = html.Div([
   html.Div(HIDDEN_DIVS),
@@ -31,7 +30,6 @@ layout = html.Div([
     html.Div([SECTION_POSE_CONTROL, SECTION_LENGTHS_CONTROL], style={'width': '55%'})],
     style={'display': 'flex'}
   ),
-  html.Div(id='display-legs-on-ground'),
 ])
 
 # *********************
@@ -108,14 +106,6 @@ def update_left_back(coxia, femur, tibia):
 def update_right_back(coxia, femur, tibia):
   return leg_json(coxia, femur, tibia)
 
-@app.callback(Output('display-legs-on-ground', 'children'), [Input('legs-on-ground', 'children')])
-def display_ground_contact(legs_on_ground_json):
-  if legs_on_ground_json is None:
-    return html.H1('No legs contacting ground to display')
-  
-  legs_on_ground_text = json.loads(legs_on_ground_json)['text']
-  return dcc.Markdown(legs_on_ground_text)
-
 INPUT_LEGS = [Input('pose-{}'.format(leg), 'children') for leg in NAMES_LEG]
 @app.callback(
   Output('hexapod-poses-values', 'children'),
@@ -142,21 +132,20 @@ def update_hexapod_pose_values(rm, rf, lf, lm, lb, rb):
 # -------------------
 INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexapod-measurements-values']]
 @app.callback(
-  [Output('graph-hexapod', 'figure'), Output('legs-on-ground', 'children')],
+  Output('graph-hexapod', 'figure'),
   INPUT_ALL, 
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
 def update_graph(poses_json, measurements_json, relayout_data, figure):
 
   if figure is None:
-    return HEXAPOD_FIGURE, None
+    return HEXAPOD_FIGURE
 
   if measurements_json is None:
     raise PreventUpdate
 
-  # make base hexapod model given body measurements
+  # Make base hexapod model given body measurements
   measurements = json.loads(measurements_json)
-
   virtual_hexapod = VirtualHexapod(measurements)
   
   # Configure the pose of the hexapod given joint angles
@@ -176,14 +165,4 @@ def update_graph(poses_json, measurements_json, relayout_data, figure):
     camera = relayout_data['scene.camera']
     figure = BASE_PLOTTER.change_camera_view(figure, camera)
 
-  # Get information of legs contacting ground
-  legs_on_ground, _ = virtual_hexapod.feet_on_ground()
-
-  if legs_on_ground is None:
-    return figure, None
-
-  text ='\n'
-  for leg in legs_on_ground:
-    text += '- **`{}`** ` height: {}` \n'.format(leg.name, -leg.foot_tip().z)
-
-  return figure, json.dumps({'text': text})
+  return figure
