@@ -98,7 +98,7 @@ def check_stability2(p0, p1, p2):
     return -0.01 <= x <= 1 and -0.01 <= y <= 1 and x + y <= 1
 
 
-def three_feet_ids_on_ground(legs):
+def three_ids_of_legs_on_ground(legs):
   trios, other_trios = set_of_two_trios_from_six()
 
   for i, trio, other_trio in zip(range(20), trios, other_trios):
@@ -153,7 +153,7 @@ def three_feet_ids_on_ground(legs):
   return None
 
 
-def get_feet_on_ground(legs):
+def get_legs_on_ground(legs):
 
   def take_z(leg):
     return leg.z_wrt_body_contact()
@@ -167,7 +167,7 @@ def get_feet_on_ground(legs):
   if sorted_legs[0].z_wrt_body_contact() <= 0:
     return None, None
 
-  trio = three_feet_ids_on_ground(legs)
+  trio = three_ids_of_legs_on_ground(legs)
 
   if trio is None:
     return None, None
@@ -177,11 +177,11 @@ def get_feet_on_ground(legs):
   # using p0, p1 or p2 should yield the same result
   cog_from_ground= -dot(n, p0)
   
-  feet_on_ground = []
+  legs_on_ground = []
 
   for leg in legs:
     tip_from_ground = -dot(n, leg.toe())   
     if within_thresh(tip_from_ground, cog_from_ground):
-      feet_on_ground.append(leg)
+      legs_on_ground.append(leg)
   
-  return feet_on_ground, None
+  return legs_on_ground, None

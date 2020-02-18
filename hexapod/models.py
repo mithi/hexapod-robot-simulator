@@ -1,5 +1,5 @@
 import numpy as np
-from .feetcalculations import get_feet_on_ground
+from .feetcalculations import get_legs_on_ground
 from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate
 # -------------
 # LINKAGE
@@ -203,12 +203,7 @@ class VirtualHexapod:
       self.legs.append(linkage)
 
   def feet_on_ground(self):
-    return get_feet_on_ground(self.legs)
-
-
-
-
-
+    return get_legs_on_ground(self.legs)
 
 
 
