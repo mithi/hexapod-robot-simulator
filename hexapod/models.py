@@ -1,5 +1,5 @@
 import numpy as np
-from .groundcontactcalculator import get_legs_on_ground
+from .ground_contact_calculator import get_legs_on_ground
 from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate
 # -------------
 # LINKAGE
@@ -237,7 +237,7 @@ class VirtualHexapod:
       self.new(f, m, s, h, k, a)
 
   def new(self, f=0, m=0, s=0, a=0, b=0, c=0):
-    # coxia length, femur length tibia length
+    # coxia length, femur length, tibia length
     self.linkage_measurements = [a, b, c]
     # front length, middle length, side length
     self.body_measurements = [f, m, s]
