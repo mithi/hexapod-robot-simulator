@@ -1,4 +1,3 @@
-
 from itertools import combinations
 import numpy as np
 
@@ -22,12 +21,6 @@ def set_of_two_trios_from_six():
 
   return trios, other_trios
 
-
-def get_corresponding_foot_tips(ids, legs):
-  i, j, k = ids
-  return legs[i].foot_tip(), legs[j].foot_tip(), legs[k].foot_tip()
-
-
 def check_stability(a, b, c):
   # if the center of gravity p (0, 0) on xy plane
   # is inside projection (in the xy plane) of 
@@ -35,13 +28,16 @@ def check_stability(a, b, c):
   p = Point(0, 0, 0)
   return is_point_inside_triangle(p, a, b, c)
 
+def get_corresponding_ground_contacts(ids, legs):
+  i, j, k = ids
+  return legs[i].ground_contact(), legs[j].ground_contact(), legs[k].ground_contact()
 
-def three_ids_of_legs_on_ground(legs):
+def three_ids_of_ground_contacts(legs):
   trios, other_trios = set_of_two_trios_from_six()
 
   for trio, other_trio in zip(trios, other_trios):
     # let p0 to p6 be the foot tip of each leg
-    p0, p1, p2 = get_corresponding_foot_tips(trio, legs)
+    p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
 
     if check_stability(p0, p1, p2) == True:
 
@@ -53,9 +49,9 @@ def three_ids_of_legs_on_ground(legs):
       # always towards one direction (ccw)
       n = get_unit_normal(p0, p1, p2)
       
-      # p0 is vector from cog (0, 0, 0) to foot tip
+      # p0 is vector from cog (0, 0, 0) to ground contact
       # dot product of this and normal we get the 
-      # hypothetical (negative) height of foot_tip to cog
+      # hypothetical (negative) height of ground contact to cog
       #
       #  cog *  ^ (normal_vector) ----
       #      \  |                  |
@@ -68,9 +64,9 @@ def three_ids_of_legs_on_ground(legs):
 
       # h should be the most negative(the lowest) since
       # the plane defined by this trio is on the ground
-      #  the other legs foot tip cannot be lower than the ground
+      #  the other legs ground contact cannot be lower than the ground
       condition_violated = False
-      p3, p4, p5 = get_corresponding_foot_tips(other_trio, legs)
+      p3, p4, p5 = get_corresponding_ground_contacts(other_trio, legs)
       for p in [p3, p4, p5]:
         h_ = dot(n, p)
 
@@ -87,29 +83,19 @@ def three_ids_of_legs_on_ground(legs):
 
   # nothing met the condition
   return None
-
-
+ 
 def get_legs_on_ground(legs):
 
-  def foot_tip_height(leg):
-    return leg.foot_tip_height()
-  
   def within_thresh(a, b, tol=2):
     return np.abs(a - b) < 2
 
-  sorted_legs = sorted(legs, key=foot_tip_height, reverse=True)
 
-  # this is negative only foot tip is higher 
-  # than center of gravity (0, 0)
-  if sorted_legs[0].foot_tip_height() <= 0:
-    return None, None
-
-  trio = three_ids_of_legs_on_ground(legs)
+  trio = three_ids_of_ground_contacts(legs)
 
   if trio is None:
     return None, None
 
-  p0, p1, p2 = get_corresponding_foot_tips(trio, legs)
+  p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
   n = get_unit_normal(p0, p1, p2)
   # using p0, p1 or p2 should yield the same result
   cog_from_ground= -dot(n, p0)
@@ -117,8 +103,9 @@ def get_legs_on_ground(legs):
   legs_on_ground = []
 
   for leg in legs:
-    tip_from_ground = -dot(n, leg.foot_tip())   
-    if within_thresh(tip_from_ground, cog_from_ground):
+    ground_contact = -dot(n, leg.ground_contact())   
+    if within_thresh(ground_contact, cog_from_ground):
       legs_on_ground.append(leg)
 
   return legs_on_ground, None
+

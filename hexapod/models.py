@@ -26,6 +26,11 @@ from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate
 #                      |          |
 #                      | p3  ------
 #
+# p0 - body contact
+# p1 - coxia point
+# p2 - femur point
+# p3 - foot tip
+#
 #  z axis
 #  |
 #  |
@@ -95,7 +100,7 @@ class Linkage:
     self.p2 = p2.get_point_wrt(new_frame)
     self.p3 = p3.get_point_wrt(new_frame)
 
-    self.p1.name = 'body_contact'
+    self.p0.name = 'body_contact'
     self.p1.name = 'coxia'
     self.p2.name = 'femur'
     self.p3.name = 'tibia'
@@ -105,6 +110,12 @@ class Linkage:
     beta = beta or self._beta
     gamma = gamma or self._gamma
     self.save_new_pose(alpha, beta, gamma)
+
+  def coxia_point(self):
+    return self.p1
+
+  def femur_point(self):
+    return self.p2 
 
   def foot_tip(self):
     return self.p3
@@ -137,8 +148,24 @@ class Linkage:
     #             //               |
     #*===*=======*  -------------------
     # Negative only if body contact point
-    # is touching the grou
-    return -self.p3.z
+    # is touching the ground
+    return -self.foot_tip().z
+  
+  def femur_point_height(self):
+    return -self.femur_point().z
+  
+  def ground_contact(self):
+    if self.foot_tip_height() <= 0:
+      if self.femur_point_height() <= 0:
+        return self.coxia_point()
+      else:
+        return self.femur_point()
+
+    if self.foot_tip_height() >= self.femur_point_height():
+      return self.foot_tip()
+    else:
+      return self.femur_point()
+
 
 # MEASUREMENTS f, s, and m
 #
