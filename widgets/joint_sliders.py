@@ -1,37 +1,33 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from .sectioning import make_section_type3, make_section_type4
+from .sectioning import make_section_type3, make_section_type4, make_section_type2
 from hexapod.const import NAMES_JOINT, NAMES_LEG
 
-# -----------
-# SLIDERS FOR JOINTS
-# -----------
-def make_slider(name):
+def make_joint_slider_input(name):
   slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
   return dcc.Slider(id=name, min=-105, max=105, marks=slider_marks, value=0, step=5)
 
 # slider id format:
-# 'slider' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
-
-# Sliders dictionary structure
-# SLIDERS['left-front']['coxia'] =  {'slider': SLIDER, 'id': 'slider-left-front-coxia'}
-# SLIDERS['right-middle']['femur'] = {'slider': SLIDER, 'id': 'slider-right-middle-femur'}
-def make_sliders():
-  sliders_leg = {}
+# 'input' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
+# input dictionary structure
+# JOINT_INPUTS['left-front']['coxia'] =  INPUT_COMPONENT
+# JOINT_INPUTS['right-middle']['femur'] = INPUT_COMPONENT
+def make_joint_inputs():
+  all_joint_inputs = {}
 
   for leg_name in NAMES_LEG:
-    sliders_joint = {}
-    
+    leg_joint_inputs = {}
+
     for joint_name in NAMES_JOINT:
-      slider_name = 'slider-' + leg_name + '-' + joint_name
-      slider = make_slider(slider_name)
-      sliders_joint[joint_name] = { 'slider': slider, 'id': slider_name }
-    
-    sliders_leg[leg_name] = sliders_joint
+      input_name = 'input-{}-{}'.format(leg_name, joint_name)
+      leg_joint_inputs[joint_name] = make_joint_slider_input(input_name)
 
-  return sliders_leg
+    all_joint_inputs[leg_name] = leg_joint_inputs
 
-SLIDERS = make_sliders()
+  return all_joint_inputs
+
+
+JOINT_INPUTS = make_joint_inputs()
 
 def make_leg_sections():
   sections = []
@@ -40,9 +36,9 @@ def make_leg_sections():
 
   for leg in NAMES_LEG:
     header = html.Label(dcc.Markdown('**`{}`**'.format(leg)))
-    coxia = SLIDERS[leg]['coxia']['slider']
-    femur = SLIDERS[leg]['femur']['slider']
-    tibia = SLIDERS[leg]['tibia']['slider']
+    coxia = JOINT_INPUTS[leg]['coxia']
+    femur = JOINT_INPUTS[leg]['femur']
+    tibia = JOINT_INPUTS[leg]['tibia']
     section = make_section_type4(header, coxia, femur, tibia)
     sections.append(section)
 

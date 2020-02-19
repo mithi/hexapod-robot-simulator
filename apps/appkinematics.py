@@ -10,7 +10,8 @@ from hexapod.figure_template import HEXAPOD_FIGURE
 from hexapod.pose_template import HEXAPOD_POSE
 
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
-from widgets.joint_sliders import SECTION_POSE_CONTROL
+from widgets.joint_number_inputs import SECTION_POSE_CONTROL
+#from widgets.joint_sliders import SECTION_POSE_CONTROL
 from widgets.sectioning import make_section_type4, make_section_type3
 
 from copy import deepcopy
@@ -76,7 +77,7 @@ def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
 # Listen if a leg pose is updated
 # -------------------
 def leg_inputs(prefix):
-  return [Input('slider-{}-{}'.format(prefix, joint), 'value') for joint in NAMES_JOINT]
+  return [Input('input-{}-{}'.format(prefix, joint), 'value') for joint in NAMES_JOINT]
 
 def leg_output(prefix):
   return Output('pose-{}'.format(prefix), 'children')
