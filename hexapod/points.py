@@ -1,5 +1,38 @@
 import numpy as np
 
+def skew(p):
+  return np.array([
+    [0, -p.z, p.y], 
+    [p.z, 0, -p.x],
+    [-p.y, p.x, 0]
+  ])
+
+# https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
+def frame_to_align_vector_a_to_b(a, b):
+
+  v = cross(a, b)
+  s = length(v)
+
+  # When angle between a and b is zero or 180 degrees
+  # cross product is 0, R = I
+  if s == 0.0:
+    return np.eye(4)
+  c = dot(a, b)
+  i = np.eye(3) # Identity matrix 3x3
+  
+  # skew symmetric cross product
+  vx = skew(v)
+  d = (1 - c) / s / s
+  r = i + vx + np.matmul(vx, vx) * d
+
+  # r00 r01 r02 0
+  # r10 r11 r12 0
+  # r20 r21 r22 0
+  #  0   0   0  1
+  r = np.hstack((r, [[0], [0], [0]]))
+  r = np.vstack((r, [0, 0, 0, 1]))
+  return r 
+
 # rotate about y, translate in x
 def frame_yrotate_xtranslate(theta, x):
   theta = np.radians(theta)
@@ -10,7 +43,7 @@ def frame_yrotate_xtranslate(theta, x):
     [cos_theta, 0, sin_theta, x],
     [0, 1, 0, 0],
     [-sin_theta, 0, cos_theta, 0],
-    [0, 0, 0, 1]
+    [0, 0, 0, 1],
   ])
 
 
@@ -43,6 +76,18 @@ class Point:
     p = np.matmul(reference_frame, p)
     return Point(p[0], p[1], p[2], name)
 
+  def update_point_wrt(self, reference_frame, z=0):
+    p = np.array([self.x, self.y, self.z, 1])
+    p = np.matmul(reference_frame, p)
+    self.x = p[0]
+    self.y = p[1]
+    self.z = p[2] + z
+
+  def move_up(self, z):
+    self.z += z
+
+  def __str__(self):
+    return 'Point(name={}, x={}, y={}, z={})'.format(self.name, self.x, self.y, self.z)
 
 def cross(a, b):
   x = a.y * b.z - a.z * b.y
