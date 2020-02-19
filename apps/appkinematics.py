@@ -10,8 +10,8 @@ from hexapod.figure_template import HEXAPOD_FIGURE
 from hexapod.pose_template import HEXAPOD_POSE
 
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
-from widgets.joint_number_inputs import SECTION_POSE_CONTROL
-#from widgets.joint_sliders import SECTION_POSE_CONTROL
+from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
+#from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 from widgets.sectioning import make_section_type4, make_section_type3
 
 from copy import deepcopy
