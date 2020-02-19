@@ -37,20 +37,24 @@ class HexapodPlot:
 
     # draw a mesh for body contact on ground
     ground_contacts = hexapod.ground_contact_points()
-    if ground_contacts is not None:
-      fig['data'][10]['x'] = [point.x for point in ground_contacts]
-      fig['data'][10]['y'] = [point.y for point in ground_contacts]
-      fig['data'][10]['z'] = [point.z for point in ground_contacts]
+    fig['data'][10]['x'] = [point.x for point in ground_contacts]
+    fig['data'][10]['y'] = [point.y for point in ground_contacts]
+    fig['data'][10]['z'] = [point.z for point in ground_contacts]
+
+    fig['data'][11]['x'] = [0, 200 * hexapod.shadow_normal.x]
+    fig['data'][11]['y'] = [0, 200 * hexapod.shadow_normal.y]
+    fig['data'][11]['z'] = [0, 200 * hexapod.shadow_normal.z]
 
     # Change range of view for all axes
     f, m, s = hexapod.body_measurements
     a, b, c = hexapod.linkage_measurements
     RANGE = (f + m + s + a + b + c)
     AXIS_RANGE = [-RANGE, RANGE]
-
+    
+    z_start = -10
     fig['layout']['scene']['xaxis']['range'] = AXIS_RANGE
     fig['layout']['scene']['yaxis']['range'] = AXIS_RANGE
-    fig['layout']['scene']['zaxis']['range'] = AXIS_RANGE
+    fig['layout']['scene']['zaxis']['range'] = [z_start, (RANGE - z_start) * 2]
     return fig
 
   def change_camera_view(self, fig, camera):

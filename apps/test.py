@@ -10,12 +10,15 @@ from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
-from hexapod.const import BASE_PLOTTER
+from hexapod.const import BASE_PLOTTER, NAMES_LEG
 from hexapod.figure_template import HEXAPOD_FIGURE
+from hexapod.pose_template import HEXAPOD_POSE
 
+from copy import deepcopy
 import json
 from app import app
 
+POSES = deepcopy(HEXAPOD_POSE)
 # -----------
 # LAYOUT
 # -----------
@@ -131,9 +134,17 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
     a or 0
   )
 
-  for leg in virtual_hexapod.legs:
-    leg.change_pose(alpha, beta, gamma)
-  
+  for k, _ in POSES.items():
+    POSES[k] = {
+      'id': k,
+      'name': NAMES_LEG[k],
+      'coxia': alpha,
+      'femur': beta,
+      'tibia': gamma,
+    }
+
+  virtual_hexapod.update(POSES)
+
   if camera is not None:
     figure = BASE_PLOTTER.change_camera_view(figure, json.loads(camera))
 

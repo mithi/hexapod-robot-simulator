@@ -1,6 +1,8 @@
 import numpy as np
 from .ground_contact_calculator import get_legs_on_ground
-from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate
+from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate, frame_to_align_vector_a_to_b
+from .pose_template import HEXAPOD_POSE
+from copy import deepcopy
 # -------------
 # LINKAGE
 # -------------
@@ -95,12 +97,11 @@ class Linkage:
     p3 = p0.get_point_wrt(frame_03)
 
     # find points wrt to center of gravity
-    self.p0 = self._new_origin
-    self.p0.name = 'body_contact'
-
-    self.p1 = p1.get_point_wrt(new_frame, name='coxia')
-    self.p2 = p2.get_point_wrt(new_frame, name='femur')
-    self.p3 = p3.get_point_wrt(new_frame, name='tibia')
+    self.p0 = deepcopy(self._new_origin)
+    self.p0.name += 'body-contact'
+    self.p1 = p1.get_point_wrt(new_frame, name=self.name+'-coxia')
+    self.p2 = p2.get_point_wrt(new_frame, name=self.name+'-femur')
+    self.p3 = p3.get_point_wrt(new_frame, name=self.name+'-tibia')
 
     self.ground_contact_point = self.compute_ground_contact()
 
@@ -216,15 +217,15 @@ class Hexagon:
     self.m = m
     self.s = s
 
-    self.cog = Point(0, 0, 0)
-    self.head = Point(0, s, 0)
+    self.cog = Point(0, 0, 0, name='center of gravity')
+    self.head = Point(0, s, 0, name='head')
     self.vertices = [
-      Point(m, 0, 0),
-      Point(f, s, 0),
-      Point(-f, s, 0),
-      Point(-m, 0, 0),
-      Point(-f, -s, 0),
-      Point(f, -s, 0),
+      Point(m, 0, 0, name=Hexagon.VERTEX_NAMES[0]),
+      Point(f, s, 0, name=Hexagon.VERTEX_NAMES[1]),
+      Point(-f, s, 0, name=Hexagon.VERTEX_NAMES[2]),
+      Point(-m, 0, 0, name=Hexagon.VERTEX_NAMES[3]),
+      Point(-f, -s, 0, name=Hexagon.VERTEX_NAMES[4]),
+      Point(f, -s, 0, name=Hexagon.VERTEX_NAMES[5]),
     ]
 
 class VirtualHexapod:
@@ -237,12 +238,14 @@ class VirtualHexapod:
       self.new(f, m, s, h, k, a)
 
   def new(self, f=0, m=0, s=0, a=0, b=0, c=0):
+    self.shadow_normal = Point(0, 0, 1)
     # coxia length, femur length, tibia length
     self.linkage_measurements = [a, b, c]
     # front length, middle length, side length
     self.body_measurements = [f, m, s]
     self.body = Hexagon(f, m, s)
     self.store_neutral_legs(a, b, c)
+    self.ground_contacts = [leg.foot_tip() for leg in self.legs]
     return self
 
   def store_neutral_legs(self, a, b, c):
@@ -253,27 +256,46 @@ class VirtualHexapod:
       self.legs.append(linkage)
 
   def ground_contact_points(self):
-    legs = get_legs_on_ground(self.legs)
-    ground_contact = [leg.ground_contact() for leg in legs]
-    return ground_contact
-  
+    return self.ground_contacts
+
+  def tilt_and_shift(self, frame, height):
+    self.shadow_normal.update_point_wrt(frame, height)
+    self.body.cog.update_point_wrt(frame, height)
+    self.body.head.update_point_wrt(frame, height)
+
+    # Update each point in  body hexagon
+    for vertex in self.body.vertices:
+      vertex.update_point_wrt(frame, height)
+
+    # Update each point in each leg
+    for leg in self.legs:
+      leg.p0.update_point_wrt(frame, height)
+      leg.p1.update_point_wrt(frame, height)
+      leg.p2.update_point_wrt(frame, height)
+      leg.p3.update_point_wrt(frame, height)
+
   def update(self, poses):
-    # pose = { 
-    #   LEG_ID: {
-    #     'name': LEG_NAME, 
-    #     'id': LEG_ID
-    #     'coxia': ALPHA, 
-    #     'femur': BETA, 
-    #     'tibia': GAMMA}
-    #   }
-    #   ...
-    # }
+
     for _, pose in poses.items():
       i = pose['id']
       alpha = pose['coxia']
       beta = pose['femur']
       gamma = pose['tibia']
       self.legs[i].change_pose(alpha, beta, gamma)
+
+    # Update which legs are on the ground
+    # And the new 'normal' (temporarily called shadow normal)
+    legs, self.shadow_normal, height = get_legs_on_ground(self.legs)
+    self.ground_contacts = [leg.ground_contact() for leg in legs]
+
+    if self.shadow_normal is not None:
+      # tilt and shift the hexapod based on new normal
+      frame = frame_to_align_vector_a_to_b(self.shadow_normal, Point(0, 0, 1))
+      self.tilt_and_shift(frame, height)
+    
+    # The position is not stable, what to do?
+    # Right now it just displays the figure like 
+    # There's no gravity
 
 
 
