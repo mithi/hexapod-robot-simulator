@@ -6,8 +6,7 @@ from dash.exceptions import PreventUpdate
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_PLOTTER, BASE_HEXAPOD
-from hexapod.figure_template import HEXAPOD_FIGURE
-from hexapod.pose_template import HEXAPOD_POSE
+from hexapod.const import HEXAPOD_FIGURE, HEXAPOD_POSE
 
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
 from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL

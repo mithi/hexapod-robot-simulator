@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 from .sectioning import make_section_type4, make_section_type3
-from hexapod.figure_template import HEXAPOD_FIGURE
+from hexapod.const import HEXAPOD_FIGURE
 
 camera = HEXAPOD_FIGURE['layout']['scene']['camera']
 

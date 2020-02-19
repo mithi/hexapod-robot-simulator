@@ -1,4 +1,4 @@
-from .figure_template import HEXAPOD_FIGURE
+from .templates.figure_template import HEXAPOD_FIGURE
 
 class HexapodPlot:
   def __init__(self):

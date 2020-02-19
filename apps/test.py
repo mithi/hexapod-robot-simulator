@@ -11,8 +11,7 @@ from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import BASE_PLOTTER, NAMES_LEG, BASE_HEXAPOD
-from hexapod.figure_template import HEXAPOD_FIGURE
-from hexapod.pose_template import HEXAPOD_POSE
+from hexapod.const import HEXAPOD_FIGURE, HEXAPOD_POSE
 
 from copy import deepcopy
 import json

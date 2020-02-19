@@ -1,7 +1,6 @@
 import numpy as np
 from .ground_contact_calculator import get_legs_on_ground
 from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate, frame_to_align_vector_a_to_b
-from .pose_template import HEXAPOD_POSE
 from copy import deepcopy
 # -------------
 # LINKAGE
