@@ -10,7 +10,7 @@ from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
-from hexapod.const import BASE_PLOTTER, NAMES_LEG
+from hexapod.const import BASE_PLOTTER, NAMES_LEG, BASE_HEXAPOD
 from hexapod.figure_template import HEXAPOD_FIGURE
 from hexapod.pose_template import HEXAPOD_POSE
 
@@ -18,7 +18,6 @@ from copy import deepcopy
 import json
 from app import app
 
-POSES = deepcopy(HEXAPOD_POSE)
 # -----------
 # LAYOUT
 # -----------
@@ -61,9 +60,11 @@ def update_camera_inputs(hover_data, relayout_data):
     raise PreventUpdate
 
   camera = relayout_data['scene.camera']
+
   up = camera['up']
   c = camera['center']
   eye =  camera['eye']
+
   ux, uy, uz = up['x'], up['y'], up['z']
   cx, cy, cz = c['x'], c['y'], c['z']
   ex, ey, ez = eye['x'], eye['y'], eye['z']
@@ -76,11 +77,13 @@ def update_camera_inputs(hover_data, relayout_data):
   [Input(input_id, 'value') for input_id in CAMVIEW_INPUT_IDs]
 )
 def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, eye_y, eye_z):
+
   camera = {
     'up': {'x': up_x or 0, 'y': up_y or 0, 'z': up_z or 0},
     'center': {'x': center_x or 0, 'y': center_y or 0, 'z': center_z or 0},
     'eye': {'x': (eye_x or 0), 'y': (eye_y or 0), 'z': (eye_z or 0)}
   }
+
   return json.dumps(camera)
 
 
@@ -109,10 +112,10 @@ def update_variable(alpha, beta, gamma, f, s, m, h, k, a):
 )
 def display_variables(pose_params):
   p = json.loads(pose_params)
-  s = ""
+  s = ''
   for k, v in p.items():
-    s += "- `{}: {}` \n".format(k, v)
-  
+    s += '- `{}: {}` \n'.format(k, v)
+
   return dcc.Markdown(s)
 
 
@@ -122,8 +125,11 @@ def display_variables(pose_params):
   [State('hexapod-plot', 'figure')]
 )
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
+
   if figure is None:
-    return HEXAPOD_FIGURE
+    HEXAPOD = deepcopy(BASE_HEXAPOD)
+    HEXAPOD.update(HEXAPOD_POSE)
+    return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
 
   virtual_hexapod = VirtualHexapod().new( 
     f or 0, 
@@ -133,6 +139,8 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
     k or 0, 
     a or 0
   )
+  
+  POSES = deepcopy(HEXAPOD_POSE)
 
   for k, _ in POSES.items():
     POSES[k] = {
