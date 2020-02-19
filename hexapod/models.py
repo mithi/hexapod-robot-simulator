@@ -238,7 +238,10 @@ class VirtualHexapod:
       self.new(f, m, s, h, k, a)
 
   def new(self, f=0, m=0, s=0, a=0, b=0, c=0):
-    self.shadow_normal = Point(0, 0, 1)
+    self.x_axis = Point(1, 0, 0, name='hexapod x axis')
+    self.y_axis = Point(0, 1, 0, name='hexapod y axis')
+    self.z_axis = Point(0, 0, 1, name='hexapod z axis')
+
     # coxia length, femur length, tibia length
     self.linkage_measurements = [a, b, c]
     # front length, middle length, side length
@@ -259,7 +262,6 @@ class VirtualHexapod:
     return self.ground_contacts
 
   def tilt_and_shift(self, frame, height):
-    self.shadow_normal.update_point_wrt(frame, height)
     self.body.cog.update_point_wrt(frame, height)
     self.body.head.update_point_wrt(frame, height)
 
@@ -284,15 +286,20 @@ class VirtualHexapod:
       self.legs[i].change_pose(alpha, beta, gamma)
 
     # Update which legs are on the ground
-    # And the new 'normal' (temporarily called shadow normal)
-    legs, self.shadow_normal, height = get_legs_on_ground(self.legs)
+    # And the new 'normal' 
+    legs, self.n_axis, height = get_legs_on_ground(self.legs)
     self.ground_contacts = [leg.ground_contact() for leg in legs]
-
-    if self.shadow_normal is not None:
-      # tilt and shift the hexapod based on new normal
-      frame = frame_to_align_vector_a_to_b(self.shadow_normal, Point(0, 0, 1))
-      self.tilt_and_shift(frame, height)
     
+
+    if self.z_axis is not None:
+      # tilt and shift the hexapod based on new normal
+      frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
+      self.x_axis.update_point_wrt(frame, 0)
+      self.y_axis.update_point_wrt(frame, 0)
+      self.z_axis.update_point_wrt(frame, 0)
+
+      self.tilt_and_shift(frame, height)
+
     # The position is not stable, what to do?
     # Right now it just displays the figure like 
     # There's no gravity

@@ -97,7 +97,7 @@ def get_legs_on_ground(legs):
 
   p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
   n = get_unit_normal(p0, p1, p2)
-  n.name = 'New Normal wrt Old normal (shadow normal)'
+
   # Note: using p0, p1 or p2 should yield the same result
   cog_from_ground= -dot(n, p0)
 

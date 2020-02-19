@@ -41,20 +41,51 @@ class HexapodPlot:
     fig['data'][10]['y'] = [point.y for point in ground_contacts]
     fig['data'][10]['z'] = [point.z for point in ground_contacts]
 
-    fig['data'][11]['x'] = [0, 200 * hexapod.shadow_normal.x]
-    fig['data'][11]['y'] = [0, 200 * hexapod.shadow_normal.y]
-    fig['data'][11]['z'] = [0, 200 * hexapod.shadow_normal.z]
-
     # Change range of view for all axes
     f, m, s = hexapod.body_measurements
     a, b, c = hexapod.linkage_measurements
     RANGE = (f + m + s + a + b + c)
     AXIS_RANGE = [-RANGE, RANGE]
-    
+
     z_start = -10
     fig['layout']['scene']['xaxis']['range'] = AXIS_RANGE
     fig['layout']['scene']['yaxis']['range'] = AXIS_RANGE
     fig['layout']['scene']['zaxis']['range'] = [z_start, (RANGE - z_start) * 2]
+
+    # Draw the hexapod local frame
+    cog = hexapod.body.cog
+    x_axis = hexapod.x_axis
+    y_axis = hexapod.y_axis
+    z_axis = hexapod.z_axis
+
+    axis_scale = f / 2 
+
+    fig['data'][11]['x'] = [cog.x, cog.x + axis_scale * x_axis.x]
+    fig['data'][11]['y'] = [cog.y, cog.y + axis_scale * x_axis.y]
+    fig['data'][11]['z'] = [cog.z, cog.z + axis_scale * x_axis.z]
+
+    fig['data'][12]['x'] = [cog.x, cog.x + axis_scale * y_axis.x]
+    fig['data'][12]['y'] = [cog.y, cog.y + axis_scale * y_axis.y]
+    fig['data'][12]['z'] = [cog.z, cog.z + axis_scale * y_axis.z]
+
+    fig['data'][13]['x'] = [cog.x, cog.x + axis_scale * z_axis.x]
+    fig['data'][13]['y'] = [cog.y, cog.y + axis_scale * z_axis.y]
+    fig['data'][13]['z'] = [cog.z, cog.z + axis_scale * z_axis.z]
+
+    # Scale the global coordinate frame
+
+    fig['data'][14]['x'] = [0, axis_scale]
+    fig['data'][14]['y'] = [0, 0]
+    fig['data'][14]['z'] = [0, 0]
+
+    fig['data'][15]['x'] = [0, 0]
+    fig['data'][15]['y'] = [0, axis_scale]
+    fig['data'][15]['z'] = [0, 0]
+
+    fig['data'][16]['x'] = [0, 0]
+    fig['data'][16]['y'] = [0, 0]
+    fig['data'][16]['z'] = [0, axis_scale]
+
     return fig
 
   def change_camera_view(self, fig, camera):
