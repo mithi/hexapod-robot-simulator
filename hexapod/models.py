@@ -272,7 +272,7 @@ class VirtualHexapod:
     self.y_axis.update_point_wrt(frame, 0)
     self.z_axis.update_point_wrt(frame, 0)
 
-  def tilt_and_shift(self, frame, height):
+  def rotate_and_shift(self, frame, height):
     # Update cog and head
     self.body.cog.update_point_wrt(frame, height)
     self.body.head.update_point_wrt(frame, height)
@@ -286,6 +286,8 @@ class VirtualHexapod:
       leg.update_leg_wrt(frame, height)
 
   def update(self, poses):
+    # Remember old ground contacts
+    old_ground_contacts = deepcopy(self.ground_contacts)
 
     # Change each leg's pose
     for _, pose in poses.items():
@@ -304,8 +306,69 @@ class VirtualHexapod:
       # tilt and shift the hexapod based on new normal
       frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
       self.update_local_frame(frame)
-      self.tilt_and_shift(frame, height)
+      self.rotate_and_shift(frame, height)
+
+      twist_frame = find_twist(old_ground_contacts, self.ground_contacts)
+      self.rotate_and_shift(twist_frame, 0)
 
     # The position is not stable, what to do?
     # Right now it just displays the figure like 
     # There's no gravity
+
+def find_twist(old_ground_contacts, new_ground_contacts):
+
+  def _make_contact_dict(contact_list):
+    contact_dict = {}
+    for leg_point in contact_list:
+      name = leg_point.name
+      contact_dict[name] = leg_point
+    return contact_dict
+
+  def _twist(v1, v2):
+    # Note: theta is in radians
+    # https://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
+    theta = np.arctan2(v2.y, v2.x) - np.arctan2(v1.y, v1.x) 
+
+    # frome to rotate around z 
+    cos_theta = np.cos(theta)
+    sin_theta = np.sin(theta)
+
+    return np.array([
+      [cos_theta, -sin_theta, 0, 0],
+      [sin_theta, cos_theta, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1],
+    ])
+  
+  # Make dictionary mapping contact point name and leg_contact_point
+  old_contacts = _make_contact_dict(old_ground_contacts)
+  new_contacts = _make_contact_dict(new_ground_contacts)
+  
+  # Find at least one point that's the same
+  same_point_name = None
+  for key in old_contacts.keys():
+    if key in new_contacts.keys():
+      same_point_name = key
+      break
+
+  # We don't know how to rotate if we can't find any
+  if same_point_name == None:
+    return np.eye(4)
+
+  old = old_contacts[same_point_name]
+  new = new_contacts[same_point_name]
+
+  # Get the projection of these points in the ground
+  old_vector = Point(old.x, old.y, 0)
+  new_vector = Point(new.x, new.y, 0)
+  
+  # Fix: Why is this not working?? 😢
+  # wrong_twist_frame = frame_to_align_vector_a_to_b(new_vector, old_vector)
+  
+  twist_frame = _twist(new_vector, old_vector)
+
+  # IMPORTANT NOTE: We are assuming that because the point 
+  # is on the ground before and after 
+  # They should be at the same point after movement
+  # I can't think of a case that contradict his as of this moment
+  return twist_frame
