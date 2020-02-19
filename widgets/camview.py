@@ -1,5 +1,8 @@
 import dash_core_components as dcc
 from .sectioning import make_section_type4, make_section_type3
+from hexapod.figure_template import HEXAPOD_FIGURE
+
+camera = HEXAPOD_FIGURE['layout']['scene']['camera']
 
 CAMVIEW_INPUT_IDs = [
   'input-view-up-x',
@@ -23,17 +26,17 @@ def make_number_input(_name, _value):
 
 # Camera view adjustment inputs
 INPUT_CAMVIEW = {
-  'up-x': make_number_input('input-view-up-x', 0.0),
-  'up-y': make_number_input('input-view-up-y', 0.0),
-  'up-z': make_number_input('input-view-up-z', 1.0),
+  'up-x': make_number_input('input-view-up-x', camera['up']['x']),
+  'up-y': make_number_input('input-view-up-y', camera['up']['y']),
+  'up-z': make_number_input('input-view-up-z', camera['up']['z']),
 
-  'center-x': make_number_input('input-view-center-x', -0.05),
-  'center-y': make_number_input('input-view-center-y', 0.0),
-  'center-z': make_number_input('input-view-center-z', -0.1),
+  'center-x': make_number_input('input-view-center-x', camera['center']['x']),
+  'center-y': make_number_input('input-view-center-y', camera['center']['y']),
+  'center-z': make_number_input('input-view-center-z', camera['center']['z']),
 
-  'eye-x': make_number_input('input-view-eye-x', 0.35),
-  'eye-y': make_number_input('input-view-eye-y', 0.7),
-  'eye-z': make_number_input('input-view-eye-z', 0.5),
+  'eye-x': make_number_input('input-view-eye-x', camera['eye']['x']),
+  'eye-y': make_number_input('input-view-eye-y', camera['eye']['y']),
+  'eye-z': make_number_input('input-view-eye-z', camera['eye']['z']),
 }
 
 # section for camera view adjustments
