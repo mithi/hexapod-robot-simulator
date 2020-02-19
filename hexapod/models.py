@@ -64,17 +64,17 @@ from copy import deepcopy
 class Linkage:
   POINT_NAMES = ['coxia', 'femur', 'tibia']
   def __init__(self, a, b, c, alpha=0, beta=0, gamma=0, new_x_axis=0, new_origin=Point(0, 0, 0), name=None, id_number=None):
-    self.id = id_number
-    self.name = name
-    self.store_linkage_attributes(a, b, c, new_x_axis, new_origin)
+    self.store_linkage_attributes(a, b, c, new_x_axis, new_origin, name, id_number)
     self.save_new_pose(alpha, beta, gamma)
 
-  def store_linkage_attributes(self, a, b, c, new_x_axis, new_origin):
+  def store_linkage_attributes(self, a, b, c, new_x_axis, new_origin, name, id_number):
     self._a = a
     self._b = b
     self._c = c
     self._new_origin = new_origin
     self._new_x_axis = new_x_axis
+    self.id = id_number
+    self.name = name
 
   def save_new_pose(self, alpha, beta, gamma):
     self._alpha = alpha
@@ -120,7 +120,7 @@ class Linkage:
   def foot_tip(self):
     return self.p3
 
-  def tip_wrt_cog(self):
+  def _tip_wrt_cog(self):
     #
     #          /*
     #         //\\ 
@@ -151,17 +151,17 @@ class Linkage:
     # is touching the ground
     return -self.foot_tip().z
   
-  def femur_wrt_cog(self):
+  def _femur_wrt_cog(self):
     return -self.femur_point().z
   
   def compute_ground_contact(self):
-    if self.tip_wrt_cog() <= 0:
-      if self.femur_wrt_cog() <= 0:
+    if self._tip_wrt_cog() <= 0:
+      if self._femur_wrt_cog() <= 0:
         return self.coxia_point()
       else:
         return self.femur_point()
 
-    if self.tip_wrt_cog() >= self.femur_wrt_cog():
+    if self._tip_wrt_cog() >= self._femur_wrt_cog():
       return self.foot_tip()
     else:
       return self.femur_point()
@@ -169,6 +169,11 @@ class Linkage:
   def ground_contact(self):
     return self.ground_contact_point
 
+  def update_leg_wrt(self, frame, height):
+      self.p0.update_point_wrt(frame, height)
+      self.p1.update_point_wrt(frame, height)
+      self.p2.update_point_wrt(frame, height)
+      self.p3.update_point_wrt(frame, height)
 
 # MEASUREMENTS f, s, and m
 #
@@ -238,17 +243,19 @@ class VirtualHexapod:
       self.new(f, m, s, h, k, a)
 
   def new(self, f=0, m=0, s=0, a=0, b=0, c=0):
-    self.x_axis = Point(1, 0, 0, name='hexapod x axis')
-    self.y_axis = Point(0, 1, 0, name='hexapod y axis')
-    self.z_axis = Point(0, 0, 1, name='hexapod z axis')
-
     # coxia length, femur length, tibia length
     self.linkage_measurements = [a, b, c]
     # front length, middle length, side length
     self.body_measurements = [f, m, s]
+
     self.body = Hexagon(f, m, s)
     self.store_neutral_legs(a, b, c)
     self.ground_contacts = [leg.foot_tip() for leg in self.legs]
+
+    # Initialize local coordinate frame
+    self.x_axis = Point(1, 0, 0, name='hexapod x axis')
+    self.y_axis = Point(0, 1, 0, name='hexapod y axis')
+    self.z_axis = Point(0, 0, 1, name='hexapod z axis')
     return self
 
   def store_neutral_legs(self, a, b, c):
@@ -261,23 +268,26 @@ class VirtualHexapod:
   def ground_contact_points(self):
     return self.ground_contacts
 
+  def update_local_frame(self, frame):
+    self.x_axis.update_point_wrt(frame, 0)
+    self.y_axis.update_point_wrt(frame, 0)
+    self.z_axis.update_point_wrt(frame, 0)
+
   def tilt_and_shift(self, frame, height):
+    # Update cog and head
     self.body.cog.update_point_wrt(frame, height)
     self.body.head.update_point_wrt(frame, height)
 
-    # Update each point in  body hexagon
+    # Update each point in body hexagon
     for vertex in self.body.vertices:
       vertex.update_point_wrt(frame, height)
 
     # Update each point in each leg
     for leg in self.legs:
-      leg.p0.update_point_wrt(frame, height)
-      leg.p1.update_point_wrt(frame, height)
-      leg.p2.update_point_wrt(frame, height)
-      leg.p3.update_point_wrt(frame, height)
+      leg.update_leg_wrt(frame, height)
 
   def update(self, poses):
-
+    # Change each leg's pose
     for _, pose in poses.items():
       i = pose['id']
       alpha = pose['coxia']
@@ -286,18 +296,14 @@ class VirtualHexapod:
       self.legs[i].change_pose(alpha, beta, gamma)
 
     # Update which legs are on the ground
-    # And the new 'normal' 
+    # The new 'normal', and height 
     legs, self.n_axis, height = get_legs_on_ground(self.legs)
     self.ground_contacts = [leg.ground_contact() for leg in legs]
-    
 
     if self.z_axis is not None:
       # tilt and shift the hexapod based on new normal
       frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
-      self.x_axis.update_point_wrt(frame, 0)
-      self.y_axis.update_point_wrt(frame, 0)
-      self.z_axis.update_point_wrt(frame, 0)
-
+      self.update_local_frame(frame)
       self.tilt_and_shift(frame, height)
 
     # The position is not stable, what to do?
