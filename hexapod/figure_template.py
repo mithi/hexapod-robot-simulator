@@ -18,7 +18,7 @@ data = [
    'y': [0.0, 100.0, 100.0, 0.0, -100.0, -100.0, 0.0], 
    'z': [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]}, 
     
-  {'marker': {'color': '#e74c3c', 'opacity': 1, 'size': 10}, 
+  {'marker': {'color': '#ff4757', 'opacity': 1, 'size': 12}, 
    'mode': 'markers', 
    'name': 'cog', 
    'type': 'scatter3d', 
@@ -27,7 +27,7 @@ data = [
    'y': [0.0], 
    'z': [100.0]}, 
    
-   {'marker': {'color': '#8e44ad', 'opacity': 1, 'size': 15}, 
+   {'marker': {'color': '#8e44ad', 'opacity': 1, 'size': 12}, 
    'mode': 'markers', 
    'name': 'head', 
    'type': 'scatter3d', 
