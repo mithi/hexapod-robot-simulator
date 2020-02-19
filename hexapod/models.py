@@ -286,6 +286,7 @@ class VirtualHexapod:
       leg.update_leg_wrt(frame, height)
 
   def update(self, poses):
+
     # Change each leg's pose
     for _, pose in poses.items():
       i = pose['id']
@@ -299,7 +300,7 @@ class VirtualHexapod:
     legs, self.n_axis, height = get_legs_on_ground(self.legs)
     self.ground_contacts = [leg.ground_contact() for leg in legs]
 
-    if self.z_axis is not None:
+    if self.n_axis is not None:
       # tilt and shift the hexapod based on new normal
       frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
       self.update_local_frame(frame)
@@ -308,7 +309,3 @@ class VirtualHexapod:
     # The position is not stable, what to do?
     # Right now it just displays the figure like 
     # There's no gravity
-
-
-
-
