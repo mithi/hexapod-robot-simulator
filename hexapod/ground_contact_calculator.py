@@ -87,15 +87,17 @@ def three_ids_of_ground_contacts(legs):
 def get_legs_on_ground(legs):
 
   def within_thresh(a, b, tol=2):
-    return np.abs(a - b) < 2
+    return np.abs(a - b) < tol
 
   trio = three_ids_of_ground_contacts(legs)
 
+  # This pose is unstable, The hexapod has no balance
   if trio is None:
-    return None
+    return [], None, None
 
   p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
   n = get_unit_normal(p0, p1, p2)
+  n.name = 'New Normal wrt Old normal (shadow normal)'
   # Note: using p0, p1 or p2 should yield the same result
   cog_from_ground= -dot(n, p0)
 
@@ -107,5 +109,4 @@ def get_legs_on_ground(legs):
     if within_thresh(ground_contact, cog_from_ground):
       legs_on_ground.append(leg)
 
-  return legs_on_ground
-
+  return legs_on_ground, n, cog_from_ground
