@@ -5,13 +5,15 @@ from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
-from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_PLOTTER
+from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_PLOTTER, BASE_HEXAPOD
 from hexapod.figure_template import HEXAPOD_FIGURE
+from hexapod.pose_template import HEXAPOD_POSE
 
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
-from widgets.jointsliders import SECTION_POSE_CONTROL
+from widgets.joint_sliders import SECTION_POSE_CONTROL
 from widgets.sectioning import make_section_type4, make_section_type3
 
+from copy import deepcopy
 import json
 from app import app
 
@@ -139,7 +141,9 @@ INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexap
 def update_graph(poses_json, measurements_json, relayout_data, figure):
 
   if figure is None:
-    return HEXAPOD_FIGURE
+    HEXAPOD = deepcopy(BASE_HEXAPOD)
+    HEXAPOD.update(HEXAPOD_POSE)
+    return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
 
   if measurements_json is None:
     raise PreventUpdate
