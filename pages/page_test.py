@@ -24,7 +24,7 @@ from app import app
 radio_items_section = dcc.RadioItems(
   id='predefined-poses',
   options=[{'label': i, 'value': i} for i in PREDEFINED_POSES.keys()],
-  value='none',
+  value='NONE',
   labelStyle={'display': 'inline-block'}
 )
 

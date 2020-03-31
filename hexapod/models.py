@@ -11,7 +11,7 @@ from copy import deepcopy
 #  link a and link b form a straight line
 #  link a coincide with x axis
 #
-# alpha - the able linkage a makes with x_axis about z axis
+# alpha - the angle linkage a makes with x_axis about z axis
 # beta - the angle that linkage a makes with linkage b
 # gamma - the angle that linkage c make with the line perpendicular to linkage b
 #
@@ -283,8 +283,8 @@ class VirtualHexapod:
     if self.n_axis is not None:
       # tilt and shift the hexapod based on new normal
       frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
-      self.update_local_frame(frame)
       self.rotate_and_shift(frame, height)
+      self.update_local_frame(frame)
 
       # Only twist if we computed earlier that at least three hips twisted
       if might_twist:
@@ -340,6 +340,7 @@ class VirtualHexapod:
     return self.ground_contacts
 
   def update_local_frame(self, frame):
+    # Update the x, y, z axis centered at cog of hexapod
     self.x_axis.update_point_wrt(frame, 0)
     self.y_axis.update_point_wrt(frame, 0)
     self.z_axis.update_point_wrt(frame, 0)
