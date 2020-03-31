@@ -8,7 +8,7 @@ from .points import is_point_inside_triangle
 def set_of_two_trios_from_six():
   # Get all combinations of a three-item-group given six items
   # 20 combinations total
-  # (2, 3, 5) is a trio from set [0, 1, 2, 3, 4, 5] 
+  # (2, 3, 5) is a trio from set [0, 1, 2, 3, 4, 5]
   # the corresponding other_trio of (2, 3, 5) is (0, 1, 4)
   # order is not important ie (2, 3, 5) is the same as (5, 3, 2)
 
@@ -23,7 +23,7 @@ def set_of_two_trios_from_six():
 
 def check_stability(a, b, c):
   # if the center of gravity p (0, 0) on xy plane
-  # is inside projection (in the xy plane) of 
+  # is inside projection (in the xy plane) of
   # the triangle defined by point a, b, c, then this is stable
   p = Point(0, 0, 0)
   return is_point_inside_triangle(p, a, b, c)
@@ -48,9 +48,9 @@ def three_ids_of_ground_contacts(legs):
       # starting from middle-right (id:0) to right back (id:5)
       # always towards one direction (ccw)
       n = get_unit_normal(p0, p1, p2)
-      
+
       # p0 is vector from cog (0, 0, 0) to ground contact
-      # dot product of this and normal we get the 
+      # dot product of this and normal we get the
       # hypothetical (negative) height of ground contact to cog
       #
       #  cog *  ^ (normal_vector) ----
@@ -74,7 +74,7 @@ def three_ids_of_ground_contacts(legs):
         if h_ < h:
           condition_violated = True
           break
-      
+
       if condition_violated:
         continue
       else:
@@ -83,7 +83,7 @@ def three_ids_of_ground_contacts(legs):
 
   # Nothing met the condition
   return None
- 
+
 def get_legs_on_ground(legs):
 
   def within_thresh(a, b, tol=2):

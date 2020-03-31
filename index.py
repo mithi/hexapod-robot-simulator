@@ -13,7 +13,6 @@ div_nav = html.Div([
 
   dcc.Link('Inverse Kinematics', href='/inverse-kinematics'),
   html.Br(),
-  
 
   dcc.Link('Test: basic changes', href='/test'),
   html.Br(),

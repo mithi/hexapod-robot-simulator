@@ -2,7 +2,7 @@ import numpy as np
 
 def skew(p):
   return np.array([
-    [0, -p.z, p.y], 
+    [0, -p.z, p.y],
     [p.z, 0, -p.x],
     [-p.y, p.x, 0]
   ])
@@ -19,7 +19,7 @@ def frame_to_align_vector_a_to_b(a, b):
     return np.eye(4)
   c = dot(a, b)
   i = np.eye(3) # Identity matrix 3x3
-  
+
   # skew symmetric cross product
   vx = skew(v)
   d = (1 - c) / s / s
@@ -31,7 +31,7 @@ def frame_to_align_vector_a_to_b(a, b):
   #  0   0   0  1
   r = np.hstack((r, [[0], [0], [0]]))
   r = np.vstack((r, [0, 0, 0, 1]))
-  return r 
+  return r
 
 # rotate about y, translate in x
 def frame_yrotate_xtranslate(theta, x):
@@ -142,7 +142,7 @@ def is_point_inside_triangle(p, a, b, c):
 # Another way
 def is_point_inside_triangle2(p, p0, p1, p2):
   p = Point(0, 0, 0)
-  
+
   a = p1.x - p0.x
   b = p2.x - p0.x
   c = p1.y - p0.y
@@ -151,7 +151,7 @@ def is_point_inside_triangle2(p, p0, p1, p2):
   f = p.y - p0.y
 
   det = a * d - b * c
-  
+
   if det == 0:
     return False
   else:

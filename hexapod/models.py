@@ -114,7 +114,7 @@ class Linkage:
     return self.p1
 
   def femur_point(self):
-    return self.p2 
+    return self.p2
 
   def foot_tip(self):
     return self.p3
@@ -122,7 +122,7 @@ class Linkage:
   def _tip_wrt_cog(self):
     #
     #          /*
-    #         //\\ 
+    #         //\\
     #        //  \\
     #       //    \\
     #      //      \\
@@ -132,8 +132,8 @@ class Linkage:
     #                  \\     |
     #                   \\ -----
     #
-    # 
-    # *===*=======* 
+    #
+    # *===*=======*
     #           | \\
     #           |  \\
     # (positive)|   \\
@@ -149,10 +149,10 @@ class Linkage:
     # Negative only if body contact point
     # is touching the ground
     return -self.foot_tip().z
-  
+
   def _femur_wrt_cog(self):
     return -self.femur_point().z
-  
+
   def compute_ground_contact(self):
     if self._tip_wrt_cog() <= 0:
       if self._femur_wrt_cog() <= 0:
@@ -164,7 +164,7 @@ class Linkage:
       return self.foot_tip()
     else:
       return self.femur_point()
-  
+
   def ground_contact(self):
     return self.ground_contact_point
 
@@ -298,7 +298,7 @@ class VirtualHexapod:
       self.legs[i].change_pose(alpha, beta, gamma)
 
     # Update which legs are on the ground
-    # The new 'normal', and height 
+    # The new 'normal', and height
     legs, self.n_axis, height = get_legs_on_ground(self.legs)
     self.ground_contacts = [leg.ground_contact() for leg in legs]
 
@@ -311,8 +311,9 @@ class VirtualHexapod:
       twist_frame = find_twist(old_ground_contacts, self.ground_contacts)
       self.rotate_and_shift(twist_frame, 0)
 
+    # IMPORTANT!!:
     # The position is not stable, what to do?
-    # Right now it just displays the figure like 
+    # Right now it just displays the figure like
     # There's no gravity
 
 def find_twist(old_ground_contacts, new_ground_contacts):
@@ -327,9 +328,9 @@ def find_twist(old_ground_contacts, new_ground_contacts):
   def _twist(v1, v2):
     # Note: theta is in radians
     # https://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
-    theta = np.arctan2(v2.y, v2.x) - np.arctan2(v1.y, v1.x) 
+    theta = np.arctan2(v2.y, v2.x) - np.arctan2(v1.y, v1.x)
 
-    # frome to rotate around z 
+    # frame to rotate around z
     cos_theta = np.cos(theta)
     sin_theta = np.sin(theta)
 
@@ -339,11 +340,11 @@ def find_twist(old_ground_contacts, new_ground_contacts):
       [0, 0, 1, 0],
       [0, 0, 0, 1],
     ])
-  
+
   # Make dictionary mapping contact point name and leg_contact_point
   old_contacts = _make_contact_dict(old_ground_contacts)
   new_contacts = _make_contact_dict(new_ground_contacts)
-  
+
   # Find at least one point that's the same
   same_point_name = None
   for key in old_contacts.keys():
@@ -361,14 +362,14 @@ def find_twist(old_ground_contacts, new_ground_contacts):
   # Get the projection of these points in the ground
   old_vector = Point(old.x, old.y, 0)
   new_vector = Point(new.x, new.y, 0)
-  
+
   # Fix: Why is this not working?? 😢
   # wrong_twist_frame = frame_to_align_vector_a_to_b(new_vector, old_vector)
-  
+
   twist_frame = _twist(new_vector, old_vector)
 
-  # IMPORTANT NOTE: We are assuming that because the point 
-  # is on the ground before and after 
+  # IMPORTANT: We are assuming that because the point
+  # is on the ground before and after
   # They should be at the same point after movement
-  # I can't think of a case that contradict his as of this moment
+  # I can't think of a case that contradicts this as of this moment
   return twist_frame

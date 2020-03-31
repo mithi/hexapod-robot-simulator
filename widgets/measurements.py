@@ -19,7 +19,7 @@ def make_positive_number_input(_name, _value):
   return dcc.Input(id=_name, type='number', value=_value, step=5, min=0, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
 
 # Hexapod measured lengths inputs
-INPUT_LENGTHS = { 
+INPUT_LENGTHS = {
   'front': make_positive_number_input('input-length-front', 100),
   'side': make_positive_number_input('input-length-side', 100),
   'middle': make_positive_number_input('input-length-middle', 100),

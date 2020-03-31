@@ -3,7 +3,7 @@ from .templates.figure_template import HEXAPOD_FIGURE
 class HexapodPlot:
   def __init__(self):
     self.fig = HEXAPOD_FIGURE
-  
+
   def _draw_hexapod(self, fig, hexapod):
     #body
     points = hexapod.body.vertices + [hexapod.body.vertices[0]]
@@ -14,7 +14,7 @@ class HexapodPlot:
     fig['data'][0]['z'] = [point.z for point in points]
 
     # body outline
-    fig['data'][1]['x'] = fig['data'][0]['x'] 
+    fig['data'][1]['x'] = fig['data'][0]['x']
     fig['data'][1]['y'] = fig['data'][0]['y']
     fig['data'][1]['z'] = fig['data'][0]['z']
 
@@ -25,10 +25,10 @@ class HexapodPlot:
     fig['data'][3]['x'] = [hexapod.body.head.x]
     fig['data'][3]['y'] = [hexapod.body.head.y]
     fig['data'][3]['z'] = [hexapod.body.head.z]
-    
+
     # legs
     n = [i for i in range(4, 10)]
-    
+
     for n, leg in zip(n, hexapod.legs):
       points = [leg.p0, leg.p1, leg.p2, leg.p3]
       fig['data'][n]['x'] = [point.x for point in points]
@@ -55,7 +55,7 @@ class HexapodPlot:
     fig['layout']['scene']['yaxis']['range'] = AXIS_RANGE
     fig['layout']['scene']['zaxis']['range'] = [z_start, (RANGE - z_start) * 2]
 
-    axis_scale = f / 2 
+    axis_scale = f / 2
 
     # Draw the hexapod local frame
     cog = hexapod.body.cog

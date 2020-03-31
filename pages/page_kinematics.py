@@ -127,7 +127,6 @@ def update_hexapod_pose_values(rm, rf, lf, lm, lb, rb):
       print("can't parse:", pose)
 
   return json.dumps(poses_json)
-    
 
 # -------------------
 # Listen if we need to update Graph
@@ -135,7 +134,7 @@ def update_hexapod_pose_values(rm, rf, lf, lm, lb, rb):
 INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexapod-measurements-values']]
 @app.callback(
   Output('graph-hexapod', 'figure'),
-  INPUT_ALL, 
+  INPUT_ALL,
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
 def update_graph(poses_json, measurements_json, relayout_data, figure):
@@ -151,14 +150,14 @@ def update_graph(poses_json, measurements_json, relayout_data, figure):
   # Make base hexapod model given body measurements
   measurements = json.loads(measurements_json)
   virtual_hexapod = VirtualHexapod(measurements)
-  
+
   # Configure the pose of the hexapod given joint angles
   if poses_json is not None:
     try:
       poses = json.loads(poses_json)
     except:
       print("can't parse:", poses)
-    
+
     virtual_hexapod.update(poses)
 
   # Update the plot to reflect pose of hexapod

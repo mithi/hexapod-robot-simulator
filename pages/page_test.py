@@ -23,7 +23,7 @@ from app import app
 section_hexapod = html.Div([
   html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
   html.Div([SECTION_LENGTHS_CONTROL, SECTION_SLIDERS_TEST], style={'width': '40%'}),
-  html.Div(id='display-variables', style={'width': '10%'})], 
+  html.Div(id='display-variables', style={'width': '10%'})],
   style={'display': 'flex'}
 )
 
@@ -55,7 +55,7 @@ def update_camera_inputs(hover_data, relayout_data):
   if relayout_data is None:
     raise PreventUpdate
 
-  if 'scene.camera' not in relayout_data: 
+  if 'scene.camera' not in relayout_data:
     raise PreventUpdate
 
   camera = relayout_data['scene.camera']
@@ -130,15 +130,15 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
     HEXAPOD.update(HEXAPOD_POSE)
     return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
 
-  virtual_hexapod = VirtualHexapod().new( 
-    f or 0, 
-    m or 0, 
+  virtual_hexapod = VirtualHexapod().new(
+    f or 0,
+    m or 0,
     s or 0,
-    h or 0, 
-    k or 0, 
+    h or 0,
+    k or 0,
     a or 0
   )
-  
+
   POSES = deepcopy(HEXAPOD_POSE)
 
   for k, _ in POSES.items():

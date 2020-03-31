@@ -5,8 +5,8 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 HEXAPOD_MEASUREMENTS = {
   'front_length': 20,
   'side_length': 30,
-  'mid_length': 40, 
-  'hip_length': 25, 
+  'mid_length': 40,
+  'hip_length': 25,
   'knee_length': 40,
   'ankle_length':60
 }
