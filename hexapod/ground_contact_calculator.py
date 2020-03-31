@@ -105,7 +105,7 @@ def get_legs_on_ground(legs):
 
   # Get all contacts of the same height
   for leg in legs:
-    ground_contact = -dot(n, leg.ground_contact())   
+    ground_contact = -dot(n, leg.ground_contact())
     if within_thresh(ground_contact, cog_from_ground):
       legs_on_ground.append(leg)
 
