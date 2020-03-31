@@ -16,4 +16,4 @@ $ python index.py
 # Screenshots
 | ![](./img/screen_shot-v1-4.png) | ![](./img/screen_shot-v1-2.png) |
 | ------------- |:-------------:|
-| ![](./img/screen_shot-v1-3.png) | ![](../img/screen_shot-v1-1.png) |
+| ![](./img/screen_shot-v1-3.png) | ![](./img/screen_shot-v1-1.png) |
