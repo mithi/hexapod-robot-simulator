@@ -5,8 +5,7 @@ import dash_daq
 from hexapod.const import NAMES_JOINT, NAMES_LEG
 
 def make_joint_daq_slider_input(name):
-  _, left_or_right, f_m_b, angle = name.split('-')
-  leg_name = left_or_right + ' ' + f_m_b
+  _, _, _, angle = name.split('-')
 
   return dash_daq.Slider( # pylint: disable=not-callable
     id=name,

@@ -140,6 +140,7 @@ INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexap
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
 def update_graph(poses_json, measurements_json, relayout_data, figure):
+  #print(poses_json)
 
   if figure is None:
     HEXAPOD = deepcopy(BASE_HEXAPOD)

@@ -322,7 +322,7 @@ class VirtualHexapod:
       except:
         new_hip_angle = poses[str(leg_id)]['coxia']
 
-      if not np.isclose(old_hip_angle, new_hip_angle):
+      if not np.isclose(old_hip_angle, new_hip_angle or 0):
         did_change_count += 1
         if did_change_count >= 3:
           return True

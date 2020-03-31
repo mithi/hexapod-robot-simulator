@@ -3,7 +3,7 @@ import dash_html_components as html
 from widgets.sectioning import make_section_type3, make_section_type4, make_section_type2
 from widgets.joint_input_maker import make_all_joint_inputs, make_joint_number_input
 
-JOINT_INPUTS = make_all_joint_inputs(joint_input_function= make_joint_number_input)
+JOINT_INPUTS = make_all_joint_inputs(joint_input_function = make_joint_number_input)
 
 def code(name):
   return dcc.Markdown('**`{}`**'.format(name))
