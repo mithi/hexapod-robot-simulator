@@ -1,3 +1,12 @@
+#
+# This module is responsible for the following:
+# 1. determining which legs of the hexapod is on the ground
+# 2. Computing the normal vector of the triangle defined by at least three legs on the ground
+# the normal vector wrt to the old normal vector that is defined by the legs on the ground in
+# the hexapod's neutral position
+# 3. Determining the height of the center of gravity wrt to the ground
+#
+
 from itertools import combinations
 import numpy as np
 

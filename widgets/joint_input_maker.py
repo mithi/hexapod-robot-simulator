@@ -14,7 +14,6 @@ def make_joint_knob_input(name):
     value=0,
     size=75,
     scale = {'custom': {0: '|', -90: '.', 90: '.',  -45: '.', 45: '.'}}
-    # custom (dict; optional): Custom scale marks. The key determines the position and the value determines what will show. 
   )
 
 def make_joint_daq_slider_input(name):
@@ -40,7 +39,7 @@ def make_joint_number_input(_name):
     id=_name,
     type='number',
     value=0.0,
-    step=5.0,
+    step=1.0,
     min=-135.0,
     max=135.0,
     style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})

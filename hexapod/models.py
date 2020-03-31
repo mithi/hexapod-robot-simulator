@@ -307,7 +307,7 @@ class VirtualHexapod:
 
     for leg_point in self.ground_contacts:
 
-      # gind the leg id of the ground contact point
+      # find the leg id of the ground contact point
       right_or_left, front_mid_or_back, _ = leg_point.name.split('-')
       leg_placement =  right_or_left + '-' + front_mid_or_back
       leg_id = self.body.VERTEX_NAMES.index(leg_placement)
