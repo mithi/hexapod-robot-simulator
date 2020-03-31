@@ -11,7 +11,8 @@ from hexapod.const import HEXAPOD_FIGURE, HEXAPOD_POSE
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
 #from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
-from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
+from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
+#from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
 
 from widgets.sectioning import make_section_type4, make_section_type3
 
@@ -140,7 +141,7 @@ INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexap
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
 def update_graph(poses_json, measurements_json, relayout_data, figure):
-  #print(poses_json)
+  print(poses_json)
 
   if figure is None:
     HEXAPOD = deepcopy(BASE_HEXAPOD)

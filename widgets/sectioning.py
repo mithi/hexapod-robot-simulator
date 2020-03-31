@@ -24,8 +24,20 @@ def make_section_type4(div1, div2, div3, div4):
 
 def make_section_type2(div1, div2):
   return html.Div([
-    html.Div(div1, style={'width': '50%'}),
-    html.Div(div2, style={'width': '50%'}),
+    html.Div(div1, style={'width': '25%'}),
+    html.Div(div2, style={'width': '75%'}),
     ],
     style={'display': 'flex'}
+  )
+
+def make_section_type6(div1, div2, div3, div4, div5, div6):
+  return html.Div([
+    html.Div(div1, style={'width': '17%'}),
+    html.Div(div2, style={'width': '17%'}),
+    html.Div(div3, style={'width': '17%'}),
+    html.Div(div4, style={'width': '17%'}),
+    html.Div(div5, style={'width': '16%'}),
+    html.Div(div6, style={'width': '16%'}),
+  ],
+  style={'display': 'flex'}
   )
