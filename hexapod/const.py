@@ -2,6 +2,7 @@ from .plotter import HexapodPlot
 from .models import VirtualHexapod, Hexagon, Linkage
 from .templates.figure_template import HEXAPOD_FIGURE
 from .templates.pose_template import HEXAPOD_POSE
+from .templates.pose_template import PREDEFINED_POSES
 
 #         x2          x1
 #          \         /

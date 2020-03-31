@@ -12,6 +12,7 @@ from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import BASE_PLOTTER, NAMES_LEG, BASE_HEXAPOD
 from hexapod.const import HEXAPOD_FIGURE, HEXAPOD_POSE
+from hexapod.const import PREDEFINED_POSES
 
 from copy import deepcopy
 import json
@@ -20,6 +21,13 @@ from app import app
 # -----------
 # LAYOUT
 # -----------
+radio_items_section = dcc.RadioItems(
+  id='predefined-poses',
+  options=[{'label': i, 'value': i} for i in PREDEFINED_POSES.keys()],
+  value='none',
+  labelStyle={'display': 'inline-block'}
+)
+
 section_hexapod = html.Div([
   html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
   html.Div([SECTION_LENGTHS_CONTROL, SECTION_SLIDERS_TEST], style={'width': '40%'}),
@@ -31,10 +39,13 @@ layout = html.Div([
   section_hexapod,
 
   html.H4('Camera View Adjustment Controls'),
+  html.P('IMPORTANT! Hover on any hexapod point/vertex to set current camera view as default'),
   SECTION_INPUT_CAMVIEW,
-  html.P('Hover on any hexapod point/vertex to set current camera view as default'),
   html.Br(),
-
+  html.H4('Predefined poses'),
+  html.Label("IMPORTANT! When a predefined pose is selected, custom leg angles input (alpha/beta/gamma) would be ignored. Select NONE to enable custom poses."),
+  radio_items_section,
+  html.Br(),
   html.Div(id='camera-view-values', style={'display': 'none'}),
   html.Div(id='variables', style={'display': 'none'}),
 ])
@@ -120,15 +131,18 @@ def display_variables(pose_params):
 
 @app.callback(
   Output('hexapod-plot', 'figure'),
-  [Input(i, 'value') for i in INPUT_IDs] + [Input('camera-view-values', 'children')],
+  [Input(i, 'value') for i in INPUT_IDs] + [Input('camera-view-values', 'children')] + [Input('predefined-poses', 'value')],
   [State('hexapod-plot', 'figure')]
 )
-def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
+def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, predefined_pose, figure):
 
   if figure is None:
     HEXAPOD = deepcopy(BASE_HEXAPOD)
     HEXAPOD.update(HEXAPOD_POSE)
     return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
+
+  if camera is not None:
+    figure = BASE_PLOTTER.change_camera_view(figure, json.loads(camera))
 
   virtual_hexapod = VirtualHexapod().new(
     f or 0,
@@ -138,6 +152,11 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
     k or 0,
     a or 0
   )
+
+  if predefined_pose != 'NONE':
+    pose = PREDEFINED_POSES[predefined_pose]
+    virtual_hexapod.update(pose)
+    return BASE_PLOTTER.update(figure, virtual_hexapod)
 
   POSES = deepcopy(HEXAPOD_POSE)
 
@@ -152,7 +171,5 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
 
   virtual_hexapod.update(POSES)
 
-  if camera is not None:
-    figure = BASE_PLOTTER.change_camera_view(figure, json.loads(camera))
-
+  BASE_PLOTTER.update(figure, virtual_hexapod)
   return BASE_PLOTTER.update(figure, virtual_hexapod)
