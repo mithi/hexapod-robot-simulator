@@ -9,8 +9,10 @@ from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_PLOTTER, BASE_HEXAPOD
 from hexapod.const import HEXAPOD_FIGURE, HEXAPOD_POSE
 
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
-from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
+#from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
+from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
+
 from widgets.sectioning import make_section_type4, make_section_type3
 
 from copy import deepcopy
@@ -53,7 +55,7 @@ def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
 
     'coxia': cox or 0,
     'femur': fem or 0,
-    'tibia': tib or 0, 
+    'tibia': tib or 0,
   }
 
   return json.dumps(measurements)

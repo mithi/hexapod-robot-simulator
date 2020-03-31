@@ -1,6 +1,22 @@
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_daq
+
 from hexapod.const import NAMES_JOINT, NAMES_LEG
+
+def make_joint_daq_slider_input(name):
+  _, left_or_right, f_m_b, angle = name.split('-')
+  leg_name = left_or_right + ' ' + f_m_b
+
+  return dash_daq.Slider( # pylint: disable=not-callable
+    id=name,
+    min=-105,
+    max=105,
+    value=10,
+    size=150,
+    handleLabel={"showCurrentValue": True,"label": angle},
+    step=1,
+  )
 
 def make_joint_slider_input(name):
   slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
