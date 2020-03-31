@@ -261,9 +261,10 @@ class VirtualHexapod:
     return self
 
   def update(self, poses):
+    # Check the possibility of hexapod twisting about z axis
+    might_twist = self.find_if_might_twist(poses)
     # Remember old ground contacts
     old_ground_contacts = deepcopy(self.ground_contacts)
-    might_twist = self.find_if_might_twist(poses)
 
     # Change each leg's pose
     for _, leg_pose in poses.items():
@@ -292,24 +293,34 @@ class VirtualHexapod:
     else:
       pass
       # IMPORTANT!!:
-      # If the position is not stable, what to do?
-      # Right now it just displays the figure like
-      # There's no gravity
+      # if the position is not stable, what to do?
+      # right now it just displays the figure like
+      # there's no gravity
 
   def find_if_might_twist(self, poses):
-    # if only two of the legs twisted its hips/femur
-    # ie only 2 legs have changed alpha angle
-    # then the hexapod will definitely NOT twist
+    # hexapod will only definitely NOT twist
+    # if only two of the legs (currently on the ground)
+    # has twisted its hips/coxia
+    # i.e. only 2 legs with ground contact points have changed alpha angle
+    # i.e. we don't care if the legs which are not on the ground twisted its hips
     did_change_count = 0
-    print(poses)
 
-    for leg in self.legs:
-      old_hip_angle = leg.coxia_angle()
+    for leg_point in self.ground_contacts:
+
+      # gind the leg id of the ground contact point
+      right_or_left, front_mid_or_back, _ = leg_point.name.split('-')
+      leg_placement =  right_or_left + '-' + front_mid_or_back
+      leg_id = self.body.VERTEX_NAMES.index(leg_placement)
+
+      # alpha before new pose
+      old_hip_angle = self.legs[leg_id].coxia_angle()
+
+      # new alpha pose
       new_hip_angle = None
       try:
-        new_hip_angle = poses[leg.id]['coxia']
+        new_hip_angle = poses[leg_id]['coxia']
       except:
-        new_hip_angle = poses[str(leg.id)]['coxia']
+        new_hip_angle = poses[str(leg_id)]['coxia']
 
       if not np.isclose(old_hip_angle, new_hip_angle):
         did_change_count += 1
