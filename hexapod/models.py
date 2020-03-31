@@ -110,6 +110,9 @@ class Linkage:
     gamma = gamma or self._gamma
     self.save_new_pose(alpha, beta, gamma)
 
+  def coxia_angle(self):
+    return self._alpha
+
   def coxia_point(self):
     return self.p1
 
@@ -257,6 +260,64 @@ class VirtualHexapod:
     self.z_axis = Point(0, 0, 1, name='hexapod z axis')
     return self
 
+  def update(self, poses):
+    # Remember old ground contacts
+    old_ground_contacts = deepcopy(self.ground_contacts)
+    might_twist = self.find_if_might_twist(poses)
+
+    # Change each leg's pose
+    for _, leg_pose in poses.items():
+      i = leg_pose['id']
+      alpha = leg_pose['coxia']
+      beta = leg_pose['femur']
+      gamma = leg_pose['tibia']
+      self.legs[i].change_pose(alpha, beta, gamma)
+
+    # Update which legs are on the ground
+    # The new 'normal', and height
+    legs, self.n_axis, height = get_legs_on_ground(self.legs)
+    self.ground_contacts = [leg.ground_contact() for leg in legs]
+
+    # This means that the position is stable
+    if self.n_axis is not None:
+      # tilt and shift the hexapod based on new normal
+      frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
+      self.update_local_frame(frame)
+      self.rotate_and_shift(frame, height)
+
+      # Only twist if we computed earlier that at least three hips twisted
+      if might_twist:
+        twist_frame = find_twist(old_ground_contacts, self.ground_contacts)
+        self.rotate_and_shift(twist_frame, 0)
+    else:
+      pass
+      # IMPORTANT!!:
+      # If the position is not stable, what to do?
+      # Right now it just displays the figure like
+      # There's no gravity
+
+  def find_if_might_twist(self, poses):
+    # if only two of the legs twisted its hips/femur
+    # ie only 2 legs have changed alpha angle
+    # then the hexapod will definitely NOT twist
+    did_change_count = 0
+    print(poses)
+
+    for leg in self.legs:
+      old_hip_angle = leg.coxia_angle()
+      new_hip_angle = None
+      try:
+        new_hip_angle = poses[leg.id]['coxia']
+      except:
+        new_hip_angle = poses[str(leg.id)]['coxia']
+
+      if not np.isclose(old_hip_angle, new_hip_angle):
+        did_change_count += 1
+        if did_change_count >= 3:
+          return True
+
+    return False
+
   def store_neutral_legs(self, a, b, c):
     self.legs = []
     vertices, axes, names = self.body.vertices, Hexagon.NEW_X_AXES, Hexagon.VERTEX_NAMES
@@ -285,38 +346,8 @@ class VirtualHexapod:
     for leg in self.legs:
       leg.update_leg_wrt(frame, height)
 
-  def update(self, poses):
-    # Remember old ground contacts
-    old_ground_contacts = deepcopy(self.ground_contacts)
-
-    # Change each leg's pose
-    for _, pose in poses.items():
-      i = pose['id']
-      alpha = pose['coxia']
-      beta = pose['femur']
-      gamma = pose['tibia']
-      self.legs[i].change_pose(alpha, beta, gamma)
-
-    # Update which legs are on the ground
-    # The new 'normal', and height
-    legs, self.n_axis, height = get_legs_on_ground(self.legs)
-    self.ground_contacts = [leg.ground_contact() for leg in legs]
-
-    if self.n_axis is not None:
-      # tilt and shift the hexapod based on new normal
-      frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
-      self.update_local_frame(frame)
-      self.rotate_and_shift(frame, height)
-
-      twist_frame = find_twist(old_ground_contacts, self.ground_contacts)
-      self.rotate_and_shift(twist_frame, 0)
-
-    # IMPORTANT!!:
-    # The position is not stable, what to do?
-    # Right now it just displays the figure like
-    # There's no gravity
-
 def find_twist(old_ground_contacts, new_ground_contacts):
+  # This is the frame used to twist the model about the z axis
 
   def _make_contact_dict(contact_list):
     contact_dict = {}
@@ -352,7 +383,10 @@ def find_twist(old_ground_contacts, new_ground_contacts):
       same_point_name = key
       break
 
-  # We don't know how to rotate if we can't find any
+  # We don't know how to rotate if we don't
+  # know at least one point that's contacting the ground
+  # before and after the movement
+  # so we assume that the hexapod didn't move
   if same_point_name == None:
     return np.eye(4)
 
