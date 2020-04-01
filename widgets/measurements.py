@@ -44,7 +44,7 @@ SECTION_INPUT_LENGTHS = html.Div([
 )
 
 SECTION_LENGTHS_CONTROL = html.Div([
-  html.Label(dcc.Markdown('**HEXAPOD ROBOT MEASUREMENTS**')),
+  html.Label(dcc.Markdown('**HEXAPOD ROBOT DIMENSIONS**')),
   SECTION_INPUT_LENGTHS,
   html.Br(),
 ])

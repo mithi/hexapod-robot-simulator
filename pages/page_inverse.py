@@ -8,7 +8,10 @@ from app import app
 section_nothing = html.Label('Nothing')
 
 SECTION_LEFT = html.Div([
-    html.Div([SECTION_IK, SECTION_LENGTHS_CONTROL], style={'width': '60%'}),
+    html.Div([
+      html.Label(dcc.Markdown('**INVERSE KINEMATICS CONTROLS**')),
+      SECTION_IK,
+      SECTION_LENGTHS_CONTROL], style={'width': '60%'}),
     html.Div(section_nothing, style={'width': '40%'}),
   ],
   style={'display': 'flex'}
