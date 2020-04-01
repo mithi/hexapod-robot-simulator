@@ -1,6 +1,6 @@
 import numpy as np
 from .ground_contact_calculator import get_legs_on_ground
-from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate, frame_to_align_vector_a_to_b
+from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate, frame_to_align_vector_a_to_b, frame_rotxyz
 from copy import deepcopy
 # -------------
 # LINKAGE
@@ -97,7 +97,7 @@ class Linkage:
 
     # find points wrt to center of gravity
     self.p0 = deepcopy(self._new_origin)
-    self.p0.name += 'body-contact'
+    self.p0.name += '-body-contact'
     self.p1 = p1.get_point_wrt(new_frame, name=self.name+'-coxia')
     self.p2 = p2.get_point_wrt(new_frame, name=self.name+'-femur')
     self.p3 = p3.get_point_wrt(new_frame, name=self.name+'-tibia')
@@ -176,6 +176,9 @@ class Linkage:
       self.p1.update_point_wrt(frame, height)
       self.p2.update_point_wrt(frame, height)
       self.p3.update_point_wrt(frame, height)
+
+  def all_points(self):
+      return [self.p0, self.p1, self.p2, self.p3]
 
 # MEASUREMENTS f, s, and m
 #
@@ -259,6 +262,16 @@ class VirtualHexapod:
     self.y_axis = Point(0, 1, 0, name='hexapod y axis')
     self.z_axis = Point(0, 0, 1, name='hexapod z axis')
     return self
+
+  def detach_body_rotate_and_translate(self, a, b, c, x, y, z):
+    # this detaches the body of the hexapod from the legs
+    # and rotate and translate it as if a separate entity
+    frame = frame_rotxyz(a, b, c)
+    points = self.body.vertices + [self.body.head, self.body.cog]
+
+    for point in points:
+      point.update_point_wrt(frame)
+      point.move_xyz(x, y, z)
 
   def update(self, poses):
     # Check the possibility of hexapod twisting about z axis

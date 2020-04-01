@@ -26,8 +26,10 @@ SECTION_LEFT = html.Div([
     html.Div([
       html.Label(dcc.Markdown('**INVERSE KINEMATICS CONTROLS**')),
       SECTION_IK,
-      SECTION_LENGTHS_CONTROL], style={'width': '60%'}),
-    dcc.Graph(id='graph-hexapod-2', style={'width': '45%'}),
+      SECTION_LENGTHS_CONTROL,
+      html.Div(id='ik-variables')],
+      style={'width': '47%'}),
+    dcc.Graph(id='graph-hexapod-2', style={'width': '53%'}),
   ],
   style={'display': 'flex'}
 )
@@ -36,7 +38,6 @@ SECTION_LEFT = html.Div([
 layout = html.Div([
   html.H1('Inverse Kinematics'),
   SECTION_LEFT,
-  html.Div(id='ik-variables')
 ])
 
 
@@ -112,26 +113,13 @@ stance: {start_hip_stance} | init.z: {start_cog_z}
     pose[key]["femur"] = -start_cog_z
     pose[key]["tibia"] = start_cog_z
 
-  '''
-  # update pose given start_cog_z
-  # height is a multiple of tibia
-  height = start_cog_z * tibia
-
-  # height can't be more than the limb length
-  max_height = tibia + femur
-  height = np.minimum(max_height, height)
-  print("resulting height", height)
-  if height <= tibia:
-    length = tibia - height
-    print("length", length)
-    theta = np.degrees(np.arcsin(length / femur))
-    print("theta", theta)
-  else:
-    theta = 0
-
-  '''
 
   virtual_hexapod.update(pose)
+  tx = end_x * mid
+  ty = end_y * side
+  tz = end_z * tibia
+  virtual_hexapod.detach_body_rotate_and_translate(rot_x, rot_y, rot_z, tx, ty, tz)
+
   BASE_PLOTTER.update(figure, virtual_hexapod)
 
   # Use current camera view to display plot
