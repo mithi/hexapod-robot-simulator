@@ -13,7 +13,7 @@ names = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back'
 HEXAPOD_POSE = {}
 
 for i, name in enumerate(names):
-  HEXAPOD_POSE[str(i)] = {
+  HEXAPOD_POSE[i] = {
     'name': name,
     'id': i,
     'coxia': 0,
