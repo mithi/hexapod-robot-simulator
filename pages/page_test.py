@@ -108,7 +108,9 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, predefined
     virtual_hexapod.update(pose)
     return BASE_PLOTTER.update(figure, virtual_hexapod)
 
+  # *******************************
   # If no pose selected, show custom pose based on custom controls
+  # *******************************
 
   # Update Hexapod's pose given alpha, beta, and gamma
   poses = deepcopy(HEXAPOD_POSE)
