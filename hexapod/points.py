@@ -22,6 +22,11 @@ class Point:
     self.y = p[1]
     self.z = p[2] + z
 
+  def move_xyz(self, x, y, z):
+    self.x += x
+    self.y += y
+    self.z += z
+
   def move_up(self, z):
     self.z += z
 
@@ -88,6 +93,48 @@ def frame_zrotate_xytranslate(theta, x, y):
     [0, 0, 1, 0],
     [0, 0, 0, 1]
   ])
+
+def return_sin_and_cos(theta):
+  d = np.radians(theta)
+  c = np.cos(d)
+  s = np.sin(d)
+  return c, s
+
+def rotx(theta):
+  c, s = return_sin_and_cos(theta)
+  return np.array([
+    [1, 0, 0, 0],
+    [0, c,-s, 0],
+    [0, s, c, 0],
+    [0, 0, 0, 1]
+
+  ])
+
+def roty(theta):
+  c, s = return_sin_and_cos(theta)
+  return np.array([
+    [ c, 0, s, 0],
+    [ 0, 1, 0, 0],
+    [-s, 0, c, 0],
+    [0, 0, 0, 1]
+  ])
+
+def rotz(theta_degrees):
+  c, s = return_sin_and_cos(theta_degrees)
+  return np.array([
+    [c,-s, 0, 0],
+    [s, c, 0, 0],
+    [0, 0, 1, 0],
+    [0, 0, 0, 1]
+  ])
+
+def frame_rotxyz(a, b, c):
+  rx = rotx(a)
+  ry = roty(b)
+  rz = rotz(c)
+  rxy = np.matmul(rx, ry)
+  rxyz = np.matmul(rxy, rz)
+  return rxyz
 
 def cross(a, b):
   x = a.y * b.z - a.z * b.y
