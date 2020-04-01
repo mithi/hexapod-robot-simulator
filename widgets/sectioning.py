@@ -14,10 +14,10 @@ def make_section_type3(div1, div2, div3, name1='', name2='', name3=''):
 
 def make_section_type4(div1, div2, div3, div4):
   return html.Div([
-    html.Div(div1, style={'width': '13%'}),
-    html.Div(div2, style={'width': '29%'}),
-    html.Div(div3, style={'width': '29%'}),
-    html.Div(div4, style={'width': '29%'}),
+    html.Div(div1, style={'width': '16%'}),
+    html.Div(div2, style={'width': '28%'}),
+    html.Div(div3, style={'width': '28%'}),
+    html.Div(div4, style={'width': '28%'}),
     ],
     style={'display': 'flex'}
   )

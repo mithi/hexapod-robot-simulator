@@ -12,7 +12,7 @@ def make_leg_sections():
   row2 = []
   row3 = []
   for leg in NAMES_LEG:
-    header = html.Label(dcc.Markdown('**`{}`**'.format(leg)))
+    header = html.Label(dcc.Markdown(f'**{leg.upper()}**'))
     coxia = JOINT_INPUTS[leg]['coxia']
     femur = JOINT_INPUTS[leg]['femur']
     tibia = JOINT_INPUTS[leg]['tibia']

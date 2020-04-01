@@ -34,9 +34,11 @@ section_radio_items = dcc.RadioItems(
 
 section_hexapod = html.Div([
   html.Div([
-    html.Label(dcc.Markdown('**CUSTOM CONTROLS**')),
+    html.H3(dcc.Markdown('**CUSTOM CONTROLS**')),
+    SECTION_SLIDERS_TEST,
+    html.Br(),
     SECTION_LENGTHS_CONTROL,
-    SECTION_SLIDERS_TEST],
+  ],
     style={'width': '40%'}
   ),
   html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
@@ -80,13 +82,13 @@ layout = html.Div([
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, predefined_pose, figure):
 
   if figure is None:
-    print('No existing hexapod figure.')
+    #print('No existing hexapod figure.')
     HEXAPOD = deepcopy(BASE_HEXAPOD)
     HEXAPOD.update(HEXAPOD_POSE)
     return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
 
   if camera is not None:
-    print('Camera view changed.')
+    #print('Camera view changed.')
     figure = BASE_PLOTTER.change_camera_view(figure, json.loads(camera))
 
   # Create a hexapod
@@ -101,7 +103,7 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, predefined
 
   # If a predefined pose is selected, show it
   if predefined_pose != 'NONE':
-    print('Predefined mode activated, custom controls disabled.')
+    #print('Predefined mode activated, custom controls disabled.')
     pose = PREDEFINED_POSES[predefined_pose]
     virtual_hexapod.update(pose)
     return BASE_PLOTTER.update(figure, virtual_hexapod)

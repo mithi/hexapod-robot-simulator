@@ -10,10 +10,9 @@ SLIDER_BETA = dcc.Slider(id='slider-beta', min=-90, max=90, marks=SLIDER_ANGLE_M
 SLIDER_GAMMA = dcc.Slider(id='slider-gamma', min=-90, max=90, marks=SLIDER_ANGLE_MARKS, value=0, step=5)
 
 SECTION_SLIDERS_TEST = html.Div([
-  html.Div(html.H6('Leg Angles'), style={'width': '10%'}),
-  html.Div([html.Label('alpha'), SLIDER_ALPHA], style={'width': '30%'}),
-  html.Div([html.Label('beta'), SLIDER_BETA], style={'width': '30%'}),
-  html.Div([html.Label('gamma'), SLIDER_GAMMA], style={'width': '30%'}),
+  html.Div([html.Label('ALPHA'), SLIDER_ALPHA], style={'width': '33%'}),
+  html.Div([html.Label('BETA'), SLIDER_BETA], style={'width': '33%'}),
+  html.Div([html.Label('GAMMA'), SLIDER_GAMMA], style={'width': '33%'}),
   ],
   style={'display': 'flex'}
 )
