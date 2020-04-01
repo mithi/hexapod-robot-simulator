@@ -5,8 +5,6 @@ import dash_daq
 from hexapod.const import NAMES_JOINT, NAMES_LEG
 
 def make_joint_knob_input(name):
-  _, _, _, angle = name.split('-')
-
   return dash_daq.Knob( # pylint: disable=not-callable
     id=name,
     min=-105,
@@ -25,9 +23,9 @@ def make_joint_daq_slider_input(name):
     max=105,
     value=10,
     size=150,
-    updatemode='drag',
+    #updatemode='drag',
     handleLabel={"showCurrentValue": True,"label": angle},
-    step=1,
+    step=5,
   )
 
 def make_joint_slider_input(name):
@@ -39,7 +37,7 @@ def make_joint_number_input(_name):
     id=_name,
     type='number',
     value=0.0,
-    step=1.0,
+    step=5.0,
     min=-135.0,
     max=135.0,
     style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
