@@ -62,6 +62,10 @@ def display_variables(
   relayout_data,
   figure):
 
+  # end_x is  % of middle
+  # end_y is % of side
+  # end_z is % of tibia
+
   # Display the parameter values on the screen
   text = dcc.Markdown(f'''
   ```
@@ -94,13 +98,12 @@ stance: {start_hip_stance} | init.z: {start_cog_z}
 
   # Update pose of hexapod
   pose = deepcopy(HEXAPOD_POSE)
-  pose["1"]["coxia"] = -start_hip_stance # right_front
-  pose["2"]["coxia"] = start_hip_stance # left_front
-  pose["4"]["coxia"] = -start_hip_stance # left_back
-  pose["5"]["coxia"] = start_hip_stance # right_back
+  pose[1]["coxia"] = -start_hip_stance # right_front
+  pose[2]["coxia"] = start_hip_stance # left_front
+  pose[4]["coxia"] = -start_hip_stance # left_back
+  pose[5]["coxia"] = start_hip_stance # right_back
 
   virtual_hexapod.update(pose)
-  print(pose)
 
   BASE_PLOTTER.update(figure, virtual_hexapod)
 
