@@ -23,7 +23,7 @@ def make_joint_daq_slider_input(name):
     max=105,
     value=10,
     size=150,
-    #updatemode='drag',
+    updatemode='drag',
     handleLabel={"showCurrentValue": True,"label": angle},
     step=5,
   )
