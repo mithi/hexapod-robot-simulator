@@ -1,8 +1,15 @@
+# ********************
+# This module updates the figure dictionary
+# that plotly uses to draw the 3d graph
+# it takes in a hexapod model, and the figure to update
+# you can also update the camera view with it by passing a camera dictionary
+# ********************
+
 from .templates.figure_template import HEXAPOD_FIGURE
 
 class HexapodPlot:
   def __init__(self):
-    self.fig = HEXAPOD_FIGURE
+    pass
 
   def _draw_hexapod(self, fig, hexapod):
     #body
