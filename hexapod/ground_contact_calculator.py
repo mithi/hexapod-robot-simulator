@@ -20,7 +20,6 @@ def set_of_two_trios_from_six():
   # (2, 3, 5) is a trio from set [0, 1, 2, 3, 4, 5]
   # the corresponding other_trio of (2, 3, 5) is (0, 1, 4)
   # order is not important ie (2, 3, 5) is the same as (5, 3, 2)
-
   trios = [trio for trio in combinations(range(6), 3)]
   other_trios = []
 
@@ -31,7 +30,7 @@ def set_of_two_trios_from_six():
   return trios, other_trios
 
 def check_stability(a, b, c):
-  # if the center of gravity p (0, 0) on xy plane
+  # If the center of gravity p (0, 0) on xy plane
   # is inside projection (in the xy plane) of
   # the triangle defined by point a, b, c, then this is stable
   p = Point(0, 0, 0)
@@ -45,12 +44,11 @@ def three_ids_of_ground_contacts(legs):
   trios, other_trios = set_of_two_trios_from_six()
 
   for trio, other_trio in zip(trios, other_trios):
-    # let p0 to p6 be leg ground contacts
+    # Let p0 to p6 be leg ground contacts
     p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
 
     if check_stability(p0, p1, p2) == True:
-
-      # the vector normal to plane defined by these points
+      # The vector normal to plane defined by these points
       # IMPORTANT: Normal is always pointing up
       # because of how we specified the order of the trio
       # (and the legs in general)
@@ -73,7 +71,7 @@ def three_ids_of_ground_contacts(legs):
 
       # h should be the most negative(the lowest) since
       # the plane defined by this trio is on the ground
-      #  the other legs ground contact cannot be lower than the ground
+      # the other legs ground contact cannot be lower than the ground
       condition_violated = False
       p3, p4, p5 = get_corresponding_ground_contacts(other_trio, legs)
       for p in [p3, p4, p5]:

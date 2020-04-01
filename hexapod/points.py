@@ -1,5 +1,35 @@
 import numpy as np
 
+class Point:
+  def __init__(self, x, y, z, name=None):
+    self.x = x
+    self.y = y
+    self.z = z
+    self.name = name
+
+  def get_point_wrt(self, reference_frame, name=None):
+    # given frame_ab which is the pose of frame_b wrt frame_a
+    # given a point as defined wrt to frame_b
+    # return point defined wrt to frame a
+    p = np.array([self.x, self.y, self.z, 1])
+    p = np.matmul(reference_frame, p)
+    return Point(p[0], p[1], p[2], name)
+
+  def update_point_wrt(self, reference_frame, z=0):
+    p = np.array([self.x, self.y, self.z, 1])
+    p = np.matmul(reference_frame, p)
+    self.x = p[0]
+    self.y = p[1]
+    self.z = p[2] + z
+
+  def move_up(self, z):
+    self.z += z
+
+  def __str__(self):
+    return 'Point(name={}, x={}, y={}, z={})'.format(self.name, self.x, self.y, self.z)
+
+# *********************************************
+
 def skew(p):
   return np.array([
     [0, -p.z, p.y],
@@ -46,7 +76,6 @@ def frame_yrotate_xtranslate(theta, x):
     [0, 0, 0, 1],
   ])
 
-
 # rotate about z, translate in x and y
 def frame_zrotate_xytranslate(theta, x, y):
   theta = np.radians(theta)
@@ -59,35 +88,6 @@ def frame_zrotate_xytranslate(theta, x, y):
     [0, 0, 1, 0],
     [0, 0, 0, 1]
   ])
-
-
-class Point:
-  def __init__(self, x, y, z, name=None):
-    self.x = x
-    self.y = y
-    self.z = z
-    self.name = name
-
-  def get_point_wrt(self, reference_frame, name=None):
-    # given frame_ab which is the pose of frame_b wrt frame_a
-    # given a point as defined wrt to frame_b
-    # return point defined wrt to frame a
-    p = np.array([self.x, self.y, self.z, 1])
-    p = np.matmul(reference_frame, p)
-    return Point(p[0], p[1], p[2], name)
-
-  def update_point_wrt(self, reference_frame, z=0):
-    p = np.array([self.x, self.y, self.z, 1])
-    p = np.matmul(reference_frame, p)
-    self.x = p[0]
-    self.y = p[1]
-    self.z = p[2] + z
-
-  def move_up(self, z):
-    self.z += z
-
-  def __str__(self):
-    return 'Point(name={}, x={}, y={}, z={})'.format(self.name, self.x, self.y, self.z)
 
 def cross(a, b):
   x = a.y * b.z - a.z * b.y

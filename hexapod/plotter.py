@@ -104,5 +104,8 @@ class HexapodPlot:
     return fig
 
   def change_camera_view(self, fig, camera):
+    # camera = { 'up': {'x': 0, 'y': 0, 'z': 0},
+    #        'center': {'x': 0, 'y': 0, 'z': 0},
+    #           'eye': {'x': 0, 'y': 0, 'z': 0)}}
     fig['layout']['scene']['camera'] = camera
     return fig
