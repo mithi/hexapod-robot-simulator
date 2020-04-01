@@ -1,3 +1,5 @@
+import numpy as np
+
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
@@ -97,14 +99,39 @@ stance: {start_hip_stance} | init.z: {start_cog_z}
   )
 
   # Update pose of hexapod
+
+  # update given start_hipstance
   pose = deepcopy(HEXAPOD_POSE)
   pose[1]["coxia"] = -start_hip_stance # right_front
   pose[2]["coxia"] = start_hip_stance # left_front
   pose[4]["coxia"] = -start_hip_stance # left_back
   pose[5]["coxia"] = start_hip_stance # right_back
 
-  virtual_hexapod.update(pose)
+  # update pose given start_cog_z
+  for key in pose.keys():
+    pose[key]["femur"] = -start_cog_z
+    pose[key]["tibia"] = start_cog_z
 
+  '''
+  # update pose given start_cog_z
+  # height is a multiple of tibia
+  height = start_cog_z * tibia
+
+  # height can't be more than the limb length
+  max_height = tibia + femur
+  height = np.minimum(max_height, height)
+  print("resulting height", height)
+  if height <= tibia:
+    length = tibia - height
+    print("length", length)
+    theta = np.degrees(np.arcsin(length / femur))
+    print("theta", theta)
+  else:
+    theta = 0
+
+  '''
+
+  virtual_hexapod.update(pose)
   BASE_PLOTTER.update(figure, virtual_hexapod)
 
   # Use current camera view to display plot
