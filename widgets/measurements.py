@@ -49,4 +49,4 @@ SECTION_LENGTHS_CONTROL = html.Div([
   html.Br(),
 ])
 
-MEASURMENT_INPUTS = [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
+MEASUREMENT_INPUTS = [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]

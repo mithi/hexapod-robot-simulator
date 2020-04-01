@@ -3,10 +3,9 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS_IDs
-from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUT_IDs
-from widgets.alpha_beta_gamma import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
-INPUT_IDs = SLIDERS_TEST_IDs + INPUT_LENGTHS_IDs
+from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASUREMENT_INPUTS
+from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUTS, CAMVIEW_OUTPUTS
+from widgets.alpha_beta_gamma import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
@@ -74,9 +73,10 @@ layout = html.Div([
 # -----------
 # CALLBACKS
 # -----------
+INPUTS = SLIDERS_TEST_INPUTS + MEASUREMENT_INPUTS + [Input('camera-view-values', 'children')] + [Input('predefined-poses', 'value')]
 @app.callback(
   Output('hexapod-plot', 'figure'),
-  [Input(i, 'value') for i in INPUT_IDs] + [Input('camera-view-values', 'children')] + [Input('predefined-poses', 'value')],
+  INPUTS,
   [State('hexapod-plot', 'figure')]
 )
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, predefined_pose, figure):
@@ -130,7 +130,7 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, predefined
 
 
 @app.callback(
-  [Output(i, 'value') for i in CAMVIEW_INPUT_IDs],
+  CAMVIEW_OUTPUTS,
   [Input('hexapod-plot', 'hoverData')],
   [State('hexapod-plot', 'relayoutData')]
 )
@@ -160,7 +160,7 @@ def update_camera_inputs(hover_data, relayout_data):
 
 @app.callback(
   Output('camera-view-values', 'children'),
-  [Input(input_id, 'value') for input_id in CAMVIEW_INPUT_IDs]
+  CAMVIEW_INPUTS
 )
 def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, eye_y, eye_z):
 
@@ -175,7 +175,7 @@ def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, ey
 
 @app.callback(
   Output('variables', 'children'),
-  [Input(i, 'value') for i in INPUT_IDs]
+  SLIDERS_TEST_INPUTS + MEASUREMENT_INPUTS
 )
 def update_variables(alpha, beta, gamma, f, s, m, h, k, a):
   return json.dumps({

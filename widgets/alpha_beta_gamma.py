@@ -1,5 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input
 
 SLIDERS_TEST_IDs = ['slider-alpha', 'slider-beta', 'slider-gamma']
 SLIDER_ANGLE_MARKS = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
@@ -14,3 +15,5 @@ SECTION_SLIDERS_TEST = html.Div([
   ],
   style={'display': 'flex'}
 )
+
+SLIDERS_TEST_INPUTS = [Input(i, 'value') for i in SLIDERS_TEST_IDs]

@@ -1,4 +1,5 @@
 import dash_core_components as dcc
+from dash.dependencies import Input, Output
 from .sectioning import make_section_type4, make_section_type3
 from hexapod.const import HEXAPOD_FIGURE
 
@@ -44,3 +45,5 @@ section_input_up = make_section_type4(dcc.Markdown('`(UP)`'), INPUT_CAMVIEW['up-
 section_input_center = make_section_type4(dcc.Markdown('`(CNTR)`'), INPUT_CAMVIEW['center-x'], INPUT_CAMVIEW['center-y'], INPUT_CAMVIEW['center-z'])
 section_input_eye = make_section_type4(dcc.Markdown('`(EYE)`'), INPUT_CAMVIEW['eye-x'], INPUT_CAMVIEW['eye-y'], INPUT_CAMVIEW['eye-z'])
 SECTION_INPUT_CAMVIEW = make_section_type3(section_input_up, section_input_center, section_input_eye)
+CAMVIEW_OUTPUTS = [Output(i, 'value') for i in CAMVIEW_INPUT_IDs]
+CAMVIEW_INPUTS = [Input(i, 'value') for i in CAMVIEW_INPUT_IDs]

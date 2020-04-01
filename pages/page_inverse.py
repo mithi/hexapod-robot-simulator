@@ -2,7 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from widgets.ik_ui import IK_INPUTS, SECTION_IK
-from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASURMENT_INPUTS
+from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASUREMENT_INPUTS
 from app import app
 
 section_nothing = html.Label('Nothing')
@@ -25,10 +25,11 @@ layout = html.Div([
 ])
 
 
-inputs = IK_INPUTS + MEASURMENT_INPUTS
+inputs = IK_INPUTS + MEASUREMENT_INPUTS
 @app.callback(
-  Output('ik-variables', 'children'),
-  inputs)
+  [Output('ik-variables', 'children')],
+   inputs
+)
 def display_variables(
   start_hip_stance,
   start_cog_z,
@@ -45,7 +46,7 @@ def display_variables(
   femur,
   tibia):
 
-  return dcc.Markdown(f'''
+  text = dcc.Markdown(f'''
   ```
 x: {end_x} | rot.x: {rot_x} | coxia: {coxia} | fro: {front}
 y: {end_y} | rot.y: {rot_y} | femur: {femur} | sid: {side}
@@ -56,3 +57,5 @@ stance: {start_hip_stance} | init.z: {start_cog_z}
   ```
   '''
   )
+
+  return text,
