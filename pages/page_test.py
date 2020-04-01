@@ -5,7 +5,7 @@ from dash.exceptions import PreventUpdate
 
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS_IDs
 from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUT_IDs
-from widgets.misc import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
+from widgets.alpha_beta_gamma import SECTION_SLIDERS_TEST, SLIDERS_TEST_IDs
 INPUT_IDs = SLIDERS_TEST_IDs + INPUT_LENGTHS_IDs
 
 from hexapod.models import VirtualHexapod
