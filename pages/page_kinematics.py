@@ -5,10 +5,15 @@ from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
-from hexapod.const import NAMES_LEG, NAMES_JOINT, BASE_PLOTTER, BASE_HEXAPOD
-from hexapod.const import HEXAPOD_FIGURE, HEXAPOD_POSE
+from hexapod.const import (
+  NAMES_LEG,
+  NAMES_JOINT,
+  BASE_PLOTTER,
+  BASE_HEXAPOD,
+  HEXAPOD_FIGURE,
+  HEXAPOD_POSE
+)
 
-from widgets.sectioning import make_section_type4, make_section_type3
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
 #from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
@@ -40,7 +45,7 @@ layout = html.Div([
 # *  CALLBACKS        *
 # *********************
 # -------------------
-# Listen if we need to update Graph
+# Listen if we need to update the hexapod graph
 # -------------------
 INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexapod-measurements-values']]
 @app.callback(
