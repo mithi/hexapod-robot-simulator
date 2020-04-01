@@ -20,8 +20,6 @@ from copy import deepcopy
 
 from app import app
 
-section_nothing = html.Label('Nothing')
-
 SECTION_LEFT = html.Div([
     html.Div([
       html.Label(dcc.Markdown('**INVERSE KINEMATICS CONTROLS**')),
@@ -93,6 +91,17 @@ stance: {start_hip_stance} | init.z: {start_cog_z}
     femur or 0,
     tibia or 0
   )
+
+  # Update pose of hexapod
+  pose = deepcopy(HEXAPOD_POSE)
+  pose["1"]["coxia"] = -start_hip_stance # right_front
+  pose["2"]["coxia"] = start_hip_stance # left_front
+  pose["4"]["coxia"] = -start_hip_stance # left_back
+  pose["5"]["coxia"] = start_hip_stance # right_back
+
+  virtual_hexapod.update(pose)
+  print(pose)
+
   BASE_PLOTTER.update(figure, virtual_hexapod)
 
   # Use current camera view to display plot
@@ -100,5 +109,4 @@ stance: {start_hip_stance} | init.z: {start_cog_z}
     camera = relayout_data['scene.camera']
     figure = BASE_PLOTTER.change_camera_view(figure, camera)
 
-  output_list = [text, None]
-  return output_list
+  return text, figure
