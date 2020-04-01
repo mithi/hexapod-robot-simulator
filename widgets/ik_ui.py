@@ -33,7 +33,7 @@ def make_rotate_knob(name, knob_label):
     min=-65,
     max=65,
     value=0,
-    size=75,
+    size=65,
     scale = {'custom': {0: knob_label, -60: '-60', -30: '-30',  30: '30', 60: '60'}}
   )
 
@@ -63,11 +63,11 @@ start_section_ik = html.Div([div_ss, html.Br(), div_sz],)
 SECTION_IK = html.Div([
     html.Div(start_section_ik, style={'padding': '0 0 0 4em'}),
     html.Div(div_rx),
-    html.Div(div_ex, style={'padding': '0 0 0 3em'}),
+    html.Div(div_ex, style={'padding': '0 0 0 2em'}),
     html.Div(div_ry),
-    html.Div(div_ey, style={'padding': '0 0 0 3em'}),
+    html.Div(div_ey, style={'padding': '0 0 0 2em'}),
     html.Div(div_rz),
-    html.Div(div_ez, style={'padding': '0 0 0 3em'}),
+    html.Div(div_ez, style={'padding': '0 0 0 2em'}),
   ],
   style={'display': 'flex', 'flex-direction': 'row'}
 )

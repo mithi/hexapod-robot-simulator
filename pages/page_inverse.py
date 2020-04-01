@@ -1,8 +1,23 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
+from dash.exceptions import PreventUpdate
+
+from hexapod.models import VirtualHexapod
+from hexapod.plotter import HexapodPlot
+from hexapod.const import (
+  NAMES_LEG,
+  NAMES_JOINT,
+  BASE_PLOTTER,
+  BASE_HEXAPOD,
+  HEXAPOD_FIGURE,
+  HEXAPOD_POSE
+)
+
 from widgets.ik_ui import IK_INPUTS, SECTION_IK
 from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASUREMENT_INPUTS
+from copy import deepcopy
+
 from app import app
 
 section_nothing = html.Label('Nothing')
@@ -12,7 +27,7 @@ SECTION_LEFT = html.Div([
       html.Label(dcc.Markdown('**INVERSE KINEMATICS CONTROLS**')),
       SECTION_IK,
       SECTION_LENGTHS_CONTROL], style={'width': '60%'}),
-    html.Div(section_nothing, style={'width': '40%'}),
+    dcc.Graph(id='graph-hexapod-2', style={'width': '45%'}),
   ],
   style={'display': 'flex'}
 )
@@ -25,10 +40,11 @@ layout = html.Div([
 ])
 
 
-inputs = IK_INPUTS + MEASUREMENT_INPUTS
+INPUTS = IK_INPUTS + MEASUREMENT_INPUTS
 @app.callback(
-  [Output('ik-variables', 'children')],
-   inputs
+  [Output('ik-variables', 'children'), Output('graph-hexapod-2', 'figure')],
+   INPUTS,
+  [State('graph-hexapod-2', 'relayoutData'), State('graph-hexapod-2', 'figure')]
 )
 def display_variables(
   start_hip_stance,
@@ -44,8 +60,11 @@ def display_variables(
   mid,
   coxia,
   femur,
-  tibia):
+  tibia,
+  relayout_data,
+  figure):
 
+  # Display the parameter values on the screen
   text = dcc.Markdown(f'''
   ```
 x: {end_x} | rot.x: {rot_x} | coxia: {coxia} | fro: {front}
@@ -58,4 +77,28 @@ stance: {start_hip_stance} | init.z: {start_cog_z}
   '''
   )
 
-  return text,
+  # If there's no figure, create the default one
+  if figure is None:
+    print('No hexapod figure')
+    hexapod = deepcopy(BASE_HEXAPOD)
+    hexapod.update(HEXAPOD_POSE)
+    return text, BASE_PLOTTER.update(HEXAPOD_FIGURE, hexapod)
+
+  # Create a hexapod
+  virtual_hexapod = VirtualHexapod().new(
+    front or 0,
+    mid or 0,
+    side or 0,
+    coxia or 0,
+    femur or 0,
+    tibia or 0
+  )
+  BASE_PLOTTER.update(figure, virtual_hexapod)
+
+  # Use current camera view to display plot
+  if relayout_data and 'scene.camera' in relayout_data:
+    camera = relayout_data['scene.camera']
+    figure = BASE_PLOTTER.change_camera_view(figure, camera)
+
+  output_list = [text, None]
+  return output_list
