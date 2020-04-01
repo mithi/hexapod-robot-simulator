@@ -1,5 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input
 import dash_daq
 
 IK_INPUT_IDs = [
@@ -70,3 +71,5 @@ SECTION_IK = html.Div([
   ],
   style={'display': 'flex', 'flex-direction': 'row'}
 )
+
+IK_INPUTS = [Input(input_id, 'value') for input_id in IK_INPUT_IDs]

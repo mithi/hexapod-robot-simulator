@@ -1,5 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input
 from .sectioning import make_section_type3
 
 INPUT_LENGTHS_IDs = [
@@ -47,3 +48,5 @@ SECTION_LENGTHS_CONTROL = html.Div([
   SECTION_INPUT_LENGTHS,
   html.Br(),
 ])
+
+MEASURMENT_INPUTS = [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
