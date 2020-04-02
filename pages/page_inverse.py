@@ -16,7 +16,7 @@ from hexapod.const import (
   HEXAPOD_POSE
 )
 
-#from ik_solver import inverse_kinematics_update
+from hexapod.ik_solver import inverse_kinematics_update
 
 from widgets.ik_ui import IK_INPUTS, SECTION_IK
 from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASUREMENT_INPUTS
@@ -99,10 +99,7 @@ hip_stance: {start_hip_stance} | leg_stance: {start_leg_stance}
   )
 
   hexapod.update_stance(start_hip_stance, start_leg_stance)
-  tx = end_x * hexapod.mid
-  ty = end_y * hexapod.side
-  tz = end_z * hexapod.tibia
-  hexapod.detach_body_rotate_and_translate(rot_x, rot_y, rot_z, tx, ty, tz)
+  hexapod, _ = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
 
   BASE_PLOTTER.update(figure, hexapod)
 
