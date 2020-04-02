@@ -281,6 +281,20 @@ class VirtualHexapod:
       point.update_point_wrt(frame)
       point.move_xyz(x, y, z)
 
+  def detach_body_and_coxia_rotate_and_translate(self, a, b, c, x, y, z):
+    frame = frame_rotxyz(a, b, c)
+    points = self.body.vertices + [self.body.head, self.body.cog]
+
+    for point in points:
+      point.update_point_wrt(frame)
+      point.move_xyz(x, y, z)
+
+    for leg in self.legs:
+      leg.p0.update_point_wrt(frame)
+      leg.p0.move_xyz(x, y, z)
+      leg.p1.update_point_wrt(frame)
+      leg.p1.move_xyz(x, y, z)
+
   def update_stance(self, hip_stance, leg_stance):
     pose = deepcopy(HEXAPOD_POSE)
     pose[1]["coxia"] = -hip_stance # right_front
