@@ -281,6 +281,8 @@ class VirtualHexapod:
       point.update_point_wrt(frame)
       point.move_xyz(x, y, z)
 
+    self.update_local_frame(frame)
+
   def detach_body_and_coxia_rotate_and_translate(self, a, b, c, x, y, z):
     frame = frame_rotxyz(a, b, c)
     points = self.body.vertices + [self.body.head, self.body.cog]
