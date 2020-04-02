@@ -4,8 +4,8 @@ from dash.dependencies import Input
 import dash_daq
 
 IK_INPUT_IDs = [
-  'input-start-stance',
-  'input-start-z',
+  'input-start-hip-stance',
+  'input-start-leg-stance',
   'input-end-x',
   'input-end-y',
   'input-end-z',
@@ -63,8 +63,8 @@ def make_stance_slider(name, slider_label):
     step=5.0,
   )
 
-div_ss = make_stance_slider('input-start-stance', 'start.stance')
-div_sz = make_h_slider('input-start-z', 'start.z')
+div_ss = make_stance_slider('input-start-hip-stance', 'hip.stance')
+div_sz = make_h_slider('input-start-leg-stance', 'leg.stance')
 div_ex = make_translate_slider('input-end-x', 'end.x')
 div_ey = make_translate_slider('input-end-y', 'end.y')
 div_ez = make_translate_slider('input-end-z', 'end.z')
