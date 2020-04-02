@@ -140,6 +140,8 @@ def inverse_kinematics_update(
     p2 = None
 
     if CANT_REACH_FOOT_TIP:
+      # FIX ME
+      # This is the wrong way to go about this. Do something else
       p2 = deepcopy(p0)
       p3 = deepcopy(p0)
       p0 = Point(0, 0, 0)
