@@ -4,6 +4,7 @@ import numpy as np
 from hexapod.models import VirtualHexapod, Linkage
 from hexapod.points import (
   Point,
+  cross,
   dot,
   length,
   scale,
@@ -18,6 +19,10 @@ from hexapod.points import (
   angle_between,
   angle_opposite_of_last_side
 )
+
+def is_counter_clockwise(a, b, n):
+  return dot(a, cross(b, n)) > 0
+
 
 # CASE 1      <..........x-axis......
 #          -         |....c.....|
@@ -96,12 +101,13 @@ def inverse_kinematics_update(
     dd = angle_opposite_of_last_side(a, b, d)
     ee = angle_between(coxia_vector2d, coxia_to_foot_vector2d)
 
-    # FIX ME. IMPORTANT! this alpha is wrong
-    # alpha_wrt_world is the smallest angle between
-    # coxia_vector and x_axis
-    # how to know which direction ? we should use right hand rule
     alpha_wrt_world = angle_between(coxia_vector, x_axis)
-    alpha = alpha_wrt_world - hexapod.body.COXIA_AXES[i]
+    is_ccw = is_counter_clockwise(x_axis, coxia_vector, body_normal)
+    alpha = None
+    if is_ccw:
+      alpha = alpha_wrt_world - hexapod.body.COXIA_AXES[i]
+    else:
+      alpha = hexapod.body.COXIA_AXES[i] - alpha_wrt_world
 
     CANT_REACH_FOOT_TIP = False
     if is_triangle_or_line(a, b, d):
@@ -149,4 +155,5 @@ def inverse_kinematics_update(
     hexapod.legs[i].p2 = p2
     hexapod.legs[i].p3 = p3
 
+  print(f'poses: {poses}')
   return hexapod, poses
