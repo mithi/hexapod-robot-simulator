@@ -35,7 +35,7 @@ class Point:
 
 # *********************************************
 
-def is_triangle_or_line(a, b, c):
+def is_triangle(a, b, c):
    return (a + b >= c) and (a + c >= b) and (b + c >= a)
 
 

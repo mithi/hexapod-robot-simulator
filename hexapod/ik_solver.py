@@ -86,8 +86,9 @@ def inverse_kinematics_update(
     coxia_vector2d.update_point_wrt(frame_to_2d)
 
     p0 = Point(0, 0, 0)
-    p1 = add_vectors(p0, coxia_vector2d)
+    p1 = Point(hexapod.coxia, 0.0, 0.0)
     p3 = body_to_foot_vector2d
+    p3.y = 0
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
 
     a = hexapod.tibia
@@ -99,7 +100,6 @@ def inverse_kinematics_update(
     aa = angle_opposite_of_last_side(d, b, a)
     bb = angle_opposite_of_last_side(a, d, b)
     dd = angle_opposite_of_last_side(a, b, d)
-    ee = angle_between(coxia_vector2d, coxia_to_foot_vector2d)
 
     alpha_wrt_world = angle_between(coxia_vector, x_axis)
     is_ccw = is_counter_clockwise(x_axis, coxia_vector, body_normal)
@@ -109,9 +109,20 @@ def inverse_kinematics_update(
     else:
       alpha = hexapod.body.COXIA_AXES[i] - alpha_wrt_world
 
+    beta = 0
     CANT_REACH_FOOT_TIP = False
+    IS_NEUTRAL_POSTION = False
+
+    if np.isclose((c + b)**2 + a**2, d**2):
+      beta = 0
+      gamma = 0
+      IS_NEUTRAL_POSTION = True
     if is_triangle(a, b, d):
-      beta = -(180 - aa - ee)
+      # This might be wrong, we need to check direction! 
+      ee = angle_between(coxia_to_foot_vector2d, x_axis)
+      print(f'angle ee {ee}')
+      print(f'angle aa {aa}')
+      beta = ee - aa
       gamma = dd - 90
     else:
       print("Can't reach foot tip")
@@ -119,9 +130,14 @@ def inverse_kinematics_update(
       beta = 0
       gamma = 90
 
+    print(f'alpha: {alpha}')
+    print(f'beta: {beta}')
+    print(f'gamma: {gamma}')
+
     poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta
     poses[i]['tibia'] = gamma
+    p2 = None
 
     if CANT_REACH_FOOT_TIP:
       p2 = deepcopy(p0)
@@ -130,15 +146,25 @@ def inverse_kinematics_update(
       p1 = Point(hexapod.coxia, 0, 0)
       p2 = Point(hexapod.coxia + hexapod.femur, 0, 0)
       p3 = Point(hexapod.coxia + hexapod.femur + hexapod.tibia, 0, 0)
+    elif IS_NEUTRAL_POSTION:
+      p2 = Point(hexapod.coxia + hexapod.femur, 0, 0)
     else:
       height = -p3.z
+      print(f'height: {height}')
+      print(f'tibia: {a}')
+
       x_ = b * np.cos(np.radians(beta))
       z_ = b * np.sin(np.radians(beta))
       x_ = p1.x + x_
       if height > a:
         z_ =  -z_ #case 1
-
       p2 = Point(x_, 0, z_)
+
+    print(f'p0 {p0}')
+    print(f'p1 {p1}')
+    print(f'p2 {p2}')
+    print(f'p3 {p3}')
+    print('----')
 
     frame = frame_to_align_vector_a_to_b(x_axis, unit_coxia_vector)
     p0.update_point_wrt(frame)
