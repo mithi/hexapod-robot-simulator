@@ -116,8 +116,10 @@ def inverse_kinematics_update(
     if CANT_REACH_FOOT_TIP:
       p2 = deepcopy(p0)
       p3 = deepcopy(p0)
-      p2.move_xyz(hexapod.femur, 0, 0)
-      p3.move_xyz(hexapod.femur + hexapod.tibia, 0, 0)
+      p0 = Point(0, 0, 0)
+      p1 = Point(hexapod.coxia, 0, 0)
+      p2 = Point(hexapod.coxia + hexapod.femur, 0, 0)
+      p3 = Point(hexapod.coxia + hexapod.femur + hexapod.tibia, 0, 0)
     else:
       height = -p3.z
       x_ = b * np.cos(np.radians(beta))
