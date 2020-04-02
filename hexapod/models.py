@@ -63,16 +63,16 @@ from copy import deepcopy
 #
 class Linkage:
   POINT_NAMES = ['coxia', 'femur', 'tibia']
-  def __init__(self, a, b, c, alpha=0, beta=0, gamma=0, new_x_axis=0, new_origin=Point(0, 0, 0), name=None, id_number=None):
-    self.store_linkage_attributes(a, b, c, new_x_axis, new_origin, name, id_number)
+  def __init__(self, a, b, c, alpha=0, beta=0, gamma=0, coxia_axis=0, new_origin=Point(0, 0, 0), name=None, id_number=None):
+    self.store_linkage_attributes(a, b, c, coxia_axis, new_origin, name, id_number)
     self.save_new_pose(alpha, beta, gamma)
 
-  def store_linkage_attributes(self, a, b, c, new_x_axis, new_origin, name, id_number):
+  def store_linkage_attributes(self, a, b, c, coxia_axis, new_origin, name, id_number):
     self._a = a
     self._b = b
     self._c = c
     self._new_origin = new_origin
-    self._new_x_axis = new_x_axis
+    self._coxia_axis = coxia_axis
     self.id = id_number
     self.name = name
 
@@ -88,7 +88,7 @@ class Linkage:
 
     frame_02 = np.matmul(frame_01, frame_12)
     frame_03 = np.matmul(frame_02, frame_23)
-    new_frame = frame_zrotate_xytranslate(self._new_x_axis + self._alpha, self._new_origin.x, self._new_origin.y)
+    new_frame = frame_zrotate_xytranslate(self._coxia_axis + self._alpha, self._new_origin.x, self._new_origin.y)
 
     # find points wrt to body contact point
     p0 = Point(0, 0, 0)
@@ -222,7 +222,7 @@ class Linkage:
 #
 class Hexagon:
   VERTEX_NAMES = ['right-middle', 'right-front', 'left-front', 'left-middle', 'left-back', 'right-back']
-  NEW_X_AXES = [0, 45, 135, 180, 225, 315]
+  COXIA_AXES = [0, 45, 135, 180, 225, 315]
   def __init__(self, f, m, s):
     self.f = f
     self.m = m
@@ -240,6 +240,7 @@ class Hexagon:
     ]
 
 class VirtualHexapod:
+  LEG_COUNT = 6
   def __init__(self, measurements=None):
     if measurements is None:
       self.new()
@@ -364,9 +365,9 @@ class VirtualHexapod:
 
   def store_neutral_legs(self, a, b, c):
     self.legs = []
-    vertices, axes, names = self.body.vertices, Hexagon.NEW_X_AXES, Hexagon.VERTEX_NAMES
-    for i, point, theta, name in zip(range(6), vertices, axes, names):
-      linkage = Linkage(a, b, c, new_x_axis=theta, new_origin=point, name=name, id_number=i)
+    vertices, axes, names = self.body.vertices, Hexagon.COXIA_AXES, Hexagon.VERTEX_NAMES
+    for i, point, axis, name in zip(range(6), vertices, axes, names):
+      linkage = Linkage(a, b, c, coxia_axis=axis, new_origin=point, name=name, id_number=i)
       self.legs.append(linkage)
 
   def ground_contact_points(self):
