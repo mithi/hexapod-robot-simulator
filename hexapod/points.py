@@ -35,6 +35,30 @@ class Point:
 
 # *********************************************
 
+def is_triangle_or_line(a, b, c):
+   return (a + b >= c) and (a + c >= b) and (b + c >= a)
+
+
+# u is the vector, n is the plane normal
+def project_vector_onto_plane(u, n):
+  s = dot(u, n) / (length(n) ** 2)
+  n = scalar_multiply(n, s)
+  vector = subtract_vectors(u, n)
+  return get_unit_vector(vector)
+
+
+def angle_between(a, b):
+  # returns the shortest angle between two vectors
+  a_dot_b = dot(a, b)
+  cos_theta = a_dot_b /(length(a) * length(b))
+  return np.degrees(np.arccos(cos_theta))
+
+
+def angle_opposite_of_last_side(a, b, c):
+  ratio = (a**2 + b**2 - c**2) / (2 * a * b)
+  return np.degrees(np.arccos(ratio))
+
+
 def skew(p):
   return np.array([
     [0, -p.z, p.y],
@@ -159,8 +183,14 @@ def length(v):
 def add_vectors(a, b):
   return Point(a.x + b.x, a.y + b.y, a.z + b.z)
 
+def scalar_multiply(p, s):
+  return Point(s * p.x, s * p.y, s * p.z)
+
 def subtract_vectors(a, b):
   return Point(a.x - b.x, a.y - b.y, a.z - b.z)
+
+def get_unit_vector(v):
+  return scale(v, length(v))
 
 def get_unit_normal(a, b, c):
   ab = subtract_vectors(b, a)
