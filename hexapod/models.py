@@ -1,5 +1,6 @@
 import numpy as np
 from .ground_contact_calculator import get_legs_on_ground
+from .templates.pose_template import HEXAPOD_POSE
 from .points import Point, frame_yrotate_xtranslate, frame_zrotate_xytranslate, frame_to_align_vector_a_to_b, frame_rotxyz
 from copy import deepcopy
 # -------------
@@ -252,6 +253,12 @@ class VirtualHexapod:
     self.linkage_measurements = [a, b, c]
     # front length, middle length, side length
     self.body_measurements = [f, m, s]
+    self.coxia = a
+    self.femur = b
+    self.tibia = c
+    self.front = f
+    self.mid = m
+    self.side = s
 
     self.body = Hexagon(f, m, s)
     self.store_neutral_legs(a, b, c)
@@ -264,14 +271,27 @@ class VirtualHexapod:
     return self
 
   def detach_body_rotate_and_translate(self, a, b, c, x, y, z):
-    # this detaches the body of the hexapod from the legs
-    # and rotate and translate it as if a separate entity
+    # Detaches the body of the hexapod from the legs
+    # then rotate and translate body as if a separate entity
     frame = frame_rotxyz(a, b, c)
     points = self.body.vertices + [self.body.head, self.body.cog]
 
     for point in points:
       point.update_point_wrt(frame)
       point.move_xyz(x, y, z)
+
+  def update_stance(self, hip_stance, leg_stance):
+    pose = deepcopy(HEXAPOD_POSE)
+    pose[1]["coxia"] = -hip_stance # right_front
+    pose[2]["coxia"] = hip_stance # left_front
+    pose[4]["coxia"] = -hip_stance # left_back
+    pose[5]["coxia"] = hip_stance # right_back
+
+    for key in pose.keys():
+      pose[key]["femur"] = -leg_stance
+      pose[key]["tibia"] = leg_stance
+
+    self.update(pose)
 
   def update(self, poses):
     # Check the possibility of hexapod twisting about z axis
