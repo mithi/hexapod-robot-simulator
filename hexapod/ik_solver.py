@@ -14,7 +14,7 @@ from hexapod.points import (
   vector_from_to,
   get_unit_vector,
   frame_to_align_vector_a_to_b,
-  is_triangle_or_line,
+  is_triangle,
   project_vector_onto_plane,
   angle_between,
   angle_opposite_of_last_side
@@ -110,7 +110,7 @@ def inverse_kinematics_update(
       alpha = hexapod.body.COXIA_AXES[i] - alpha_wrt_world
 
     CANT_REACH_FOOT_TIP = False
-    if is_triangle_or_line(a, b, d):
+    if is_triangle(a, b, d):
       beta = -(180 - aa - ee)
       gamma = dd - 90
     else:
@@ -155,5 +155,5 @@ def inverse_kinematics_update(
     hexapod.legs[i].p2 = p2
     hexapod.legs[i].p3 = p3
 
-  print(f'poses: {poses}')
+  #print(f'poses: {poses}')
   return hexapod, poses
