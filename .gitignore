@@ -7,3 +7,4 @@ hexapod/quaternion.py
 widgets/pose_control/__pycache__/*
 hexapod/templates/__pycache__/*
 pages/__pycache__/*
+.vscode/settings.json
