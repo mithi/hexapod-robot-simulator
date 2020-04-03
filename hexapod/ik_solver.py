@@ -136,8 +136,31 @@ def inverse_kinematics_update(
       print(f'No problems. {leg_name} femur:{b} | tibia:{a} | coxia-to-foot:{d}')
       # This might be wrong, we need to check direction!
       ee = angle_between(coxia_to_foot_vector2d, x_axis)
-      beta = aa - ee
+      if p3.z > 0:
+        beta = aa + ee
+      else:
+        beta = aa - ee
       gamma = dd - 90
+
+      print(f'beta: {beta}')
+      height = -p3.z
+      x_ = b * np.cos(np.radians(beta))
+      z_ = b * np.sin(np.radians(beta))
+      x_ = p1.x + x_
+      if height > a:
+        z_ =  -z_
+      if beta < 0:
+        if z_ > 0:
+          z_ = -z_
+      p2 = Point(x_, 0, z_)
+
+      if p2.z < p3.z:
+        print('Cant go through ground.')
+        beta = -np.arcsin(-p3.z/(a + b))
+        gamma = 0
+        p2.x = p1.x + b * np.cos(beta)
+        p2.z = b * np.sin(beta)
+        p3.x = p1.x + (a + b) * np.cos(beta)
     else:
       CANT_REACH_FOOT_TIP = True
       print(f"Can't reach foot tip. {leg_name}")
@@ -175,26 +198,6 @@ def inverse_kinematics_update(
     poses[i]['tibia'] = gamma
     if IS_NEUTRAL_POSTION:
       p2 = Point(hexapod.coxia + hexapod.femur, 0, 0)
-    elif not CANT_REACH_FOOT_TIP:
-      print(f'beta: {beta}')
-      height = -p3.z
-      x_ = b * np.cos(np.radians(beta))
-      z_ = b * np.sin(np.radians(beta))
-      x_ = p1.x + x_
-      if height > a:
-        z_ =  -z_
-      if beta < 0:
-        if z_ > 0:
-          z_ = -z_
-      p2 = Point(x_, 0, z_)
-
-      if p2.z < p3.z:
-        print('Cant go through ground.')
-        beta = -np.arcsin(-p3.z/(a + b))
-        gamma = 0
-        p2.x = p1.x + b * np.cos(beta)
-        p2.z = b * np.sin(beta)
-        p3.x = p1.x + (a + b) * np.cos(beta)
     else:
       if LEGS_TOO_SHORT:
         femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
