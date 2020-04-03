@@ -36,7 +36,13 @@ class Point:
 # *********************************************
 
 def is_triangle(a, b, c):
-   return (a + b >= c) and (a + c >= b) and (b + c >= a)
+  result = (a + b > c) and (a + c > b) and (b + c > a)
+  if result:
+    print(f'TRUE! {a}, {b}, {c} is TRIANGLE')
+  else:
+    print(f'FALSE! {a}, {b}, {c} is NOT TRIANGLE')
+  return result
+
 
 
 # u is the vector, n is the plane normal
