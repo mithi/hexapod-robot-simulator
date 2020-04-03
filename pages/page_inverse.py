@@ -101,19 +101,7 @@ hip_stance: {start_hip_stance} | leg_stance: {start_leg_stance}
   hexapod.update_stance(start_hip_stance, start_leg_stance)
   hexapod, poses, msg = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
   if msg is not None:
-    text = dcc.Markdown(f'''
-### **IMPORTANT MESSAGE!** {msg}
-  ```
-x: {end_x} | rot.x: {rot_x} | coxia: {coxia} | fro: {front}
-y: {end_y} | rot.y: {rot_y} | femur: {femur} | sid: {side}
-z: {end_z} | rot.z: {rot_z} | tibia: {tibia} | mid: {mid}
-hip_stance: {start_hip_stance} | leg_stance: {start_leg_stance}
-
-
-  ```
-  '''
-  )
-    return text, figure
+    text = dcc.Markdown(f'''### **IMPORTANT MESSAGE!** {msg}''')
   #hexapod = deepcopy(BASE_HEXAPOD)
   #hexapod.update(poses)
   BASE_PLOTTER.update(figure, hexapod)
