@@ -109,7 +109,8 @@ def inverse_kinematics_update(
     else:
       alpha = hexapod.body.COXIA_AXES[i] - alpha_wrt_world
 
-    beta = 0
+    beta = None
+    gamma = None
     CANT_REACH_FOOT_TIP = False
     IS_NEUTRAL_POSTION = False
 
@@ -118,7 +119,7 @@ def inverse_kinematics_update(
       gamma = 0
       IS_NEUTRAL_POSTION = True
     if is_triangle(a, b, d):
-      # This might be wrong, we need to check direction! 
+      # This might be wrong, we need to check direction!
       ee = angle_between(coxia_to_foot_vector2d, x_axis)
       print(f'angle ee {ee}')
       print(f'angle aa {aa}')
@@ -126,8 +127,8 @@ def inverse_kinematics_update(
       gamma = dd - 90
     else:
       print("Can't reach foot tip")
+      beta = angle_between(coxia_to_foot_vector2d, x_axis)
       CANT_REACH_FOOT_TIP = True
-      beta = 0
       gamma = 90
 
     print(f'alpha: {alpha}')
@@ -140,15 +141,13 @@ def inverse_kinematics_update(
     p2 = None
 
     if CANT_REACH_FOOT_TIP:
-      # FIX ME
-      # This is the wrong way to go about this. Do something else
-      p2 = deepcopy(p0)
-      p3 = deepcopy(p0)
-      p0 = Point(0, 0, 0)
-      p1 = Point(hexapod.coxia, 0, 0)
-      p2 = Point(hexapod.coxia + hexapod.femur, 0, 0)
-      p3 = Point(hexapod.coxia + hexapod.femur + hexapod.tibia, 0, 0)
-    elif IS_NEUTRAL_POSTION:
+      femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
+      femur_vector = scalar_multiply(femur_tibia_direction, a)
+      p2 = add_vectors(p1, femur_vector)
+
+      tibia_vector = scalar_multiply(femur_tibia_direction, a + b)
+      p3 = add_vectors(p1, tibia_vector)
+    if IS_NEUTRAL_POSTION:
       p2 = Point(hexapod.coxia + hexapod.femur, 0, 0)
     else:
       height = -p3.z
@@ -161,6 +160,8 @@ def inverse_kinematics_update(
       if height > a:
         z_ =  -z_ #case 1
       p2 = Point(x_, 0, z_)
+
+
 
     print(f'p0 {p0}')
     print(f'p1 {p1}')
