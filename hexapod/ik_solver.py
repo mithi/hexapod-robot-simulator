@@ -73,11 +73,9 @@ def inverse_kinematics_update(
     body_contact = hexapod.body.vertices[i]
     foot_tip = hexapod.legs[i].foot_tip()
     if body_contact.z < foot_tip.z:
-      return starting_hexapod, None, 'Twisting like this with center of gravity at this height is impossible'
+      return starting_hexapod, None, 'Impossible twist at given height: body contact shoved on ground'
 
   poses = deepcopy(HEXAPOD_POSE)
-  number_of_legs_above_ground = 0
-  leg_names_above_ground = []
 
   for i in range(hexapod.LEG_COUNT):
     leg_name = hexapod.legs[i].name
@@ -88,6 +86,10 @@ def inverse_kinematics_update(
     #ground_contact = deepcopy(foot_tip)
     unit_coxia_vector = project_vector_onto_plane(body_to_foot_vector, body_normal)
     coxia_vector = scalar_multiply(unit_coxia_vector, hexapod.coxia)
+    coxia_point = add_vectors(body_contact, coxia_vector)
+    if coxia_point.z < foot_tip.z:
+      return starting_hexapod, None, 'Impossible twist at given height: coxia joint shoved on ground'
+
 
     frame_to_2d = frame_to_align_vector_a_to_b(unit_coxia_vector, x_axis)
     body_to_foot_vector2d = deepcopy(body_to_foot_vector)
@@ -105,10 +107,8 @@ def inverse_kinematics_update(
     b = hexapod.femur
     c = hexapod.coxia
     d = length(vector_from_to(p1, p3))
-    e = length(body_to_foot_vector2d)
 
     aa = angle_opposite_of_last_side(d, b, a)
-    bb = angle_opposite_of_last_side(a, d, b)
     dd = angle_opposite_of_last_side(a, b, d)
 
     alpha_wrt_world = angle_between(coxia_vector, x_axis)
@@ -119,19 +119,6 @@ def inverse_kinematics_update(
     else:
       alpha = hexapod.body.COXIA_AXES[i] - alpha_wrt_world
 
-    beta = None
-    gamma = None
-    CANT_REACH_FOOT_TIP = False
-    IS_NEUTRAL_POSTION = False
-    LEGS_TOO_SHORT = False
-    TIBIA_TOO_LONG = False
-    FEMUR_TOO_LONG = False
-
-    if np.isclose((c + b)**2 + a**2, d**2):
-      print('Neutral position.')
-      beta = 0
-      gamma = 0
-      IS_NEUTRAL_POSTION = True
     if is_triangle(a, b, d):
       print(f'No problems. {leg_name} femur:{b} | tibia:{a} | coxia-to-foot:{d}')
       # This might be wrong, we need to check direction!
@@ -157,38 +144,17 @@ def inverse_kinematics_update(
       if p2.z < p3.z:
         return starting_hexapod, None, f'{leg_name} leg cant go through ground.'
     else:
-      CANT_REACH_FOOT_TIP = True
-      print(f"Can't reach foot tip. {leg_name}")
       if a + b < d:
-        print("> Legs too short.")
-        number_of_legs_above_ground += 1
-        leg_names_above_ground.append(leg_name)
-        print(f'Current Number of legs above ground {leg_names_above_ground}')
-        if number_of_legs_above_ground >= 3:
-          return starting_hexapod, None, f'Too many legs above ground. {leg_names_above_ground}'
-        LEGS_TOO_SHORT = True
         beta = angle_between(coxia_to_foot_vector2d, x_axis)
-        CANT_REACH_FOOT_TIP = True
-        gamma = 90
+        return starting_hexapod, None, f"Can't reach foot tip. At least one leg ({leg_name}) can't reach ground at this orientation."
       elif d + b < a:
-        TIBIA_TOO_LONG = True
         return starting_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
       else:
-        FEMUR_TOO_LONG = True
         return starting_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur is too long."
 
     poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta
     poses[i]['tibia'] = gamma
-    if IS_NEUTRAL_POSTION:
-      p2 = Point(hexapod.coxia + hexapod.femur, 0, 0)
-    else:
-      if LEGS_TOO_SHORT:
-        femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
-        femur_vector = scalar_multiply(femur_tibia_direction, a)
-        p2 = add_vectors(p1, femur_vector)
-        tibia_vector = scalar_multiply(femur_tibia_direction, b)
-        p3 = add_vectors(p2, tibia_vector)
 
     print(f'p0: {p0}')
     print(f'p1: {p1}')
