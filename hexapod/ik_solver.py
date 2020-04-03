@@ -113,61 +113,94 @@ def inverse_kinematics_update(
     gamma = None
     CANT_REACH_FOOT_TIP = False
     IS_NEUTRAL_POSTION = False
+    LEGS_TOO_SHORT = False
+    TIBIA_TOO_LONG = False
+    FEMUR_TOO_LONG = False
 
     if np.isclose((c + b)**2 + a**2, d**2):
       beta = 0
       gamma = 0
       IS_NEUTRAL_POSTION = True
     if is_triangle(a, b, d):
+      print('No problems.')
       # This might be wrong, we need to check direction!
       ee = angle_between(coxia_to_foot_vector2d, x_axis)
-      print(f'angle ee {ee}')
-      print(f'angle aa {aa}')
+      #print(f'angle ee {ee}')
+      #print(f'angle aa {aa}')
       beta = ee - aa
       gamma = dd - 90
     else:
-      print("Can't reach foot tip")
-      beta = angle_between(coxia_to_foot_vector2d, x_axis)
       CANT_REACH_FOOT_TIP = True
-      gamma = 90
+      print("Can't reach foot tip.")
+      if a + b < d:
+        print("> Legs too short.")
+        LEGS_TOO_SHORT = True
+        beta = angle_between(coxia_to_foot_vector2d, x_axis)
+        CANT_REACH_FOOT_TIP = True
+        gamma = 90
+      elif d + b < a:
+        TIBIA_TOO_LONG = True
+        print("> Tibia too long.")
 
-    print(f'alpha: {alpha}')
-    print(f'beta: {beta}')
-    print(f'gamma: {gamma}')
+        beta = 90
+        p2 = Point(p1.x, 0, b)
+        h = -p3.z
+        w = np.sqrt(a ** 2 - (b + h)**2)
+        p3 = Point(a + w, 0, p3.z)
+        tibia_vector = vector_from_to(p2, p3)
+        gamma = angle_between(tibia_vector, x_axis)
+      else:
+        FEMUR_TOO_LONG = True
+        alpha = 0
+        p2 = Point(c + b, 0, 0)
+        h = -p3.z
+        w = np.sqrt(a**2 + h**2)
+        p3 = Point(b + w, 0, h)
+        print("> Femur too long.")
+
+        tibia_vector = vector_from_to(p2, p3)
+        gamma = angle_between(tibia_vector, x_axis)
+
+    #print(f'alpha: {alpha}')
+    #print(f'beta: {beta}')
+    #print(f'gamma: {gamma}')
 
     poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta
     poses[i]['tibia'] = gamma
     p2 = None
 
-    if CANT_REACH_FOOT_TIP:
-      femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
-      femur_vector = scalar_multiply(femur_tibia_direction, a)
-      p2 = add_vectors(p1, femur_vector)
-
-      tibia_vector = scalar_multiply(femur_tibia_direction, a + b)
-      p3 = add_vectors(p1, tibia_vector)
     if IS_NEUTRAL_POSTION:
       p2 = Point(hexapod.coxia + hexapod.femur, 0, 0)
-    else:
+    elif not CANT_REACH_FOOT_TIP:
       height = -p3.z
-      print(f'height: {height}')
-      print(f'tibia: {a}')
+      #print(f'height: {height}')
+      #print(f'tibia: {a}')
 
       x_ = b * np.cos(np.radians(beta))
       z_ = b * np.sin(np.radians(beta))
       x_ = p1.x + x_
       if height > a:
         z_ =  -z_ #case 1
+
       p2 = Point(x_, 0, z_)
+    else:
+      if LEGS_TOO_SHORT:
+        femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
+        femur_vector = scalar_multiply(femur_tibia_direction, a)
+        p2 = add_vectors(p1, femur_vector)
+        tibia_vector = scalar_multiply(femur_tibia_direction, a + b)
+        p3 = add_vectors(p1, tibia_vector)
 
 
 
-    print(f'p0 {p0}')
-    print(f'p1 {p1}')
-    print(f'p2 {p2}')
-    print(f'p3 {p3}')
-    print('----')
+
+
+    #print(f'p0 {p0}')
+    #print(f'p1 {p1}')
+    #print(f'p2 {p2}')
+    #print(f'p3 {p3}')
+    #print('----')
 
     frame = frame_to_align_vector_a_to_b(x_axis, unit_coxia_vector)
     p0.update_point_wrt(frame)
