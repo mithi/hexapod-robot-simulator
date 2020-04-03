@@ -66,8 +66,9 @@ def inverse_kinematics_update(
   ty = end_y * hexapod.side
   tz = end_z * hexapod.tibia
 
-  starting_hexapod = deepcopy(hexapod)
   hexapod.detach_body_rotate_and_translate(rot_x, rot_y, rot_z, tx, ty, tz)
+  starting_hexapod = deepcopy(hexapod)
+
   body_normal = hexapod.z_axis
   for i in range(hexapod.LEG_COUNT):
     body_contact = hexapod.body.vertices[i]
@@ -105,7 +106,6 @@ def inverse_kinematics_update(
 
     a = hexapod.tibia
     b = hexapod.femur
-    c = hexapod.coxia
     d = length(vector_from_to(p1, p3))
 
     aa = angle_opposite_of_last_side(d, b, a)
@@ -113,7 +113,6 @@ def inverse_kinematics_update(
 
     alpha_wrt_world = angle_between(coxia_vector, x_axis)
     is_ccw = is_counter_clockwise(x_axis, coxia_vector, body_normal)
-    alpha = None
     if is_ccw:
       alpha = alpha_wrt_world - hexapod.body.COXIA_AXES[i]
     else:
@@ -129,7 +128,6 @@ def inverse_kinematics_update(
         beta = aa - ee
       gamma = dd - 90
 
-      print(f'beta: {beta}')
       height = -p3.z
       x_ = b * np.cos(np.radians(beta))
       z_ = b * np.sin(np.radians(beta))
