@@ -73,11 +73,11 @@ def inverse_kinematics_update(
     body_contact = hexapod.body.vertices[i]
     foot_tip = hexapod.legs[i].foot_tip()
     if body_contact.z < foot_tip.z:
-      return starting_hexapod, None, 'impossible position'
+      return starting_hexapod, None, 'Twisting like this with center of gravity at this height is impossible'
 
-
-  print('possible position')
   poses = deepcopy(HEXAPOD_POSE)
+  number_of_legs_above_ground = 0
+  leg_names_above_ground = []
 
   for i in range(hexapod.LEG_COUNT):
     leg_name = hexapod.legs[i].name
@@ -155,43 +155,27 @@ def inverse_kinematics_update(
       p2 = Point(x_, 0, z_)
 
       if p2.z < p3.z:
-        print('Cant go through ground.')
-        beta = -np.arcsin(-p3.z/(a + b))
-        gamma = 0
-        p2.x = p1.x + b * np.cos(beta)
-        p2.z = b * np.sin(beta)
-        p3.x = p1.x + (a + b) * np.cos(beta)
+        return starting_hexapod, None, f'{leg_name} leg cant go through ground.'
     else:
       CANT_REACH_FOOT_TIP = True
       print(f"Can't reach foot tip. {leg_name}")
       if a + b < d:
         print("> Legs too short.")
+        number_of_legs_above_ground += 1
+        leg_names_above_ground.append(leg_name)
+        print(f'Current Number of legs above ground {leg_names_above_ground}')
+        if number_of_legs_above_ground >= 3:
+          return starting_hexapod, None, f'Too many legs above ground. {leg_names_above_ground}'
         LEGS_TOO_SHORT = True
         beta = angle_between(coxia_to_foot_vector2d, x_axis)
         CANT_REACH_FOOT_TIP = True
         gamma = 90
       elif d + b < a:
         TIBIA_TOO_LONG = True
-        print("> Tibia too long.")
-
-        beta = 90
-        p2 = Point(p1.x, 0, b)
-        h = -p3.z
-        w = np.sqrt(a ** 2 - (b + h)**2)
-        p3 = Point(a + w, 0, p3.z)
-        tibia_vector = vector_from_to(p2, p3)
-        gamma = angle_between(tibia_vector, x_axis)
+        return starting_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
       else:
         FEMUR_TOO_LONG = True
-        alpha = 0
-        p2 = Point(c + b, 0, 0)
-        h = -p3.z
-        w = np.sqrt(a**2 + h**2)
-        p3 = Point(b + w, 0, h)
-        print("> Femur too long.")
-
-        tibia_vector = vector_from_to(p2, p3)
-        gamma = angle_between(tibia_vector, x_axis)
+        return starting_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur is too long."
 
     poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta

@@ -100,7 +100,8 @@ hip_stance: {start_hip_stance} | leg_stance: {start_leg_stance}
 
   hexapod.update_stance(start_hip_stance, start_leg_stance)
   hexapod, poses, msg = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
-  if msg == 'impossible position':
+  if msg is not None:
+    print (f'MESSAGE: {msg}')
     return text, figure
   #hexapod = deepcopy(BASE_HEXAPOD)
   #hexapod.update(poses)
