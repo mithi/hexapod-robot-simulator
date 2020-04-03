@@ -99,8 +99,11 @@ hip_stance: {start_hip_stance} | leg_stance: {start_leg_stance}
   )
 
   hexapod.update_stance(start_hip_stance, start_leg_stance)
-  hexapod, _ = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
-
+  hexapod, poses, msg = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
+  if msg == 'impossible position':
+    return text, figure
+  #hexapod = deepcopy(BASE_HEXAPOD)
+  #hexapod.update(poses)
   BASE_PLOTTER.update(figure, hexapod)
 
   # Use current camera view to display plot
