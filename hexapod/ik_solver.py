@@ -54,6 +54,14 @@ def update_hexapod_points(hexapod, leg_id, points):
   hexapod.legs[leg_id].p2 = points[2]
   hexapod.legs[leg_id].p3 = points[3]
 
+def body_contact_shoved_on_ground(hexapod):
+  for i in range(hexapod.LEG_COUNT):
+    body_contact = hexapod.body.vertices[i]
+    foot_tip = hexapod.legs[i].foot_tip()
+    if body_contact.z < foot_tip.z:
+      return True
+  return False
+
 def inverse_kinematics_update(
   hexapod,
   rot_x,
@@ -73,11 +81,8 @@ def inverse_kinematics_update(
   hexapod.detach_body_rotate_and_translate(rot_x, rot_y, rot_z, tx, ty, tz)
   detached_hexapod = deepcopy(hexapod)
 
-  for i in range(hexapod.LEG_COUNT):
-    body_contact = hexapod.body.vertices[i]
-    foot_tip = hexapod.legs[i].foot_tip()
-    if body_contact.z < foot_tip.z:
-      return detached_hexapod, None, 'Impossible twist at given height: body contact shoved on ground'
+  if body_contact_shoved_on_ground(hexapod):
+    return detached_hexapod, None, 'Impossible twist at given height: body contact shoved on ground'
 
   for i in range(hexapod.LEG_COUNT):
     leg_name = hexapod.legs[i].name
@@ -124,16 +129,17 @@ def inverse_kinematics_update(
       if p2.z < p3.z:
         return detached_hexapod, None, f'{leg_name} leg cant go through ground.'
     else:
-      if a + b < d:
+      if hexapod.femur + hexapod.tibia < d:
+        # Leg's are too short, compute tibia end points when leg's too short
         femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
         femur_vector = scalar_multiply(femur_tibia_direction, a)
         p2 = add_vectors(p1, femur_vector)
         tibia_vector = scalar_multiply(femur_tibia_direction, b)
         p3 = add_vectors(p2, tibia_vector)
-      elif d + b < a:
+      elif d + hexapod.femur < hexapod.tibia:
         return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
       else:
-        return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur is too long."
+        return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur length is too long."
 
     points = [p0, p1, p2, p3]
     # print points before updating frame of reference
