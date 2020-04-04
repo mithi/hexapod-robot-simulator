@@ -132,9 +132,9 @@ def inverse_kinematics_update(
       if hexapod.femur + hexapod.tibia < d:
         # Leg's are too short, compute tibia end points when leg's too short
         femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
-        femur_vector = scalar_multiply(femur_tibia_direction, a)
+        femur_vector = scalar_multiply(femur_tibia_direction, hexapod.femur)
         p2 = add_vectors(p1, femur_vector)
-        tibia_vector = scalar_multiply(femur_tibia_direction, b)
+        tibia_vector = scalar_multiply(femur_tibia_direction, hexapod.tibia)
         p3 = add_vectors(p2, tibia_vector)
       elif d + hexapod.femur < hexapod.tibia:
         return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
