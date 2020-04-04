@@ -119,21 +119,12 @@ def inverse_kinematics_update(
     else:
       twist_frame = rotz(twist)
 
-    p0.update_point_wrt(twist_frame)
-    p1.update_point_wrt(twist_frame)
-    p2.update_point_wrt(twist_frame)
-    p3.update_point_wrt(twist_frame)
-
-    assert hexapod.body_rotation_frame is not None
-    p0.update_point_wrt(hexapod.body_rotation_frame)
-    p1.update_point_wrt(hexapod.body_rotation_frame)
-    p2.update_point_wrt(hexapod.body_rotation_frame)
-    p3.update_point_wrt(hexapod.body_rotation_frame)
-
-    p0.move_xyz(body_contact.x, body_contact.y, body_contact.z)
-    p1.move_xyz(body_contact.x, body_contact.y, body_contact.z)
-    p2.move_xyz(body_contact.x, body_contact.y, body_contact.z)
-    p3.move_xyz(body_contact.x, body_contact.y, body_contact.z)
+    points = [p0, p1, p2, p3]
+    for point in points:
+      point.update_point_wrt(twist_frame)
+      assert hexapod.body_rotation_frame is not None
+      point.update_point_wrt(hexapod.body_rotation_frame)
+      point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
 
     # Sanity Check
     coxia = length(vector_from_to(p0, p1))
