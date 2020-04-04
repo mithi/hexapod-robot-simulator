@@ -261,7 +261,7 @@ def inverse_kinematics_update(
       gamma = 0.0
       leg_x_axis = Point(1, 0, 0)
       beta = angle_between(leg_x_axis, femur_vector)
-      if femur_vector.x < 0:
+      if femur_vector.z < 0:
         beta = -beta
 
     # *******************
@@ -286,7 +286,7 @@ def inverse_kinematics_update(
     # Update hexapod's points to what we computed
     update_hexapod_points(hexapod, i, points)
 
-    poses[i]['coxia'] = alpha
+    poses[i]['coxia'] = alpha - hexapod.body.COXIA_AXES[i]
     poses[i]['femur'] = beta
     poses[i]['tibia'] = gamma
 
