@@ -41,10 +41,10 @@ def find_twist_frame(hexapod, unit_coxia_vector):
   twist = angle_between(unit_coxia_vector, hexapod.x_axis)
   is_ccw = is_counter_clockwise(unit_coxia_vector, hexapod.x_axis, hexapod.z_axis)
   if is_ccw:
-    twist_frame = rotz(-twist)
-  else:
-    twist_frame = rotz(twist)
-  return twist_frame
+    twist = -twist
+
+  twist_frame = rotz(twist)
+  return twist, twist_frame
 
 def update_hexapod_points(hexapod, leg_id, points):
   hexapod.legs[leg_id].p0 = points[0]
@@ -149,7 +149,7 @@ def inverse_kinematics_update(
     #print_points(points)
 
     # Find frame used to twist the leg frame wrt to hexapod's body contact point's x axis
-    twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
+    _, twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
 
     # Convert points from local leg coordinate frame to world coordinate frame
     for point in points:
