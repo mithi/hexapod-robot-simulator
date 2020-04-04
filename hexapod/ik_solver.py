@@ -123,17 +123,14 @@ def inverse_kinematics_update(
     CAN_REACH_TARGET_GROUND_POINT = is_triangle(hexapod.tibia, hexapod.femur, d)
 
     if CAN_REACH_TARGET_GROUND_POINT:
-
+      beta = aa - ee
       if p3.z > 0:
         beta = aa + ee
-      else:
-        beta = aa - ee
 
-      height = -p3.z
-      x_ = hexapod.femur * np.cos(np.radians(beta))
       z_ = hexapod.femur * np.sin(np.radians(beta))
-      x_ = p1.x + x_
-      if height > hexapod.tibia:
+      x_ = p1.x + hexapod.femur * np.cos(np.radians(beta))
+
+      if -p3.z > hexapod.tibia:
         z_ =  -z_
       if beta < 0 and z_ > 0:
         z_ = -z_
