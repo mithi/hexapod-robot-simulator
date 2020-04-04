@@ -108,7 +108,9 @@ def inverse_kinematics_update(
     aa = angle_opposite_of_last_side(d, b, a)
     ee = angle_between(coxia_to_foot_vector2d, x_axis)
 
-    if is_triangle(a, b, d):
+    CAN_REACH_FOOT_TIP = is_triangle(hexapod.tibia, hexapod.femur, d)
+
+    if CAN_REACH_FOOT_TIP:
 
       if p3.z > 0:
         beta = aa + ee
@@ -129,17 +131,18 @@ def inverse_kinematics_update(
       if p2.z < p3.z:
         return detached_hexapod, None, f'{leg_name} leg cant go through ground.'
     else:
-      if hexapod.femur + hexapod.tibia < d:
-        # Leg's are too short, compute tibia end points when leg's too short
-        femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
-        femur_vector = scalar_multiply(femur_tibia_direction, hexapod.femur)
-        p2 = add_vectors(p1, femur_vector)
-        tibia_vector = scalar_multiply(femur_tibia_direction, hexapod.tibia)
-        p3 = add_vectors(p2, tibia_vector)
-      elif d + hexapod.femur < hexapod.tibia:
-        return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
-      else:
+      if d + hexapod.tibia < hexapod.femur:
         return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur length is too long."
+      if d + hexapod.femur < hexapod.tibia:
+        return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
+
+      # if hexapod.femur + hexapod.tibia < d:
+      # Leg's are too short, compute tibia end points when leg's too short
+      femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
+      femur_vector = scalar_multiply(femur_tibia_direction, hexapod.femur)
+      p2 = add_vectors(p1, femur_vector)
+      tibia_vector = scalar_multiply(femur_tibia_direction, hexapod.tibia)
+      p3 = add_vectors(p2, tibia_vector)
 
     points = [p0, p1, p2, p3]
     # print points before updating frame of reference
@@ -161,7 +164,6 @@ def inverse_kinematics_update(
 
     # Update hexapod's points to what we computed
     update_hexapod_points(hexapod, i, points)
-
 
   #print(f'poses: {poses}')
   return hexapod, poses, None
