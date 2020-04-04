@@ -17,40 +17,13 @@ from hexapod.points import (
   is_triangle,
   project_vector_onto_plane,
   angle_between,
-  angle_opposite_of_last_side
+  angle_opposite_of_last_side,
+  rotz
 )
 
 def is_counter_clockwise(a, b, n):
   return dot(a, cross(b, n)) > 0
 
-
-# CASE 1      <..........x-axis......
-#          -         |....c.....|
-#         .        /(p1)---- (p0) ....
-#        b       /  /       /     .
-#       .      /   /      /      .
-#      .     /    / d   /       .
-#     -   (p2)   /    /        e
-#     .     |   /   /         .
-#     a     |  /  /          .
-#     .     | / /           .
-#     _      (p3) ................
-#
-#
-# CASE 2    <......... x-axis .......|
-#                      (p2)
-#                     / \
-#                    /   \
-#                   /     \
-#                  /       \(p1)-------(p0)
-#                 /       /
-#                /      /
-#               /     /
-#              /    /
-#             /   /
-#            /  /
-#            (p3)
-#
 
 def inverse_kinematics_update(
   hexapod,
@@ -83,50 +56,31 @@ def inverse_kinematics_update(
     body_contact = hexapod.body.vertices[i]
     foot_tip = hexapod.legs[i].foot_tip()
     body_to_foot_vector = vector_from_to(body_contact, foot_tip)
-
-    #ground_contact = deepcopy(foot_tip)
     unit_coxia_vector = project_vector_onto_plane(body_to_foot_vector, body_normal)
     coxia_vector = scalar_multiply(unit_coxia_vector, hexapod.coxia)
     coxia_point = add_vectors(body_contact, coxia_vector)
+
     if coxia_point.z < foot_tip.z:
       return starting_hexapod, None, 'Impossible twist at given height: coxia joint shoved on ground'
 
-
-    frame_to_2d = frame_to_align_vector_a_to_b(unit_coxia_vector, x_axis)
-    body_to_foot_vector2d = deepcopy(body_to_foot_vector)
-    body_to_foot_vector2d.update_point_wrt(frame_to_2d)
-    coxia_vector2d = deepcopy(coxia_vector)
-    coxia_vector2d.update_point_wrt(frame_to_2d)
-
     p0 = Point(0, 0, 0)
-    p1 = Point(hexapod.coxia, 0.0, 0.0)
-    p3 = body_to_foot_vector2d
-    p3.y = 0
+    p1 = Point(hexapod.coxia, 0, 0)
+    dd = angle_between(unit_coxia_vector, body_to_foot_vector)
+    e = length(body_to_foot_vector)
+    p3 = Point(e * np.cos(np.radians(dd)), 0, -e * np.sin(np.radians(dd)))
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
-
+    d = length(vector_from_to(p1, p3))
     a = hexapod.tibia
     b = hexapod.femur
-    d = length(vector_from_to(p1, p3))
-
     aa = angle_opposite_of_last_side(d, b, a)
-    dd = angle_opposite_of_last_side(a, b, d)
-
-    alpha_wrt_world = angle_between(coxia_vector, x_axis)
-    is_ccw = is_counter_clockwise(x_axis, coxia_vector, body_normal)
-    if is_ccw:
-      alpha = alpha_wrt_world - hexapod.body.COXIA_AXES[i]
-    else:
-      alpha = hexapod.body.COXIA_AXES[i] - alpha_wrt_world
+    ee = angle_between(coxia_to_foot_vector2d, x_axis)
 
     if is_triangle(a, b, d):
-      print(f'No problems. {leg_name} femur:{b} | tibia:{a} | coxia-to-foot:{d}')
-      # This might be wrong, we need to check direction!
-      ee = angle_between(coxia_to_foot_vector2d, x_axis)
+
       if p3.z > 0:
         beta = aa + ee
       else:
         beta = aa - ee
-      gamma = dd - 90
 
       height = -p3.z
       x_ = b * np.cos(np.radians(beta))
@@ -143,27 +97,39 @@ def inverse_kinematics_update(
         return starting_hexapod, None, f'{leg_name} leg cant go through ground.'
     else:
       if a + b < d:
-        beta = angle_between(coxia_to_foot_vector2d, x_axis)
-        return starting_hexapod, None, f"Can't reach foot tip. At least one leg ({leg_name}) can't reach ground at this orientation."
+        femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
+        femur_vector = scalar_multiply(femur_tibia_direction, a)
+        p2 = add_vectors(p1, femur_vector)
+        tibia_vector = scalar_multiply(femur_tibia_direction, b)
+        p3 = add_vectors(p2, tibia_vector)
       elif d + b < a:
         return starting_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
       else:
         return starting_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur is too long."
 
-    poses[i]['coxia'] = alpha
-    poses[i]['femur'] = beta
-    poses[i]['tibia'] = gamma
+    #print(f'p0: {p0}')
+    #print(f'p1: {p1}')
+    #print(f'p2: {p2}')
+    #print(f'p3: {p3}')
 
-    print(f'p0: {p0}')
-    print(f'p1: {p1}')
-    print(f'p2: {p2}')
-    print(f'p3: {p3}')
+    twist = angle_between(unit_coxia_vector, hexapod.x_axis)
+    is_ccw = is_counter_clockwise(unit_coxia_vector, hexapod.x_axis, hexapod.z_axis)
+    if is_ccw:
+      twist_frame = rotz(-twist)
+    else:
+      twist_frame = rotz(twist)
 
-    frame = frame_to_align_vector_a_to_b(x_axis, unit_coxia_vector)
-    p0.update_point_wrt(frame)
-    p1.update_point_wrt(frame)
-    p2.update_point_wrt(frame)
-    p3.update_point_wrt(frame)
+    p0.update_point_wrt(twist_frame)
+    p1.update_point_wrt(twist_frame)
+    p2.update_point_wrt(twist_frame)
+    p3.update_point_wrt(twist_frame)
+
+    assert hexapod.body_rotation_frame is not None
+    p0.update_point_wrt(hexapod.body_rotation_frame)
+    p1.update_point_wrt(hexapod.body_rotation_frame)
+    p2.update_point_wrt(hexapod.body_rotation_frame)
+    p3.update_point_wrt(hexapod.body_rotation_frame)
+
     p0.move_xyz(body_contact.x, body_contact.y, body_contact.z)
     p1.move_xyz(body_contact.x, body_contact.y, body_contact.z)
     p2.move_xyz(body_contact.x, body_contact.y, body_contact.z)
