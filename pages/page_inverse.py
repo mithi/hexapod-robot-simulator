@@ -24,10 +24,11 @@ from copy import deepcopy
 
 from app import app
 
-SECTION_LEFT = html.Div([
+layout = html.Div([
     html.Div([
       html.Label(dcc.Markdown('**INVERSE KINEMATICS CONTROLS**')),
       SECTION_IK,
+      html.Br(),
       SECTION_LENGTHS_CONTROL,
       html.Div(id='ik-variables')],
       style={'width': '47%'}),
@@ -35,13 +36,6 @@ SECTION_LEFT = html.Div([
   ],
   style={'display': 'flex'}
 )
-
-
-layout = html.Div([
-  html.H1('Inverse Kinematics'),
-  SECTION_LEFT,
-])
-
 
 INPUTS = IK_INPUTS + MEASUREMENT_INPUTS
 @app.callback(
@@ -67,18 +61,16 @@ def display_variables(
   relayout_data,
   figure):
 
-  # Display the parameter values on the screen
-  text = dcc.Markdown(f'''
-  ```
-x: {end_x} | rot.x: {rot_x} | coxia: {coxia} | fro: {front}
-y: {end_y} | rot.y: {rot_y} | femur: {femur} | sid: {side}
-z: {end_z} | rot.z: {rot_z} | tibia: {tibia} | mid: {mid}
-hip_stance: {start_hip_stance} | leg_stance: {start_leg_stance}
-
-
-  ```
-  '''
-  )
+  text = f'''
++----------------+------------+------------+------------+
+| rot.x: {rot_x:<+7.2f} | x: {end_x:<+5.2f} % | coxia: {coxia:3d} | fro: {front:5d} |
+| rot.y: {rot_y:<+7.2f} | y: {end_y:<+5.2f} % | femur: {femur:3d} | sid: {side:5d} |
+| rot.z: {rot_z:<+7.2f} | z: {end_z:<+5.2f} % | tibia: {tibia:3d} | mid: {mid:5d} |
++----------------+------------+------------+------------+
+| hip_stance: {start_hip_stance:<+7.2f} |
+| leg_stance: {start_leg_stance:<+7.2f} |
++---------------------+
+'''
 
 
   # If there's no figure, create the default one
@@ -86,7 +78,7 @@ hip_stance: {start_hip_stance} | leg_stance: {start_leg_stance}
     print('No hexapod figure')
     hexapod = deepcopy(BASE_HEXAPOD)
     hexapod.update(HEXAPOD_POSE)
-    return text, BASE_PLOTTER.update(HEXAPOD_FIGURE, hexapod)
+    return dcc.Markdown(f'```{text}```'), BASE_PLOTTER.update(HEXAPOD_FIGURE, hexapod)
 
   # Create a hexapod
   hexapod = VirtualHexapod().new(
@@ -97,18 +89,34 @@ hip_stance: {start_hip_stance} | leg_stance: {start_leg_stance}
     femur or 0,
     tibia or 0
   )
+  hexapod_clone = deepcopy(hexapod)
 
   hexapod.update_stance(start_hip_stance, start_leg_stance)
   hexapod, poses, msg = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
   if msg is not None:
-    text = dcc.Markdown(f'''### **IMPORTANT MESSAGE!** {msg}''')
-  #hexapod = deepcopy(BASE_HEXAPOD)
-  #hexapod.update(poses)
-  BASE_PLOTTER.update(figure, hexapod)
+    text = f'''{msg} | {text}'''
+    BASE_PLOTTER.update(figure, hexapod)
+  else:
+    hexapod_clone.update(poses)
+    BASE_PLOTTER.update(figure, hexapod_clone)
+    text = add_poses_to_text(text, poses)
+
 
   # Use current camera view to display plot
   if relayout_data and 'scene.camera' in relayout_data:
     camera = relayout_data['scene.camera']
-    figure = BASE_PLOTTER.change_camera_view(figure, camera)
+    BASE_PLOTTER.change_camera_view(figure, camera)
 
-  return text, figure
+  return dcc.Markdown(f'```{text}```'), figure
+
+
+def add_poses_to_text(postfix_text, poses):
+  message = f'''
++----------------+------------+------------+------------+
+| leg name       | coxia      | femur      | tibia      |
++----------------+------------+------------+------------+'''
+  for pose in poses.values():
+    message += f'''
+| {pose['name']:14} | {pose['coxia']:<+10.2f} | {pose['femur']:<+10.2f} | {pose['tibia']:<+10.2f} |'''
+
+  return message + postfix_text

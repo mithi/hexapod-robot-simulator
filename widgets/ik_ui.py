@@ -13,6 +13,8 @@ IK_INPUT_IDs = [
   'input-end-rot-y',
   'input-end-rot-z',
 ]
+IK_INPUTS = [Input(input_id, 'value') for input_id in IK_INPUT_IDs]
+
 
 def make_translate_slider(name, slider_label, slider_size=200):
   return dash_daq.Slider( # pylint: disable=not-callable
@@ -60,7 +62,7 @@ def make_h_slider(name, slider_label):
     updatemode='drag',
     vertical=True,
     handleLabel={"showCurrentValue": True,"label": slider_label},
-    step=2.0,
+    step=0.5,
   )
 
 def make_stance_slider(name, slider_label):
@@ -73,7 +75,7 @@ def make_stance_slider(name, slider_label):
     updatemode='drag',
     vertical=True,
     handleLabel={"showCurrentValue": True,"label": slider_label},
-    step=2.0,
+    step=0.5,
   )
 
 div_ss = make_stance_slider('input-start-hip-stance', 'hip.stance')
@@ -99,4 +101,3 @@ SECTION_IK = html.Div([
   style={'display': 'flex', 'flex-direction': 'row'}
 )
 
-IK_INPUTS = [Input(input_id, 'value') for input_id in IK_INPUT_IDs]
