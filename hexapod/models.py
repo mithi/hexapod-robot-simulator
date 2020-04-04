@@ -260,7 +260,7 @@ class VirtualHexapod:
     self.front = f
     self.mid = m
     self.side = s
-
+    self.body_rotation_frame = None
     self.body = Hexagon(f, m, s)
     self.store_neutral_legs(a, b, c)
     self.ground_contacts = [leg.foot_tip() for leg in self.legs]
@@ -275,6 +275,8 @@ class VirtualHexapod:
     # Detaches the body of the hexapod from the legs
     # then rotate and translate body as if a separate entity
     frame = frame_rotxyz(a, b, c)
+    self.body_rotation_frame = frame
+
     points = self.body.vertices + [self.body.head, self.body.cog]
 
     for point in points:
@@ -285,6 +287,7 @@ class VirtualHexapod:
 
   def detach_body_and_coxia_rotate_and_translate(self, a, b, c, x, y, z):
     frame = frame_rotxyz(a, b, c)
+    self.body_rotation_frame = frame
     points = self.body.vertices + [self.body.head, self.body.cog]
 
     for point in points:
@@ -311,6 +314,7 @@ class VirtualHexapod:
     self.update(pose)
 
   def update(self, poses):
+    self.body_rotation_frame = None
     # Check the possibility of hexapod twisting about z axis
     might_twist = self.find_if_might_twist(poses)
     # Remember old ground contacts
@@ -458,9 +462,6 @@ def find_twist(old_ground_contacts, new_ground_contacts):
   # Get the projection of these points in the ground
   old_vector = Point(old.x, old.y, 0)
   new_vector = Point(new.x, new.y, 0)
-
-  # Fix: Why is this not working?? 😢
-  # wrong_twist_frame = frame_to_align_vector_a_to_b(new_vector, old_vector)
 
   twist_frame = _twist(new_vector, old_vector)
 
