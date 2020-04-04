@@ -1,3 +1,96 @@
+#######################
+#
+# **********************
+# DEFINITIONS
+# **********************
+# p0: Body contact point
+# p1: coxia point / coxia joint (point between coxia limb and femur limb)
+# p2: tibia point / tibia joint (point between femur limb and tibia limb)
+# p3: foot tip / ground contact
+# coxia vector - vector from p0 to p1
+# hexapod.coxia - coxia vector length
+# femur vector - vector from p1 to p2
+# hexapod.femur - femur vector length
+# tibia vector - vector from p2 to p3
+# hexapod.tibia - tibia vector length
+# body_to_foot vector - vector from p0 to p3
+# coxia_to_foot vector - vector from p1 to p3
+# d: coxia_to_foot_length
+# body_to_foot_length
+#
+# rho
+#  -- angle between coxia vector (leg x axis) and body to foot vector
+#  -- angle between point p1, p0, and p3. (p0 at center)
+# theta
+#  --- angle between femur vector and coxia to foot vector
+#  --- angle between point p2, p1, and p3. (p1 at center)
+# phi
+#  --- angle between coxia vector (leg x axis) and coxia to foot vector
+#
+# beta
+#  --- angle between coxia vector (leg x axis) and femur vector
+# gamma
+#  --- angle between tibia vector and perpendicular vector to femur vector
+#  --- positive is counter clockwise
+# alpha
+#  --- angle between leg coordinate frame and axis defined by line from
+#      hexapod's center of gravity to body contact.
+#
+#
+# For CASE 1 and CASE 2:
+#   beta = theta - phi
+#     beta is positive when phi < theta (case 1)
+#     beta is negative when phi > theta (case 2)
+# *****************
+# Case 1 (beta IS POSITIVE)
+# *****************
+#
+#                  (p2)
+#                   *
+#                  / |
+#                 /  |
+#                /   |
+#   (p0)    (p1)/    |
+#     *------- *-----| ----------------> leg_x_axis
+#      \       \     |
+#        \      \    |
+#          \     \   |
+#            \    \  |
+#              \   \ |
+#                \   |
+#                  \ * (p3)
+#
+#
+# *****************
+# Case 2 (beta is negative)
+# *****************
+#
+#
+# (p0)     (p1)
+# *------- *----------------------> leg_x_axis
+# \        |   \
+#  \       |    \
+#   \      |     \
+#    \     |      * (p2)
+#     \    |     /
+#      \   |    /
+#       \  |   /
+#        \ |  /
+#         \| /
+#          *
+#
+# *****************
+# Case 3 (p3 is above p1) then beta = phi + theta
+# *****************
+#                * (p2)
+#               / \
+#             /    |
+#           /      * (p3)
+#         /     /
+# *------ *  /
+# (p0)   (p1)
+########################
+
 from copy import deepcopy
 from hexapod.const import HEXAPOD_POSE
 import numpy as np
@@ -115,11 +208,18 @@ def inverse_kinematics_update(
     p3z = -body_to_foot_length * np.sin(np.radians(dd))
     p3 = Point(p3x, 0, p3z)
 
+    # *******************
+    # Compute p2
+    # *******************
+    # These values are needed to compute
+    # p2 aka tibia joint (point between femur limb and tibia limb)
+
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
     d = length(coxia_to_foot_vector2d)
     aa = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
     ee = angle_between(coxia_to_foot_vector2d, x_axis)
 
+    # If we can form this triangle this means we can reach the target ground contact point
     CAN_REACH_TARGET_GROUND_POINT = is_triangle(hexapod.tibia, hexapod.femur, d)
 
     if CAN_REACH_TARGET_GROUND_POINT:
@@ -153,6 +253,9 @@ def inverse_kinematics_update(
       tibia_vector = scalar_multiply(femur_tibia_direction, hexapod.tibia)
       p3 = add_vectors(p2, tibia_vector)
 
+    # *******************
+    # Update hexapod points and get pose angles
+    # *******************
     points = [p0, p1, p2, p3]
     #print_points(points)
 
