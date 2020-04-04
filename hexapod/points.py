@@ -39,12 +39,13 @@ def is_triangle(a, b, c):
   return (a + b > c) and (a + c > b) and (b + c > a)
 
 
+#https://www.maplesoft.com/support/help/Maple/view.aspx?path=MathApps%2FProjectionOfVectorOntoPlane
 # u is the vector, n is the plane normal
 def project_vector_onto_plane(u, n):
   s = dot(u, n) / (length(n) ** 2)
-  n = scalar_multiply(n, s)
-  vector = subtract_vectors(u, n)
-  return get_unit_vector(vector)
+  temporary_vector = scalar_multiply(n, s)
+  vector = subtract_vectors(u, temporary_vector)
+  return vector
 
 
 def angle_between(a, b):

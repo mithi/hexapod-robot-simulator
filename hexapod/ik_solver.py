@@ -88,11 +88,14 @@ def inverse_kinematics_update(
     leg_name = hexapod.legs[i].name
     body_contact = hexapod.body.vertices[i]
     foot_tip = hexapod.legs[i].foot_tip()
-    body_to_foot_vector = vector_from_to(body_contact, foot_tip)
-    unit_coxia_vector = project_vector_onto_plane(body_to_foot_vector, hexapod.z_axis)
-    coxia_vector = scalar_multiply(unit_coxia_vector, hexapod.coxia)
-    coxia_point = add_vectors(body_contact, coxia_vector)
 
+    body_to_foot_vector = vector_from_to(body_contact, foot_tip)
+
+    projection = project_vector_onto_plane(body_to_foot_vector, hexapod.z_axis)
+    unit_coxia_vector = get_unit_vector(projection)
+    coxia_vector = scalar_multiply(unit_coxia_vector, hexapod.coxia)
+
+    coxia_point = add_vectors(body_contact, coxia_vector)
     if coxia_point.z < foot_tip.z:
       return detached_hexapod, None, 'Impossible rotation at given height: coxia joint shoved on ground'
 
