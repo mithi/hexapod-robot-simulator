@@ -236,3 +236,8 @@ def is_point_inside_triangle2(p, p0, p1, p2):
     x = (e * d - f * b) / det
     y = (a * f - c * e) / det
     return -0.01 <= x <= 1 and -0.01 <= y <= 1 and x + y <= 1
+
+# Check if angle from vector a to b about normal n is positive
+# Rotating from vector a to is moving into a conter clockwise direction
+def is_counter_clockwise(a, b, n):
+  return dot(a, cross(b, n)) > 0

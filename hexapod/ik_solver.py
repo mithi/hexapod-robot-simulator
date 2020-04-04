@@ -15,14 +15,12 @@ from hexapod.points import (
   get_unit_vector,
   frame_to_align_vector_a_to_b,
   is_triangle,
+  is_counter_clockwise,
   project_vector_onto_plane,
   angle_between,
   angle_opposite_of_last_side,
   rotz
 )
-
-def is_counter_clockwise(a, b, n):
-  return dot(a, cross(b, n)) > 0
 
 def sanity_leg_lengths_check(hexapod, leg_name, points):
   coxia = length(vector_from_to(points[0], points[1]))
