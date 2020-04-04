@@ -82,7 +82,7 @@ def inverse_kinematics_update(
   detached_hexapod = deepcopy(hexapod)
 
   if body_contact_shoved_on_ground(hexapod):
-    return detached_hexapod, None, 'Impossible twist at given height: body contact shoved on ground'
+    return detached_hexapod, None, 'Impossible rotation at given height: body contact shoved on ground'
 
   for i in range(hexapod.LEG_COUNT):
     leg_name = hexapod.legs[i].name
@@ -94,15 +94,17 @@ def inverse_kinematics_update(
     coxia_point = add_vectors(body_contact, coxia_vector)
 
     if coxia_point.z < foot_tip.z:
-      return detached_hexapod, None, 'Impossible twist at given height: coxia joint shoved on ground'
+      return detached_hexapod, None, 'Impossible rotation at given height: coxia joint shoved on ground'
+
+    dd = angle_between(unit_coxia_vector, body_to_foot_vector)
+    e = length(body_to_foot_vector)
 
     p0 = Point(0, 0, 0)
     p1 = Point(hexapod.coxia, 0, 0)
-    dd = angle_between(unit_coxia_vector, body_to_foot_vector)
-    e = length(body_to_foot_vector)
     p3 = Point(e * np.cos(np.radians(dd)), 0, -e * np.sin(np.radians(dd)))
+
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
-    d = length(vector_from_to(p1, p3))
+    d = length(coxia_to_foot_vector2d)
     aa = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
     ee = angle_between(coxia_to_foot_vector2d, x_axis)
 
@@ -134,8 +136,8 @@ def inverse_kinematics_update(
       if d + hexapod.femur < hexapod.tibia:
         return detached_hexapod, None, f"Can't reach target ground point. {leg_name} leg's Tibia length is too long."
 
-      # if hexapod.femur + hexapod.tibia < d:
-      # Leg's are too short, compute tibia end points when leg's too short
+      # Then hexapod.femur + hexapod.tibia < d:
+      # This means leg's are too short, compute tibia end points in this case
       femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
       femur_vector = scalar_multiply(femur_tibia_direction, hexapod.femur)
       p2 = add_vectors(p1, femur_vector)
@@ -143,14 +145,12 @@ def inverse_kinematics_update(
       p3 = add_vectors(p2, tibia_vector)
 
     points = [p0, p1, p2, p3]
-    # print points before updating frame of reference
-    print_points(points)
+    #print_points(points)
 
     # Find frame used to twist the leg frame wrt to hexapod's body contact point's x axis
     twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
 
-    # Compute and convert points from local leg coordinate frame
-    # to world coordinate frame
+    # Convert points from local leg coordinate frame to world coordinate frame
     for point in points:
       point.update_point_wrt(twist_frame)
       assert hexapod.body_rotation_frame is not None
