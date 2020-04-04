@@ -103,14 +103,12 @@ def inverse_kinematics_update(
     p3 = Point(e * np.cos(np.radians(dd)), 0, -e * np.sin(np.radians(dd)))
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
     d = length(vector_from_to(p1, p3))
-    a = hexapod.tibia
-    b = hexapod.femur
-    aa = angle_opposite_of_last_side(d, b, a)
+    aa = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
     ee = angle_between(coxia_to_foot_vector2d, x_axis)
 
-    CAN_REACH_FOOT_TIP = is_triangle(hexapod.tibia, hexapod.femur, d)
+    CAN_REACH_TARGET_GROUND_POINT = is_triangle(hexapod.tibia, hexapod.femur, d)
 
-    if CAN_REACH_FOOT_TIP:
+    if CAN_REACH_TARGET_GROUND_POINT:
 
       if p3.z > 0:
         beta = aa + ee
@@ -118,23 +116,23 @@ def inverse_kinematics_update(
         beta = aa - ee
 
       height = -p3.z
-      x_ = b * np.cos(np.radians(beta))
-      z_ = b * np.sin(np.radians(beta))
+      x_ = hexapod.femur * np.cos(np.radians(beta))
+      z_ = hexapod.femur * np.sin(np.radians(beta))
       x_ = p1.x + x_
-      if height > a:
+      if height > hexapod.tibia:
         z_ =  -z_
-      if beta < 0:
-        if z_ > 0:
-          z_ = -z_
+      if beta < 0 and z_ > 0:
+        z_ = -z_
+
       p2 = Point(x_, 0, z_)
 
       if p2.z < p3.z:
         return detached_hexapod, None, f'{leg_name} leg cant go through ground.'
     else:
       if d + hexapod.tibia < hexapod.femur:
-        return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur length is too long."
+        return detached_hexapod, None, f"Can't reach target ground point. {leg_name} leg's Femur length is too long."
       if d + hexapod.femur < hexapod.tibia:
-        return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
+        return detached_hexapod, None, f"Can't reach target ground point. {leg_name} leg's Tibia length is too long."
 
       # if hexapod.femur + hexapod.tibia < d:
       # Leg's are too short, compute tibia end points when leg's too short
