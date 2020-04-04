@@ -45,13 +45,13 @@
 # Case 1 (beta IS POSITIVE)
 # *****************
 #
-#                  (p2)
-#                   *
-#                  / |
-#                 /  |
-#                /   |
+#      ^          (p2)
+#      |            *
+#  (leg_z_axis)    / |
+#      |          /  |
+#      |         /   |
 #   (p0)    (p1)/    |
-#     *------- *-----| ----------------> leg_x_axis
+#     *------- *-----| ----------------> (leg_x_axis)
 #      \       \     |
 #        \      \    |
 #          \     \   |
@@ -64,10 +64,11 @@
 # *****************
 # Case 2 (beta is negative)
 # *****************
-#
-#
-# (p0)     (p1)
-# *------- *----------------------> leg_x_axis
+#                           ^
+#                           |
+#                         (leg_z_axis direction)
+# (p0)     (p1)             |
+# *------- *----------------|------> (leg_x_axis direction)
 # \        |   \
 #  \       |    \
 #   \      |     \
@@ -214,7 +215,7 @@ def inverse_kinematics_update(
     p3 = Point(p3x, 0, p3z)
 
     # *******************
-    # Compute p2
+    # Compute p2, beta and gamma
     # *******************
     # These values are needed to compute
     # p2 aka tibia joint (point between femur limb and tibia limb)
@@ -235,12 +236,10 @@ def inverse_kinematics_update(
       z_ = hexapod.femur * np.sin(np.radians(beta))
       x_ = p1.x + hexapod.femur * np.cos(np.radians(beta))
 
-      if -p3.z > hexapod.tibia:
-        z_ =  -z_
-      if beta < 0 and z_ > 0:
-        z_ = -z_
-
       p2 = Point(x_, 0, z_)
+      femur_vector = vector_from_to(p1, p2)
+      tibia_vector = vector_from_to(p2, p3)
+      gamma = 90 - angle_between(femur_vector, tibia_vector)
 
       if p2.z < p3.z:
         return detached_hexapod, None, f'{leg_name} leg cant go through ground.'
@@ -258,6 +257,13 @@ def inverse_kinematics_update(
       tibia_vector = scalar_multiply(femur_tibia_direction, hexapod.tibia)
       p3 = add_vectors(p2, tibia_vector)
 
+      # find beta and gamma
+      gamma = 0.0
+      leg_x_axis = Point(1, 0, 0)
+      beta = angle_between(leg_x_axis, femur_vector)
+      if femur_vector.x < 0:
+        beta = -beta
+
     # *******************
     # Update hexapod points and get pose angles
     # *******************
@@ -265,7 +271,7 @@ def inverse_kinematics_update(
     #print_points(points)
 
     # Find frame used to twist the leg frame wrt to hexapod's body contact point's x axis
-    _, twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
+    alpha, twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
 
     # Convert points from local leg coordinate frame to world coordinate frame
     for point in points:
@@ -279,6 +285,11 @@ def inverse_kinematics_update(
 
     # Update hexapod's points to what we computed
     update_hexapod_points(hexapod, i, points)
+
+    poses[i]['coxia'] = alpha
+    poses[i]['femur'] = beta
+    poses[i]['tibia'] = gamma
+
 
   #print(f'poses: {poses}')
   return hexapod, poses, None
