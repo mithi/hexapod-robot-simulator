@@ -89,20 +89,31 @@ def inverse_kinematics_update(
 
     body_to_foot_vector = vector_from_to(body_contact, foot_tip)
 
+    # find the coxia vector which is the vector
+    # from body contact point to joint between coxia and femur limb
     projection = project_vector_onto_plane(body_to_foot_vector, hexapod.z_axis)
     unit_coxia_vector = get_unit_vector(projection)
     coxia_vector = scalar_multiply(unit_coxia_vector, hexapod.coxia)
 
+    # coxia point / joint is the point connecting the coxia and tibia limbs
     coxia_point = add_vectors(body_contact, coxia_vector)
     if coxia_point.z < foot_tip.z:
       return detached_hexapod, None, 'Impossible rotation at given height: coxia joint shoved on ground'
 
-    dd = angle_between(unit_coxia_vector, body_to_foot_vector)
-    e = length(body_to_foot_vector)
-
+    # *******************
+    # Compute p0, p1 and p3
+    # *******************
+    # p0 and p1 in the local leg frame is straight forward
     p0 = Point(0, 0, 0)
     p1 = Point(hexapod.coxia, 0, 0)
-    p3 = Point(e * np.cos(np.radians(dd)), 0, -e * np.sin(np.radians(dd)))
+
+    # Find p3 aka foot tip (ground contact) with respect to the local leg frame
+    dd = angle_between(unit_coxia_vector, body_to_foot_vector)
+
+    body_to_foot_length = length(body_to_foot_vector)
+    p3x = body_to_foot_length * np.cos(np.radians(dd))
+    p3z = -body_to_foot_length * np.sin(np.radians(dd))
+    p3 = Point(p3x, 0, p3z)
 
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
     d = length(coxia_to_foot_vector2d)
