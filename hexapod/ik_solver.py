@@ -24,6 +24,35 @@ from hexapod.points import (
 def is_counter_clockwise(a, b, n):
   return dot(a, cross(b, n)) > 0
 
+def sanity_leg_lengths_check(hexapod, leg_name, points):
+  coxia = length(vector_from_to(points[0], points[1]))
+  femur = length(vector_from_to(points[1], points[2]))
+  tibia = length(vector_from_to(points[2], points[3]))
+
+  assert np.isclose(hexapod.coxia, coxia, atol=1), f'wrong coxia vector length. {leg_name} coxia:{coxia}'
+  assert np.isclose(hexapod.femur, femur, atol=1), f'wrong femur vector length. {leg_name} femur:{femur}'
+  assert np.isclose(hexapod.tibia, tibia, atol=1), f'wrong tibia vector length. {leg_name} tibia:{tibia}'
+
+def print_points(points):
+  print(f'p0: {points[0]}')
+  print(f'p1: {points[1]}')
+  print(f'p2: {points[2]}')
+  print(f'p3: {points[3]}')
+
+def find_twist_frame(hexapod, unit_coxia_vector):
+  twist = angle_between(unit_coxia_vector, hexapod.x_axis)
+  is_ccw = is_counter_clockwise(unit_coxia_vector, hexapod.x_axis, hexapod.z_axis)
+  if is_ccw:
+    twist_frame = rotz(-twist)
+  else:
+    twist_frame = rotz(twist)
+  return twist_frame
+
+def update_hexapod_points(hexapod, leg_id, points):
+  hexapod.legs[leg_id].p0 = points[0]
+  hexapod.legs[leg_id].p1 = points[1]
+  hexapod.legs[leg_id].p2 = points[2]
+  hexapod.legs[leg_id].p3 = points[3]
 
 def inverse_kinematics_update(
   hexapod,
@@ -35,6 +64,8 @@ def inverse_kinematics_update(
   end_z,
 ):
   x_axis = Point(1, 0, 0)
+  poses = deepcopy(HEXAPOD_POSE)
+
   tx = end_x * hexapod.mid
   ty = end_y * hexapod.side
   tz = end_z * hexapod.tibia
@@ -42,21 +73,18 @@ def inverse_kinematics_update(
   hexapod.detach_body_rotate_and_translate(rot_x, rot_y, rot_z, tx, ty, tz)
   detached_hexapod = deepcopy(hexapod)
 
-  body_normal = hexapod.z_axis
   for i in range(hexapod.LEG_COUNT):
     body_contact = hexapod.body.vertices[i]
     foot_tip = hexapod.legs[i].foot_tip()
     if body_contact.z < foot_tip.z:
       return detached_hexapod, None, 'Impossible twist at given height: body contact shoved on ground'
 
-  poses = deepcopy(HEXAPOD_POSE)
-
   for i in range(hexapod.LEG_COUNT):
     leg_name = hexapod.legs[i].name
     body_contact = hexapod.body.vertices[i]
     foot_tip = hexapod.legs[i].foot_tip()
     body_to_foot_vector = vector_from_to(body_contact, foot_tip)
-    unit_coxia_vector = project_vector_onto_plane(body_to_foot_vector, body_normal)
+    unit_coxia_vector = project_vector_onto_plane(body_to_foot_vector, hexapod.z_axis)
     coxia_vector = scalar_multiply(unit_coxia_vector, hexapod.coxia)
     coxia_point = add_vectors(body_contact, coxia_vector)
 
@@ -107,38 +135,27 @@ def inverse_kinematics_update(
       else:
         return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur is too long."
 
-    #print(f'p0: {p0}')
-    #print(f'p1: {p1}')
-    #print(f'p2: {p2}')
-    #print(f'p3: {p3}')
-
-    twist = angle_between(unit_coxia_vector, hexapod.x_axis)
-    is_ccw = is_counter_clockwise(unit_coxia_vector, hexapod.x_axis, hexapod.z_axis)
-    if is_ccw:
-      twist_frame = rotz(-twist)
-    else:
-      twist_frame = rotz(twist)
-
     points = [p0, p1, p2, p3]
+    # print points before updating frame of reference
+    print_points(points)
+
+    # Find frame used to twist the leg frame wrt to hexapod's body contact point's x axis
+    twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
+
+    # Compute and convert points from local leg coordinate frame
+    # to world coordinate frame
     for point in points:
       point.update_point_wrt(twist_frame)
       assert hexapod.body_rotation_frame is not None
       point.update_point_wrt(hexapod.body_rotation_frame)
       point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
 
-    # Sanity Check
-    coxia = length(vector_from_to(p0, p1))
-    femur = length(vector_from_to(p1, p2))
-    tibia = length(vector_from_to(p2, p3))
+    # Check if the leg length's are what we expect
+    sanity_leg_lengths_check(hexapod, leg_name, points)
 
-    assert np.isclose(hexapod.coxia, coxia, atol=1), f'wrong coxia vector length. {leg_name} coxia:{coxia}'
-    assert np.isclose(hexapod.femur, femur, atol=1), f'wrong femur vector length. {leg_name} femur:{femur}'
-    assert np.isclose(hexapod.tibia, tibia, atol=1), f'wrong tibia vector length. {leg_name} tibia:{tibia}'
+    # Update hexapod's points to what we computed
+    update_hexapod_points(hexapod, i, points)
 
-    hexapod.legs[i].p0 = p0
-    hexapod.legs[i].p1 = p1
-    hexapod.legs[i].p2 = p2
-    hexapod.legs[i].p3 = p3
 
   #print(f'poses: {poses}')
   return hexapod, poses, None
