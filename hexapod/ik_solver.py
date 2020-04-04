@@ -40,14 +40,14 @@ def inverse_kinematics_update(
   tz = end_z * hexapod.tibia
 
   hexapod.detach_body_rotate_and_translate(rot_x, rot_y, rot_z, tx, ty, tz)
-  starting_hexapod = deepcopy(hexapod)
+  detached_hexapod = deepcopy(hexapod)
 
   body_normal = hexapod.z_axis
   for i in range(hexapod.LEG_COUNT):
     body_contact = hexapod.body.vertices[i]
     foot_tip = hexapod.legs[i].foot_tip()
     if body_contact.z < foot_tip.z:
-      return starting_hexapod, None, 'Impossible twist at given height: body contact shoved on ground'
+      return detached_hexapod, None, 'Impossible twist at given height: body contact shoved on ground'
 
   poses = deepcopy(HEXAPOD_POSE)
 
@@ -61,7 +61,7 @@ def inverse_kinematics_update(
     coxia_point = add_vectors(body_contact, coxia_vector)
 
     if coxia_point.z < foot_tip.z:
-      return starting_hexapod, None, 'Impossible twist at given height: coxia joint shoved on ground'
+      return detached_hexapod, None, 'Impossible twist at given height: coxia joint shoved on ground'
 
     p0 = Point(0, 0, 0)
     p1 = Point(hexapod.coxia, 0, 0)
@@ -94,7 +94,7 @@ def inverse_kinematics_update(
       p2 = Point(x_, 0, z_)
 
       if p2.z < p3.z:
-        return starting_hexapod, None, f'{leg_name} leg cant go through ground.'
+        return detached_hexapod, None, f'{leg_name} leg cant go through ground.'
     else:
       if a + b < d:
         femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
@@ -103,9 +103,9 @@ def inverse_kinematics_update(
         tibia_vector = scalar_multiply(femur_tibia_direction, b)
         p3 = add_vectors(p2, tibia_vector)
       elif d + b < a:
-        return starting_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
+        return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Tibia length is too long."
       else:
-        return starting_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur is too long."
+        return detached_hexapod, None, f"Can't reach foot tip. {leg_name} leg's Femur is too long."
 
     #print(f'p0: {p0}')
     #print(f'p1: {p1}')
