@@ -115,6 +115,7 @@ from hexapod.points import (
   rotz
 )
 
+
 def sanity_leg_lengths_check(hexapod, leg_name, points):
   coxia = length(vector_from_to(points[0], points[1]))
   femur = length(vector_from_to(points[1], points[2]))
@@ -124,11 +125,13 @@ def sanity_leg_lengths_check(hexapod, leg_name, points):
   assert np.isclose(hexapod.femur, femur, atol=1), f'wrong femur vector length. {leg_name} femur:{femur}'
   assert np.isclose(hexapod.tibia, tibia, atol=1), f'wrong tibia vector length. {leg_name} tibia:{tibia}'
 
+
 def print_points(points):
   print(f'p0: {points[0]}')
   print(f'p1: {points[1]}')
   print(f'p2: {points[2]}')
   print(f'p3: {points[3]}')
+
 
 def find_twist_frame(hexapod, unit_coxia_vector):
   twist = angle_between(unit_coxia_vector, hexapod.x_axis)
@@ -139,11 +142,13 @@ def find_twist_frame(hexapod, unit_coxia_vector):
   twist_frame = rotz(twist)
   return twist, twist_frame
 
+
 def update_hexapod_points(hexapod, leg_id, points):
   hexapod.legs[leg_id].p0 = points[0]
   hexapod.legs[leg_id].p1 = points[1]
   hexapod.legs[leg_id].p2 = points[2]
   hexapod.legs[leg_id].p3 = points[3]
+
 
 def body_contact_shoved_on_ground(hexapod):
   for i in range(hexapod.LEG_COUNT):
@@ -152,6 +157,7 @@ def body_contact_shoved_on_ground(hexapod):
     if body_contact.z < foot_tip.z:
       return True
   return False
+
 
 def inverse_kinematics_update(
   hexapod,
@@ -201,11 +207,10 @@ def inverse_kinematics_update(
     p1 = Point(hexapod.coxia, 0, 0)
 
     # Find p3 aka foot tip (ground contact) with respect to the local leg frame
-    dd = angle_between(unit_coxia_vector, body_to_foot_vector)
-
+    rho = angle_between(unit_coxia_vector, body_to_foot_vector)
     body_to_foot_length = length(body_to_foot_vector)
-    p3x = body_to_foot_length * np.cos(np.radians(dd))
-    p3z = -body_to_foot_length * np.sin(np.radians(dd))
+    p3x = body_to_foot_length * np.cos(np.radians(rho))
+    p3z = -body_to_foot_length * np.sin(np.radians(rho))
     p3 = Point(p3x, 0, p3z)
 
     # *******************
@@ -216,16 +221,16 @@ def inverse_kinematics_update(
 
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
     d = length(coxia_to_foot_vector2d)
-    aa = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
-    ee = angle_between(coxia_to_foot_vector2d, x_axis)
+    theta = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
+    phi = angle_between(coxia_to_foot_vector2d, x_axis)
 
     # If we can form this triangle this means we can reach the target ground contact point
     CAN_REACH_TARGET_GROUND_POINT = is_triangle(hexapod.tibia, hexapod.femur, d)
 
     if CAN_REACH_TARGET_GROUND_POINT:
-      beta = aa - ee
+      beta = theta - phi
       if p3.z > 0:
-        beta = aa + ee
+        beta = theta + phi
 
       z_ = hexapod.femur * np.sin(np.radians(beta))
       x_ = p1.x + hexapod.femur * np.cos(np.radians(beta))
