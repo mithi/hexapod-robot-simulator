@@ -23,17 +23,6 @@ def make_all_joint_inputs(joint_input_function):
   return all_joint_inputs
 
 
-def make_joint_knob_input(name):
-  return dash_daq.Knob( # pylint: disable=not-callable
-    id=name,
-    min=-105,
-    max=100,
-    value=0,
-    size=75,
-    scale = {'custom': {0: '|', -90: '.', 90: '.',  -45: '.', 45: '.'}}
-  )
-
-
 def make_joint_daq_slider_input(name):
   _, _, _, angle = name.split('-')
 
@@ -63,4 +52,15 @@ def make_joint_number_input(_name):
     min=-135.0,
     max=135.0,
     style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
+
+
+def make_joint_knob_input(name):
+  return dash_daq.Knob( # pylint: disable=not-callable
+    id=name,
+    min=-105,
+    max=100,
+    value=0,
+    size=75,
+    scale = {'custom': {0: '|', -90: '.', 90: '.',  -45: '.', 45: '.'}}
+  )
 
