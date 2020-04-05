@@ -1,4 +1,8 @@
-#######################
+ALPHA_RANGE = 90
+BETA_RANGE = 90
+GAMMA_RANGE = 90
+
+#
 #
 # **********************
 # DEFINITIONS
@@ -90,7 +94,8 @@
 #         /     /
 # *------ *  /
 # (p0)   (p1)
-########################
+#
+#
 from copy import deepcopy
 from hexapod.const import HEXAPOD_POSE
 import numpy as np
@@ -154,6 +159,7 @@ def update_hexapod_points(hexapod, leg_id, points):
   hexapod.legs[leg_id].p2 = points[2]
   hexapod.legs[leg_id].p3 = points[3]
 
+
 def body_contact_shoved_on_ground(hexapod):
   for i in range(hexapod.LEG_COUNT):
     body_contact = hexapod.body.vertices[i]
@@ -161,6 +167,7 @@ def body_contact_shoved_on_ground(hexapod):
     if body_contact.z < foot_tip.z:
       return True
   return False
+
 
 def compute_twist_wrt_to_world(alpha, coxia_axis):
   alpha = (alpha - coxia_axis) % 360
@@ -170,6 +177,7 @@ def compute_twist_wrt_to_world(alpha, coxia_axis):
     alpha =  360 + alpha
 
   return alpha
+
 
 def legs_too_short(legs):
   # True when
@@ -188,6 +196,15 @@ def legs_too_short(legs):
 
   return False, None
 
+
+def angle_above_limit(angle, angle_range, leg_name, angle_name):
+  if np.abs(angle) > angle_range:
+    return True, \
+      f"The {angle_name} of {leg_name} required \n \
+      to do this pose is above the range of motion. \n \
+      Required: {angle} degrees. Limit: {angle_range} degrees."
+
+  return False, None
 
 def inverse_kinematics_update(
   hexapod,
@@ -317,11 +334,23 @@ def inverse_kinematics_update(
 
     # Check if the leg length's are what we expect
     sanity_leg_lengths_check(hexapod, leg_name, points)
-
     # Update hexapod's points to what we computed
     update_hexapod_points(hexapod, i, points)
 
     alpha = compute_twist_wrt_to_world(alpha, hexapod.body.COXIA_AXES[i])
+
+    alpha_limit, alpha_msg = angle_above_limit(alpha, ALPHA_RANGE, leg_name, 'coxia angle (alpha)')
+    beta_limit, beta_msg = angle_above_limit(beta, BETA_RANGE, leg_name, 'beta angle (beta)')
+    gamma_limit, gamma_msg = angle_above_limit(gamma, GAMMA_RANGE, leg_name, 'gamma angle (gamma)')
+
+    if alpha_limit:
+      return detached_hexapod, None, alpha_msg
+
+    if beta_limit:
+      return detached_hexapod, None, beta_msg
+
+    if gamma_limit:
+      return detached_hexapod, None, gamma_msg
 
     poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta
@@ -332,7 +361,7 @@ def inverse_kinematics_update(
 # Notes:
 # - [x] When all left side or right side is above ground, make this an impossible pose.
 # - [x] Name the updated points of the updated hexapod their correct names, right now they're names is None
-# - Limit alpha to range between -90 to 90
-# - Also limit beta and gamma to better ranges
+# - [x] Limit alpha to range between -90 to 90
+# - [x] Also limit beta and gamma to better ranges
 # - Make ik solver a class to breakdown the large method
 # - Check if the pose of the hexapod is stable (IE the center of gravity falls in Hexy's support polygon)
