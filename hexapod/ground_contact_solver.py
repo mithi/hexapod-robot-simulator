@@ -51,7 +51,7 @@ def three_ids_of_ground_contacts(legs):
 
     if check_stability(p0, p1, p2) == True:
       # The vector normal to plane defined by these points
-      # IMPORTANT: Normal is always pointing up
+      # ❗IMPORTANT: Normal is always pointing up
       # because of how we specified the order of the trio
       # (and the legs in general)
       # starting from middle-right (id:0) to right back (id:5)

@@ -127,15 +127,16 @@ from hexapod.points import (
 # - percent_x, percent_y, percent_z are the percent shift of the
 # center of gravity of the hexapod.
 #
-# IMPORTANT: The hexapod will be MODIFIED and returned along with
+# Where the hexapod contacts the ground at its initial state
+# will also be the final points of contact by the hexapod and the ground
+# unless the leg can't reach it.
+#
+# ❗❗❗IMPORTANT: The hexapod will be MODIFIED and returned along with
 # a dictionary of POSES containing the 18 computed angles
 # if the pose is impossible, the the function will output a
 # hexapod whose body is detached from its legs, the body having the pose required
 # an ALERT message will also be returned explaining why the pose is impossible
 #
-# IMPORTANT: Where the hexapod contacts the ground at its initial state
-# will also be the final points of contact by the hexapod and the ground
-# unless the leg can't reach it.
 def inverse_kinematics_update(
   hexapod,
   rot_x,

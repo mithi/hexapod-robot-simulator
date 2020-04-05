@@ -171,7 +171,7 @@ class VirtualHexapod:
         self.rotate_and_shift(twist_frame, 0)
     else:
       pass
-      # IMPORTANT!!:
+      # ❗IMPORTANT!!:
       # if the position is not stable, what to do?
       # right now it just displays the figure like
       # there's no gravity
@@ -281,7 +281,7 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
 
   twist_frame = _twist(new_vector, old_vector)
 
-  # IMPORTANT: We are assuming that because the point
+  # ❗IMPORTANT: We are assuming that because the point
   # is on the ground before and after
   # They should be at the same point after movement
   # I can't think of a case that contradicts this as of this moment

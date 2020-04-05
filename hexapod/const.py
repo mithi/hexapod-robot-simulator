@@ -22,4 +22,3 @@ NAMES_JOINT = Linkage.POINT_NAMES
 
 BASE_HEXAPOD = VirtualHexapod().new(100, 100, 100, 100, 100, 100)
 BASE_PLOTTER = HexapodPlot()
-
