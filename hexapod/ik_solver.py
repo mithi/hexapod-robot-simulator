@@ -158,6 +158,14 @@ def body_contact_shoved_on_ground(hexapod):
       return True
   return False
 
+def compute_twist_wrt_to_world(alpha, coxia_axis):
+  alpha = (alpha - coxia_axis) % 360
+  if alpha > 180:
+    alpha = 360 - alpha
+  elif alpha < -180:
+    alpha =  360 + alpha
+
+  return alpha
 
 def inverse_kinematics_update(
   hexapod,
@@ -285,11 +293,7 @@ def inverse_kinematics_update(
     # Update hexapod's points to what we computed
     update_hexapod_points(hexapod, i, points)
 
-    alpha = (alpha - hexapod.body.COXIA_AXES[i]) % 360
-    if alpha > 180:
-      alpha = 360 - alpha
-    elif alpha < -180:
-      alpha =  360 + alpha
+    alpha = compute_twist_wrt_to_world(alpha, hexapod.body.COXIA_AXES[i])
 
     poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta
