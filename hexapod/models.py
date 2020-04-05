@@ -199,7 +199,6 @@ class VirtualHexapod:
       old_hip_angle = self.legs[leg_id].coxia_angle()
 
       # new alpha pose
-      new_hip_angle = None
       try:
         new_hip_angle = poses[leg_id]['coxia']
       except:
