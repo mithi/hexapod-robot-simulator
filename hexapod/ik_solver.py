@@ -139,7 +139,7 @@ def inverse_kinematics_update(
   detached_hexapod = deepcopy(hexapod)
 
   if body_contact_shoved_on_ground(hexapod):
-    return detached_hexapod, None, 'Impossible rotation at given height: body contact shoved on ground'
+    return detached_hexapod, None, 'Impossible rotation at given height. \n body contact shoved on ground'
 
   x_axis = Point(1, 0, 0)
   poses = deepcopy(HEXAPOD_POSE)
@@ -161,7 +161,7 @@ def inverse_kinematics_update(
     # coxia point / joint is the point connecting the coxia and tibia limbs
     coxia_point = add_vectors(body_contact, coxia_vector)
     if coxia_point.z < foot_tip.z:
-      return detached_hexapod, None, 'Impossible rotation at given height: coxia joint shoved on ground'
+      return detached_hexapod, None, 'Impossible rotation at given height. \n coxia joint shoved on ground'
 
     # *******************
     # Compute p0, p1 and p3
@@ -192,8 +192,8 @@ def inverse_kinematics_update(
       theta = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
       phi = angle_between(coxia_to_foot_vector2d, x_axis)
 
-      beta = theta - phi
-      if p3.z > 0:
+      beta = theta - phi # case 1 or 2
+      if p3.z > 0: # case 3
         beta = theta + phi
 
       z_ = hexapod.femur * np.sin(np.radians(beta))
@@ -205,12 +205,12 @@ def inverse_kinematics_update(
       gamma = 90 - angle_between(femur_vector, tibia_vector)
 
       if p2.z < p3.z:
-        return detached_hexapod, None, f'{leg_name} leg cant go through ground.'
+        return detached_hexapod, None, f"Can't reach target ground point. \n {leg_name} can't reach it because the ground is blocking the path."
     else:
       if d + hexapod.tibia < hexapod.femur:
-        return detached_hexapod, None, f"Can't reach target ground point. {leg_name} leg's Femur length is too long."
+        return detached_hexapod, None, f"Can't reach target ground point. \n {leg_name} leg's Femur length is too long."
       if d + hexapod.femur < hexapod.tibia:
-        return detached_hexapod, None, f"Can't reach target ground point. {leg_name} leg's Tibia length is too long."
+        return detached_hexapod, None, f"Can't reach target ground point. \n {leg_name} leg's Tibia length is too long."
 
       # Then hexapod.femur + hexapod.tibia < d:
       legs_up_in_the_air.append(leg_name)
@@ -331,14 +331,14 @@ def legs_too_short(legs):
   # if three of her right legs are up or
   # if four legs are up
   if len(legs) >= 4:
-    return True, f'Unstable. Too many legs off the floor: {legs}'
+    return True, f'Unstable. Too many legs off the floor. \n {legs}'
 
   if len(legs) == 3:
     leg_positions = [leg.split('-')[0] for leg in legs]
     if leg_positions.count('left') == 3:
-      return True, f'Unstable. All left legs off the ground, {legs}'
+      return True, f'Unstable. All left legs off the ground. \n {legs}'
     if leg_positions.count('right') == 3:
-      return True, f'Unstable. All right legs off the ground, {legs}'
+      return True, f'Unstable. All right legs off the ground. \n {legs}'
 
   return False, None
 
