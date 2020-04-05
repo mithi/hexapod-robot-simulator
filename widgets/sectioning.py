@@ -1,6 +1,5 @@
-# -----------
-# HELPERS TO MAKE PARTIAL SECTIONS
-# -----------
+# HELPERS USED TO MAKE PARTIAL SECTIONS
+
 import dash_html_components as html
 
 def make_section_type3(div1, div2, div3, name1='', name2='', name3=''):

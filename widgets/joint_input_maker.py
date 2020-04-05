@@ -1,3 +1,7 @@
+# This module is used to build the widgets
+# for changing the joint angles
+# see also: widgets.pose_control directory
+
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_daq

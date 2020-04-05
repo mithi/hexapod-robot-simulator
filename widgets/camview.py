@@ -1,3 +1,4 @@
+# Widgets used to control the camera view / angle of the 3d plot
 import dash_core_components as dcc
 from dash.dependencies import Input, Output
 from .sectioning import make_section_type4, make_section_type3

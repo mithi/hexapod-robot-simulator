@@ -1,3 +1,4 @@
+# Widgets used to control the dimensions of the hexapod
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
@@ -21,8 +22,8 @@ DIMENSION_INPUTS = [Input(input_id, 'value') for input_id in INPUT_DIMENSIONS_ID
 def make_positive_number_input(_name, _value):
   return dcc.Input(id=_name, type='number', value=_value, step=5, min=0, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
 
-# Hexapod measured lengths inputs
-INPUT_LENGTHS = {
+# Hexapod dimension s inputs
+INPUT_DIMENSIONS = {
   'front': make_positive_number_input('input-length-front', 100),
   'side': make_positive_number_input('input-length-side', 100),
   'middle': make_positive_number_input('input-length-middle', 100),
@@ -35,8 +36,8 @@ INPUT_LENGTHS = {
 # PARTIAL SECTIONS
 # -----------
 # section for hexapod measurement adjustments
-section_input_body = make_section_type3(INPUT_LENGTHS['front'], INPUT_LENGTHS['middle'], INPUT_LENGTHS['side'], 'front', 'middle', 'side')
-section_input_leg = make_section_type3(INPUT_LENGTHS['coxia'], INPUT_LENGTHS['femur'], INPUT_LENGTHS['tibia'], 'coxia', 'femur', 'tibia')
+section_input_body = make_section_type3(INPUT_DIMENSIONS['front'], INPUT_DIMENSIONS['middle'], INPUT_DIMENSIONS['side'], 'front', 'middle', 'side')
+section_input_leg = make_section_type3(INPUT_DIMENSIONS['coxia'], INPUT_DIMENSIONS['femur'], INPUT_DIMENSIONS['tibia'], 'coxia', 'femur', 'tibia')
 
 SECTION_DIMENSION_CONTROL = html.Div([
   html.Label(dcc.Markdown('**HEXAPOD ROBOT DIMENSIONS**')),
