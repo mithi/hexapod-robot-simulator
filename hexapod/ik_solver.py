@@ -121,19 +121,34 @@ from hexapod.points import (
 )
 
 
+# This function computes the joint angles required to
+# rotate and translate the hexapod given the parameters given
+# - rot_x, rot_y, rot_z are how the hexapod should be rotated
+# - percent_x, percent_y, percent_z are the percent shift of the
+# center of gravity of the hexapod.
+#
+# IMPORTANT: The hexapod will be MODIFIED and returned along with
+# a dictionary of POSES containing the 18 computed angles
+# if the pose is impossible, the the function will output a
+# hexapod whose body is detached from its legs, the body having the pose required
+# an ALERT message will also be returned explaining why the pose is impossible
+#
+# IMPORTANT: Where the hexapod contacts the ground at its initial state
+# will also be the final points of contact by the hexapod and the ground
+# unless the leg can't reach it.
 def inverse_kinematics_update(
   hexapod,
   rot_x,
   rot_y,
   rot_z,
-  end_x,
-  end_y,
-  end_z,
+  percent_x,
+  percent_y,
+  percent_z,
 ):
 
-  tx = end_x * hexapod.mid
-  ty = end_y * hexapod.side
-  tz = end_z * hexapod.tibia
+  tx = percent_x * hexapod.mid
+  ty = percent_y * hexapod.side
+  tz = percent_z * hexapod.tibia
 
   hexapod.detach_body_rotate_and_translate(rot_x, rot_y, rot_z, tx, ty, tz)
   detached_hexapod = deepcopy(hexapod)
@@ -346,9 +361,9 @@ def legs_too_short(legs):
 def angle_above_limit(angle, angle_range, leg_name, angle_name):
   if np.abs(angle) > angle_range:
     return True, \
-      f"The {angle_name} of {leg_name} required \n \
+      f'The {angle_name} (of {leg_name} leg) required \n \
       to do this pose is above the range of motion. \n \
-      Required: {angle} degrees. Limit: {angle_range} degrees."
+      Required: {angle} degrees. Limit: {angle_range} degrees.'
 
   return False, None
 
@@ -361,6 +376,7 @@ def sanity_leg_lengths_check(hexapod, leg_name, points):
   assert np.isclose(hexapod.coxia, coxia, atol=1), f'wrong coxia vector length. {leg_name} coxia:{coxia}'
   assert np.isclose(hexapod.femur, femur, atol=1), f'wrong femur vector length. {leg_name} femur:{femur}'
   assert np.isclose(hexapod.tibia, tibia, atol=1), f'wrong tibia vector length. {leg_name} tibia:{tibia}'
+
 
 def print_points(points):
   print(f'p0: {points[0]}')
