@@ -1,7 +1,3 @@
-ALPHA_RANGE = 90
-BETA_RANGE = 90
-GAMMA_RANGE = 90
-
 #
 #
 # **********************
@@ -97,7 +93,7 @@ GAMMA_RANGE = 90
 #
 #
 from copy import deepcopy
-from hexapod.const import HEXAPOD_POSE
+from hexapod.const import HEXAPOD_POSE, ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
 import numpy as np
 from hexapod.models import VirtualHexapod, Linkage
 from hexapod.points import (
@@ -259,9 +255,9 @@ def inverse_kinematics_update(
     # *******************
     # Early exit is angles are not within range
     # *******************
-    alpha_limit, alpha_msg = angle_above_limit(alpha, ALPHA_RANGE, leg_name, 'coxia angle (alpha)')
-    beta_limit, beta_msg = angle_above_limit(beta, BETA_RANGE, leg_name, 'beta angle (beta)')
-    gamma_limit, gamma_msg = angle_above_limit(gamma, GAMMA_RANGE, leg_name, 'gamma angle (gamma)')
+    alpha_limit, alpha_msg = angle_above_limit(alpha, ALPHA_MAX_ANGLE, leg_name, 'coxia angle (alpha)')
+    beta_limit, beta_msg = angle_above_limit(beta, BETA_MAX_ANGLE, leg_name, 'beta angle (beta)')
+    gamma_limit, gamma_msg = angle_above_limit(gamma, GAMMA_MAX_ANGLE, leg_name, 'gamma angle (gamma)')
 
     if alpha_limit:
       return detached_hexapod, None, alpha_msg
