@@ -1,4 +1,4 @@
-CHECK_POSE = True
+CHECK_POSE = False
 # The inverse kinematics solver already updates the points of the hexapod
 # but if you want to test whether the pose is indeed correct
 # ie use the poses returned by the inverse kinematics solve
@@ -106,8 +106,8 @@ def display_variables(
     if CHECK_POSE:
       BASE_PLOTTER.update(figure, hexapod)
   else:
+    text = add_poses_to_text(info, poses)
     if CHECK_POSE:
-      text = add_poses_to_text(info, poses)
       hexapod_clone.update(poses)
       BASE_PLOTTER.update(figure, hexapod_clone)
 
