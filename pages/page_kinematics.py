@@ -2,7 +2,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
-
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import (
@@ -13,13 +12,11 @@ from hexapod.const import (
   HEXAPOD_FIGURE,
   HEXAPOD_POSE
 )
-
 from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
 #from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
-
 from copy import deepcopy
 import json
 from app import app
@@ -33,12 +30,12 @@ HIDDEN_LEG_POSES_ALL = [html.Div(id='hexapod-poses-values', style={'display': 'n
 HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS +  HIDDEN_LEG_POSES_ALL
 
 layout = html.Div([
-  html.Div(HIDDEN_DIVS),
   html.Div([
     dcc.Graph(id='graph-hexapod', style={'width': '45%'}),
     html.Div([SECTION_POSE_CONTROL, SECTION_LENGTHS_CONTROL], style={'width': '55%'})],
     style={'display': 'flex'}
   ),
+  html.Div(HIDDEN_DIVS),
 ])
 
 # *********************
