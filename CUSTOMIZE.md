@@ -1,11 +1,11 @@
-# Too slow?
-- Instead of `UPDATE_MODE='drag'`, set `UPDATE_MODE='mouseup'` in
+## Too slow?
+Instead of `UPDATE_MODE='drag'`, set `UPDATE_MODE='mouseup'` in
 ```
 ./widgets/const.py
 ```
-- This will make widgets only start updating when you release the mouse button
+This will make widgets only start updating when you release the mouse button
 
-# Debugging Inverse Kinematics
+## Debugging inverse kinematics
 In the first line of
 ```
 ./pages/page-inverse.py
@@ -18,7 +18,7 @@ set `RECOMPUTE_HEXAPOD=true` otherwise for faster graph/plot updates, set `RECOM
 RECOMPUTE_HEXAPOD = False
 ```
 
-# Debugging other things
+## Debugging other things
 If you look at lines `55-60` of
 ```
 index.py
@@ -34,12 +34,12 @@ if __name__ == '__main__':
 ```
 Set them all to `True`
 
-# Setting the range of joints angles
-- Modify it in
+## Setting the range of joint angles
+Modify it in
 ```
 ./hexapod/MAX_ANGLES.py
 ```
-- They currently default to the following
+They currently default to the following
 ```
 ALPHA_MAX_ANGLE = 90
 BETA_MAX_ANGLE = 90
@@ -65,14 +65,13 @@ HIP_STANCE_MAX_ANGLE = 45
 #  left_middle = 0
 # right_middle = 0
 ```
-]
 
-# Predefining Poses
-- You can hardcode and save predefined poses in
+## Predefining poses
+You can hardcode and save predefined poses in
 ```
 . /hexapod/templates/pose_template.py
 ```
-- Check out lines `50-67`
+Check out lines `50-67`
 ```
 pose_twisted_ground = {
   0: {"coxia": -45, "femur": 5, "tibia": -1, "name": "right-middle", "id": 0},
@@ -92,18 +91,18 @@ PREDEFINED_POSES = {
   'pose-twist-ground':  pose_twisted_ground,
 }
 ```
-  - It will show as a radio button you can select at the test page
+It will show as a radio button you can select at the test page
 ```
   ./pages/page_test.py
 ```
 
-# Selecting User Interface for Kinematics Page
-- You can also select if you like to tweak poses via sliders, knobs or
+## Pose control user interface for kinematics page
+You can also select if you like to tweak poses via sliders, knobs or
 text field. You can do this by commenting out the other options in
  ```
  ./pages/page_kinematics.py
  ```
-- Check out lines `12-15` of this file
+Check out lines `12-15` of this file
 ```
 #from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
 from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
