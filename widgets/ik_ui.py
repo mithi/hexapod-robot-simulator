@@ -29,6 +29,7 @@ def make_translate_slider(name, slider_label, slider_size=200):
     step=0.05,
   )
 
+
 def make_rotate_knob(name, knob_label):
   return dash_daq.Knob( # pylint: disable=not-callable
     id=name,
@@ -38,6 +39,7 @@ def make_rotate_knob(name, knob_label):
     size=130,
     scale = {'custom': {0: knob_label, -60: '-60', -30: '-30',  30: '30', 60: '60'}}
   )
+
 
 def make_rotate_slider(name, slider_label):
   return dash_daq.Slider( # pylint: disable=not-callable
@@ -52,6 +54,7 @@ def make_rotate_slider(name, slider_label):
     step=0.5,
   )
 
+
 def make_h_slider(name, slider_label):
   return dash_daq.Slider( # pylint: disable=not-callable
     id=name,
@@ -65,6 +68,7 @@ def make_h_slider(name, slider_label):
     step=0.5,
   )
 
+
 def make_stance_slider(name, slider_label):
   return dash_daq.Slider( # pylint: disable=not-callable
     id=name,
@@ -77,6 +81,7 @@ def make_stance_slider(name, slider_label):
     handleLabel={"showCurrentValue": True,"label": slider_label},
     step=0.5,
   )
+
 
 div_ss = make_stance_slider('input-start-hip-stance', 'hip.stance')
 div_sz = make_h_slider('input-start-leg-stance', 'leg.stance')
