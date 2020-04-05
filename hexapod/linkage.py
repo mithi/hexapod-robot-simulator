@@ -72,6 +72,24 @@ class Linkage:
     self.store_linkage_attributes(a, b, c, coxia_axis, new_origin, name, id_number)
     self.save_new_pose(alpha, beta, gamma)
 
+  def all_points(self):
+      return [self.p0, self.p1, self.p2, self.p3]
+
+  def coxia_angle(self):
+    return self._alpha
+
+  def coxia_point(self):
+    return self.p1
+
+  def femur_point(self):
+    return self.p2
+
+  def foot_tip(self):
+    return self.p3
+
+  def ground_contact(self):
+    return self.ground_contact_point
+
   def store_linkage_attributes(self, a, b, c, coxia_axis, new_origin, name, id_number):
     self._a = a
     self._b = b
@@ -116,17 +134,23 @@ class Linkage:
     gamma = gamma or self._gamma
     self.save_new_pose(alpha, beta, gamma)
 
-  def coxia_angle(self):
-    return self._alpha
+  def update_leg_wrt(self, frame, height):
+      self.p0.update_point_wrt(frame, height)
+      self.p1.update_point_wrt(frame, height)
+      self.p2.update_point_wrt(frame, height)
+      self.p3.update_point_wrt(frame, height)
 
-  def coxia_point(self):
-    return self.p1
+  def compute_ground_contact(self):
+    if self._tip_wrt_cog() <= 0:
+      if self._femur_wrt_cog() <= 0:
+        return self.coxia_point()
+      else:
+        return self.femur_point()
 
-  def femur_point(self):
-    return self.p2
-
-  def foot_tip(self):
-    return self.p3
+    if self._tip_wrt_cog() >= self._femur_wrt_cog():
+      return self.foot_tip()
+    else:
+      return self.femur_point()
 
   def _tip_wrt_cog(self):
     #
@@ -162,26 +186,3 @@ class Linkage:
   def _femur_wrt_cog(self):
     return -self.femur_point().z
 
-  def compute_ground_contact(self):
-    if self._tip_wrt_cog() <= 0:
-      if self._femur_wrt_cog() <= 0:
-        return self.coxia_point()
-      else:
-        return self.femur_point()
-
-    if self._tip_wrt_cog() >= self._femur_wrt_cog():
-      return self.foot_tip()
-    else:
-      return self.femur_point()
-
-  def ground_contact(self):
-    return self.ground_contact_point
-
-  def update_leg_wrt(self, frame, height):
-      self.p0.update_point_wrt(frame, height)
-      self.p1.update_point_wrt(frame, height)
-      self.p2.update_point_wrt(frame, height)
-      self.p3.update_point_wrt(frame, height)
-
-  def all_points(self):
-      return [self.p0, self.p1, self.p2, self.p3]
