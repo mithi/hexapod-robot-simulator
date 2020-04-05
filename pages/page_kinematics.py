@@ -25,7 +25,7 @@ from app import app
 # *  LAYOUT           *
 # *********************
 HIDDEN_LEG_POSES = [html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG]
-HIDDEN_LENGTHS = [html.Div(id='hexapod-measurements-values', style={'display': 'none'})]
+HIDDEN_LENGTHS = [html.Div(id='hexapod-dimensions-values', style={'display': 'none'})]
 HIDDEN_LEG_POSES_ALL = [html.Div(id='hexapod-poses-values', style={'display': 'none'})]
 HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS +  HIDDEN_LEG_POSES_ALL
 
@@ -44,13 +44,13 @@ layout = html.Div([
 # -------------------
 # Listen if we need to update the hexapod graph
 # -------------------
-INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexapod-measurements-values']]
+INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexapod-dimensions-values']]
 @app.callback(
   Output('graph-hexapod', 'figure'),
   INPUT_ALL,
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
-def update_graph(poses_json, measurements_json, relayout_data, figure):
+def update_graph(poses_json, dimensions_json, relayout_data, figure):
 
   # If there's no figure, create the default one
   if figure is None:
@@ -60,13 +60,13 @@ def update_graph(poses_json, measurements_json, relayout_data, figure):
     return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
 
   # If there's no dimensions given, use the latest one before this
-  if measurements_json is None:
+  if dimensions_json is None:
     print('No hexapod dimensions')
     raise PreventUpdate
 
-  # Make base hexapod model given body measurements
-  measurements = json.loads(measurements_json)
-  virtual_hexapod = VirtualHexapod(measurements)
+  # Make base hexapod model given body dimensions
+  dimensions = json.loads(dimensions_json)
+  virtual_hexapod = VirtualHexapod(dimensions)
 
   # Configure the pose of the hexapod given joint angles
   if poses_json is not None:
@@ -90,14 +90,14 @@ def update_graph(poses_json, measurements_json, relayout_data, figure):
   return figure
 
 # -------------------
-# Listen if the robot measurements are updated
+# Listen if the robot dimensions are updated
 # -------------------
 @app.callback(
-  Output('hexapod-measurements-values', 'children'),
+  Output('hexapod-dimensions-values', 'children'),
   DIMENSION_INPUTS
 )
-def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
-  measurements = {
+def update_hexapod_dimensions(fro, sid, mid, cox, fem, tib):
+  dimensions = {
     'front': fro or 0,
     'side': sid or 0,
     'middle': mid or 0,
@@ -106,7 +106,7 @@ def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
     'femur': fem or 0,
     'tibia': tib or 0,
   }
-  return json.dumps(measurements)
+  return json.dumps(dimensions)
 
 # -------------------
 # Listen if we need to update pose (IE one of the leg's pose is updated)
