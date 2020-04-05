@@ -3,7 +3,7 @@
 import numpy as np
 from copy import deepcopy
 from .linkage import Linkage
-from .ground_contact_calculator import get_legs_on_ground
+from .ground_contact_solver import get_legs_on_ground
 from .templates.pose_template import HEXAPOD_POSE
 from .points import (Point,
   frame_yrotate_xtranslate,
