@@ -1,33 +1,27 @@
-CHECK_POSE = False
+RECOMPUTE_HEXAPOD = True
 # The inverse kinematics solver already updates the points of the hexapod
 # but if you want to test whether the pose is indeed correct
 # ie use the poses returned by the inverse kinematics solve
-# set CHECK_POSE to true
-# otherwise for faster graph/plot updates, set CHECK_POSE to False
+# set RECOMPUTE_HEXAPOD to true
+# otherwise for faster graph/plot updates, set RECOMPUTE_HEXAPOD to False
 
 import numpy as np
 from copy import deepcopy
-
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
-from hexapod.plotter import HexapodPlot
 from hexapod.const import (
-  NAMES_LEG,
-  NAMES_JOINT,
   BASE_PLOTTER,
   BASE_HEXAPOD,
   HEXAPOD_FIGURE,
   HEXAPOD_POSE
 )
 from hexapod.ik_solver import inverse_kinematics_update
-
 from widgets.ik_ui import IK_INPUTS, SECTION_IK
 from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASUREMENT_INPUTS
-
 from app import app
 
 layout = html.Div([
@@ -95,24 +89,34 @@ def display_variables(
     tibia or 0
   )
 
-  if CHECK_POSE:
+  # ***********************************
+  # COMPUTE POSES AND UPDATE FIGURE WITH INVERSE KINEMATICS
+  # ***********************************
+
+  if RECOMPUTE_HEXAPOD:
     hexapod_clone = deepcopy(hexapod)
 
   hexapod.update_stance(start_hip_stance, start_leg_stance)
   hexapod, poses, alert = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
 
-  if alert is not None:
-    text = add_alert_to_text(info, alert)
-    if CHECK_POSE:
-      BASE_PLOTTER.update(figure, hexapod)
+  if not RECOMPUTE_HEXAPOD:
+    BASE_PLOTTER.update(figure, hexapod)
   else:
-    text = add_poses_to_text(info, poses)
-    if CHECK_POSE:
+    if poses:
       hexapod_clone.update(poses)
       BASE_PLOTTER.update(figure, hexapod_clone)
+    else:
+      BASE_PLOTTER.update(figure, hexapod)
 
-  if not CHECK_POSE:
-    BASE_PLOTTER.update(figure, hexapod)
+  # ***********************************
+  # finalize return values
+  # ***********************************
+
+  # Update display message
+  if poses:
+    text = add_poses_to_text(info, poses)
+  else:
+    text = add_alert_to_text(info, alert)
 
   # Use current camera view to display plot
   if relayout_data and 'scene.camera' in relayout_data:
