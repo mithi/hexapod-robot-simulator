@@ -37,8 +37,8 @@ layout = html.Div([
       html.Br(),
       SECTION_LENGTHS_CONTROL,
       html.Div(id='ik-variables')],
-      style={'width': '47%'}),
-    dcc.Graph(id='graph-hexapod-2', style={'width': '53%'}),
+      style={'width': '40%'}),
+    dcc.Graph(id='graph-hexapod-2', style={'width': '60%'}),
   ],
   style={'display': 'flex'}
 )

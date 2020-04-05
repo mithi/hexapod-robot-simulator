@@ -90,13 +90,13 @@ div_rz = make_rotate_slider('input-end-rot-z', 'rot.z')
 section_ik_start = html.Div([div_ss, html.Br(), div_sz])
 
 SECTION_IK = html.Div([
-    html.Div(section_ik_start, style={'padding': '0 0 0 4em'}),
-    html.Div(div_ex, style={'padding': '0 0 0 4em'}),
-    html.Div(div_ey, style={'padding': '0 0 0 4em'}),
-    html.Div(div_ez, style={'padding': '0 0 0 4em'}),
-    html.Div(div_rx, style={'padding': '0 0 0 4em'}),
-    html.Div(div_ry, style={'padding': '0 0 0 4em'}),
-    html.Div(div_rz, style={'padding': '0 0 0 4em'}),
+    html.Div(section_ik_start, style={'padding': '0 0 0 3.5em'}),
+    html.Div(div_ex, style={'padding': '0 0 0 3.5em'}),
+    html.Div(div_ey, style={'padding': '0 0 0 3.5em'}),
+    html.Div(div_ez, style={'padding': '0 0 0 3.5em'}),
+    html.Div(div_rx, style={'padding': '0 0 0 3.5em'}),
+    html.Div(div_ry, style={'padding': '0 0 0 3.5em'}),
+    html.Div(div_rz, style={'padding': '0 0 0 3.5em'}),
   ],
   style={'display': 'flex', 'flex-direction': 'row'}
 )
