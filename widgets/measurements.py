@@ -13,6 +13,8 @@ INPUT_LENGTHS_IDs = [
   'input-length-tibia',
 ]
 
+MEASUREMENT_INPUTS = [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
+
 # -----------
 # NUMBER INPUTS FOR HEXAPOD MEASUREMENTS
 # -----------
@@ -47,5 +49,3 @@ SECTION_LENGTHS_CONTROL = html.Div([
   html.Label(dcc.Markdown('**HEXAPOD ROBOT DIMENSIONS**')),
   SECTION_INPUT_LENGTHS,
 ])
-
-MEASUREMENT_INPUTS = [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
