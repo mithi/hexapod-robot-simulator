@@ -1,3 +1,11 @@
+# *****************
+# Pick one of four, or make your own
+# *****************
+#from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
+#from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
+from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
+#from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
+
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
@@ -12,10 +20,6 @@ from hexapod.const import (
   HEXAPOD_POSE
 )
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
-#from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
-#from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
-from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
-#from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
 from copy import deepcopy
 import json
 from app import app

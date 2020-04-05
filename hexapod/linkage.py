@@ -185,4 +185,3 @@ class Linkage:
 
   def _femur_wrt_cog(self):
     return -self.femur_point().z
-
