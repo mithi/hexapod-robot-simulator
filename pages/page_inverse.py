@@ -21,7 +21,7 @@ from hexapod.const import (
 )
 from hexapod.ik_solver import inverse_kinematics_update
 from widgets.ik_ui import IK_INPUTS, SECTION_IK
-from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASUREMENT_INPUTS
+from widgets.dimensions import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 from app import app
 
 layout = html.Div([
@@ -29,7 +29,7 @@ layout = html.Div([
       html.Label(dcc.Markdown('**INVERSE KINEMATICS CONTROLS**')),
       SECTION_IK,
       html.Br(),
-      SECTION_LENGTHS_CONTROL,
+      SECTION_DIMENSION_CONTROL,
       html.Div(id='ik-variables')],
       style={'width': '40%'}),
     dcc.Graph(id='graph-hexapod-2', style={'width': '60%'}),
@@ -37,7 +37,7 @@ layout = html.Div([
   style={'display': 'flex'}
 )
 
-INPUTS = IK_INPUTS + MEASUREMENT_INPUTS
+INPUTS = IK_INPUTS + DIMENSION_INPUTS
 @app.callback(
   [Output('ik-variables', 'children'), Output('graph-hexapod-2', 'figure')],
    INPUTS,

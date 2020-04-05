@@ -12,7 +12,7 @@ from hexapod.const import (
   HEXAPOD_FIGURE,
   HEXAPOD_POSE
 )
-from widgets.measurements import SECTION_LENGTHS_CONTROL, INPUT_LENGTHS, INPUT_LENGTHS_IDs
+from widgets.dimensions import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 #from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
@@ -32,7 +32,7 @@ HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS +  HIDDEN_LEG_POSES_ALL
 layout = html.Div([
   html.Div([
     dcc.Graph(id='graph-hexapod', style={'width': '45%'}),
-    html.Div([SECTION_POSE_CONTROL, SECTION_LENGTHS_CONTROL], style={'width': '55%'})],
+    html.Div([SECTION_POSE_CONTROL, SECTION_DIMENSION_CONTROL], style={'width': '55%'})],
     style={'display': 'flex'}
   ),
   html.Div(HIDDEN_DIVS),
@@ -94,7 +94,7 @@ def update_graph(poses_json, measurements_json, relayout_data, figure):
 # -------------------
 @app.callback(
   Output('hexapod-measurements-values', 'children'),
-  [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
+  DIMENSION_INPUTS
 )
 def update_hexapod_measurements(fro, sid, mid, cox, fem, tib):
   measurements = {

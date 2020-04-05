@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASUREMENT_INPUTS
+from widgets.dimensions import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUTS, CAMVIEW_OUTPUTS
 from widgets.alpha_beta_gamma import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
 
@@ -36,7 +36,7 @@ section_hexapod = html.Div([
     html.H3(dcc.Markdown('**CUSTOM CONTROLS**')),
     SECTION_SLIDERS_TEST,
     html.Br(),
-    SECTION_LENGTHS_CONTROL,
+    SECTION_DIMENSION_CONTROL,
   ],
     style={'width': '40%'}
   ),
@@ -73,7 +73,7 @@ layout = html.Div([
 # -----------
 # CALLBACKS
 # -----------
-INPUTS = SLIDERS_TEST_INPUTS + MEASUREMENT_INPUTS + [Input('camera-view-values', 'children')] + [Input('predefined-poses', 'value')]
+INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS + [Input('camera-view-values', 'children')] + [Input('predefined-poses', 'value')]
 @app.callback(
   Output('hexapod-plot', 'figure'),
   INPUTS,
@@ -177,7 +177,7 @@ def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, ey
 
 @app.callback(
   Output('variables', 'children'),
-  SLIDERS_TEST_INPUTS + MEASUREMENT_INPUTS
+  SLIDERS_TEST_INPUTS + DIMENSION_INPUTS
 )
 def update_variables(alpha, beta, gamma, f, s, m, h, k, a):
   return json.dumps({

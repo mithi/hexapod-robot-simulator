@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Input
 from .sectioning import make_section_type3
 
-INPUT_LENGTHS_IDs = [
+INPUT_DIMENSIONS_IDs = [
   'input-length-front',
   'input-length-side',
   'input-length-middle',
@@ -13,10 +13,10 @@ INPUT_LENGTHS_IDs = [
   'input-length-tibia',
 ]
 
-MEASUREMENT_INPUTS = [Input(input_id, 'value') for input_id in INPUT_LENGTHS_IDs]
+DIMENSION_INPUTS = [Input(input_id, 'value') for input_id in INPUT_DIMENSIONS_IDs]
 
 # -----------
-# NUMBER INPUTS FOR HEXAPOD MEASUREMENTS
+# NUMBER INPUTS FOR DIMENSIONS
 # -----------
 def make_positive_number_input(_name, _value):
   return dcc.Input(id=_name, type='number', value=_value, step=5, min=0, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
@@ -38,14 +38,12 @@ INPUT_LENGTHS = {
 section_input_body = make_section_type3(INPUT_LENGTHS['front'], INPUT_LENGTHS['middle'], INPUT_LENGTHS['side'], 'front', 'middle', 'side')
 section_input_leg = make_section_type3(INPUT_LENGTHS['coxia'], INPUT_LENGTHS['femur'], INPUT_LENGTHS['tibia'], 'coxia', 'femur', 'tibia')
 
-SECTION_INPUT_LENGTHS = html.Div([
+SECTION_DIMENSION_CONTROL = html.Div([
+  html.Label(dcc.Markdown('**HEXAPOD ROBOT DIMENSIONS**')),
+  html.Div([
   html.Div(section_input_body, style={'width':  '50%'}),
   html.Div(section_input_leg, style={'width': '50%'}),
   ],
   style={'display': 'flex'}
-)
-
-SECTION_LENGTHS_CONTROL = html.Div([
-  html.Label(dcc.Markdown('**HEXAPOD ROBOT DIMENSIONS**')),
-  SECTION_INPUT_LENGTHS,
+  )
 ])
