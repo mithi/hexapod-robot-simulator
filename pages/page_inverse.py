@@ -1,4 +1,4 @@
-RECOMPUTE_HEXAPOD = True
+RECOMPUTE_HEXAPOD = False
 # The inverse kinematics solver already updates the points of the hexapod
 # but if you want to test whether the pose is indeed correct
 # ie use the poses returned by the inverse kinematics solve
@@ -20,8 +20,8 @@ from hexapod.const import (
   HEXAPOD_POSE
 )
 from hexapod.ik_solver import inverse_kinematics_update
-from widgets.ik_ui import IK_INPUTS, SECTION_IK
-from widgets.dimensions import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
+from widgets.ik_ui import SECTION_IK, IK_INPUTS
+from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 from app import app
 
 layout = html.Div([

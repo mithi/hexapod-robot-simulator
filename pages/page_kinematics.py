@@ -3,7 +3,6 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from hexapod.models import VirtualHexapod
-from hexapod.plotter import HexapodPlot
 from hexapod.const import (
   NAMES_LEG,
   NAMES_JOINT,
@@ -12,7 +11,7 @@ from hexapod.const import (
   HEXAPOD_FIGURE,
   HEXAPOD_POSE
 )
-from widgets.dimensions import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
+from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 #from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
@@ -25,9 +24,9 @@ from app import app
 # *  LAYOUT           *
 # *********************
 HIDDEN_LEG_POSES = [html.Div(id='pose-{}'.format(leg_name), style={'display': 'none'}) for leg_name in NAMES_LEG]
-HIDDEN_LENGTHS = [html.Div(id='hexapod-dimensions-values', style={'display': 'none'})]
+HIDDEN_BODY_DIMENSIONS = [html.Div(id='hexapod-dimensions-values', style={'display': 'none'})]
 HIDDEN_LEG_POSES_ALL = [html.Div(id='hexapod-poses-values', style={'display': 'none'})]
-HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_LENGTHS +  HIDDEN_LEG_POSES_ALL
+HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_BODY_DIMENSIONS +  HIDDEN_LEG_POSES_ALL
 
 layout = html.Div([
   html.Div([
@@ -35,7 +34,7 @@ layout = html.Div([
     html.Div([SECTION_POSE_CONTROL, SECTION_DIMENSION_CONTROL], style={'width': '55%'})],
     style={'display': 'flex'}
   ),
-  html.Div(HIDDEN_DIVS),
+  html.Div(HIDDEN_LEG_POSES + HIDDEN_BODY_DIMENSIONS +  HIDDEN_LEG_POSES_ALL),
 ])
 
 # *********************

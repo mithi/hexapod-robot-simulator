@@ -3,9 +3,9 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-from widgets.dimensions import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
-from widgets.camview import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUTS, CAMVIEW_OUTPUTS
-from widgets.alpha_beta_gamma import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
+from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
+from widgets.camview_ui import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUTS, CAMVIEW_OUTPUTS
+from widgets.alpha_beta_gamma_ui import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
 
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
