@@ -27,7 +27,7 @@ $ python index.py
 ```
 **Selecting user interface preferences**
 - You can also select if you like to tweak poses via sliders, knobs or
-text fireld. You can do thisby commenting out the other options in lines `12-15` of
+text field. You can do this by commenting out the other options in lines `12-15` of
 ```
 ./pages/page_kinematics.py
 
