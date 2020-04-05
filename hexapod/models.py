@@ -1,3 +1,5 @@
+# The module contains the model of a hexapod
+# Use it to manipulate the pose of the hexapod
 import numpy as np
 from copy import deepcopy
 from .linkage import Linkage
@@ -10,7 +12,7 @@ from .points import (Point,
   frame_rotxyz
 )
 
-# MEASUREMENTS f, s, and m
+# Dimensions f, s, and m
 #
 #       |-f-|
 #       *---*---*--------
@@ -91,13 +93,23 @@ class VirtualHexapod:
     self.side = s
     self.body_rotation_frame = None
     self.body = Hexagon(f, m, s)
-    self.store_neutral_legs(a, b, c)
-    self.ground_contacts = [leg.foot_tip() for leg in self.legs]
 
     # Initialize local coordinate frame
     self.x_axis = Point(1, 0, 0, name='hexapod x axis')
     self.y_axis = Point(0, 1, 0, name='hexapod y axis')
     self.z_axis = Point(0, 0, 1, name='hexapod z axis')
+
+    # *************************
+    # Store legs in neutral position
+    # *************************
+    self.legs = []
+    vertices, axes, names = self.body.vertices, Hexagon.COXIA_AXES, Hexagon.VERTEX_NAMES
+    for i, point, axis, name in zip(range(6), vertices, axes, names):
+      linkage = Linkage(a, b, c, coxia_axis=axis, new_origin=point, name=name, id_number=i)
+      self.legs.append(linkage)
+
+    self.ground_contacts = [leg.foot_tip() for leg in self.legs]
+
     return self
 
   def detach_body_rotate_and_translate(self, a, b, c, x, y, z):
@@ -105,29 +117,13 @@ class VirtualHexapod:
     # then rotate and translate body as if a separate entity
     frame = frame_rotxyz(a, b, c)
     self.body_rotation_frame = frame
-
     points = self.body.vertices + [self.body.head, self.body.cog]
 
     for point in points:
       point.update_point_wrt(frame)
       point.move_xyz(x, y, z)
 
-    self.update_local_frame(frame)
-
-  def detach_body_and_coxia_rotate_and_translate(self, a, b, c, x, y, z):
-    frame = frame_rotxyz(a, b, c)
-    self.body_rotation_frame = frame
-    points = self.body.vertices + [self.body.head, self.body.cog]
-
-    for point in points:
-      point.update_point_wrt(frame)
-      point.move_xyz(x, y, z)
-
-    for leg in self.legs:
-      leg.p0.update_point_wrt(frame)
-      leg.p0.move_xyz(x, y, z)
-      leg.p1.update_point_wrt(frame)
-      leg.p1.move_xyz(x, y, z)
+    self._update_local_frame(frame)
 
   def update_stance(self, hip_stance, leg_stance):
     pose = deepcopy(HEXAPOD_POSE)
@@ -145,7 +141,7 @@ class VirtualHexapod:
   def update(self, poses):
     self.body_rotation_frame = None
     # Check the possibility of hexapod twisting about z axis
-    might_twist = self.find_if_might_twist(poses)
+    might_twist = self._find_if_might_twist(poses)
     # Remember old ground contacts
     old_ground_contacts = deepcopy(self.ground_contacts)
 
@@ -167,11 +163,11 @@ class VirtualHexapod:
       # tilt and shift the hexapod based on new normal
       frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
       self.rotate_and_shift(frame, height)
-      self.update_local_frame(frame)
+      self._update_local_frame(frame)
 
       # Only twist if we computed earlier that at least three hips twisted
       if might_twist:
-        twist_frame = find_twist(old_ground_contacts, self.ground_contacts)
+        twist_frame = find_twist_frame(old_ground_contacts, self.ground_contacts)
         self.rotate_and_shift(twist_frame, 0)
     else:
       pass
@@ -180,7 +176,20 @@ class VirtualHexapod:
       # right now it just displays the figure like
       # there's no gravity
 
-  def find_if_might_twist(self, poses):
+  def rotate_and_shift(self, frame, height):
+    # Update cog and head
+    self.body.cog.update_point_wrt(frame, height)
+    self.body.head.update_point_wrt(frame, height)
+
+    # Update each point in body hexagon
+    for vertex in self.body.vertices:
+      vertex.update_point_wrt(frame, height)
+
+    # Update each point in each leg
+    for leg in self.legs:
+      leg.update_leg_wrt(frame, height)
+
+  def _find_if_might_twist(self, poses):
     # hexapod will only definitely NOT twist
     # if only two of the legs (currently on the ground)
     # has twisted its hips/coxia
@@ -211,36 +220,15 @@ class VirtualHexapod:
 
     return False
 
-  def store_neutral_legs(self, a, b, c):
-    self.legs = []
-    vertices, axes, names = self.body.vertices, Hexagon.COXIA_AXES, Hexagon.VERTEX_NAMES
-    for i, point, axis, name in zip(range(6), vertices, axes, names):
-      linkage = Linkage(a, b, c, coxia_axis=axis, new_origin=point, name=name, id_number=i)
-      self.legs.append(linkage)
-
-  def ground_contact_points(self):
-    return self.ground_contacts
-
-  def update_local_frame(self, frame):
+  def _update_local_frame(self, frame):
     # Update the x, y, z axis centered at cog of hexapod
     self.x_axis.update_point_wrt(frame, 0)
     self.y_axis.update_point_wrt(frame, 0)
     self.z_axis.update_point_wrt(frame, 0)
 
-  def rotate_and_shift(self, frame, height):
-    # Update cog and head
-    self.body.cog.update_point_wrt(frame, height)
-    self.body.head.update_point_wrt(frame, height)
 
-    # Update each point in body hexagon
-    for vertex in self.body.vertices:
-      vertex.update_point_wrt(frame, height)
 
-    # Update each point in each leg
-    for leg in self.legs:
-      leg.update_leg_wrt(frame, height)
-
-def find_twist(old_ground_contacts, new_ground_contacts):
+def find_twist_frame(old_ground_contacts, new_ground_contacts):
   # This is the frame used to twist the model about the z axis
 
   def _make_contact_dict(contact_list):
