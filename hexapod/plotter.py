@@ -44,7 +44,7 @@ class HexapodPlot:
 
     # draw a mesh for body contact on ground
     dz = -1 # mesh must be slightly below ground
-    ground_contacts = hexapod.ground_contact_points()
+    ground_contacts = hexapod.ground_contacts
     fig['data'][10]['x'] = [point.x for point in ground_contacts]
     fig['data'][10]['y'] = [point.y for point in ground_contacts]
     fig['data'][10]['z'] = [(point.z + dz) for point in ground_contacts]
