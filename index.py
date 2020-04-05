@@ -14,10 +14,7 @@ div_nav = html.Div([
   dcc.Link('Inverse Kinematics', href='/inverse-kinematics'),
   html.Br(),
 
-  dcc.Link('Test: basic changes', href='/test'),
-  html.Br(),
-
-  dcc.Link('Root', href='/'),
+  dcc.Link('Test: Basic Changes', href='/test'),
   html.Br(),
 ])
 
@@ -50,14 +47,14 @@ def display_page(pathname):
   try:
     return PAGES[pathname]
   except KeyError:
-    return 'Hello world!'
+    return PAGES['/inverse-kinematics']
 
 # --------------
 # Run server
 # --------------
 if __name__ == '__main__':
   app.run_server(
-    debug=True,
+    debug=False,
     dev_tools_ui=False,
     dev_tools_props_check=False
   )
