@@ -1,41 +1,24 @@
 # hexapod-robot-simulator
-- Hexapod robot simulator using Plotly Dash
-- Still a work in progress
+- Hexapod robot simulator built from first principles
 
 # Requirements
-- Python 3
-- Plotly 4
-- Plotly Dash
-- Numpy
+- Python 3.8.1
+- Plotly Dash 1.10.0
+- Numpy 1.18.1
 
 # Run
 ```
 $ python index.py
 ```
-# Notes 
-**KNOWN ISSUE**
+
+# KNOWN ISSUES
   - Leg can criss-cross each other which shouldn't be the case, I'm open to hearing ideas on how to go about this
+  - Some unstable poses are not marked as unstable, by the hexapod or the inverse kinematics solver
+  - When the right-middle leg is twisted by itself, the figure point of view changes, other legs don't do this
+  - See other issues [here](https://github.com/mithi/hexapod-robot-simulator/issues)
 
- **Predefined Poses**
-  - You can hardcode and save predefined poses in
-```
-. /hexapod/templates/pose_template.py
-```
-  - It will show as a radio button you can select at the test page
-```
-  ./pages/page_test.py
-```
-**Selecting user interface preferences**
-- You can also select if you like to tweak poses via sliders, knobs or
-text field. You can do this by commenting out the other options in lines `12-15` of
-```
-./pages/page_kinematics.py
-
-#from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
-from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
-#from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
-#from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
-```
+# Changing global variables
+- See [./CUSTOMIZE.md](./CUSTOMIZE.md) for more information
 
 # Screenshots
 | ![](./img/screen_shot-v1-4.png) | ![](./img/screen_shot-v1-2.png) |
