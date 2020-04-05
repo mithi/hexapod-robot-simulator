@@ -1,4 +1,4 @@
-# This module Contains the Point class
+# This module contains the Point class
 # and functions for manipulating vectors
 # and finding properties and relationships of vectors
 # computing reference frames

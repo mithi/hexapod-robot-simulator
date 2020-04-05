@@ -15,12 +15,12 @@ class HexapodPlot:
     #body
     points = hexapod.body.vertices + [hexapod.body.vertices[0]]
 
-    # body surface Mesh
+    # Body Surface Mesh
     fig['data'][0]['x'] = [point.x for point in points]
     fig['data'][0]['y'] = [point.y for point in points]
     fig['data'][0]['z'] = [point.z for point in points]
 
-    # body outline
+    # Body Outline
     fig['data'][1]['x'] = fig['data'][0]['x']
     fig['data'][1]['y'] = fig['data'][0]['y']
     fig['data'][1]['z'] = fig['data'][0]['z']
@@ -33,7 +33,7 @@ class HexapodPlot:
     fig['data'][3]['y'] = [hexapod.body.head.y]
     fig['data'][3]['z'] = [hexapod.body.head.z]
 
-    # legs
+    # Legs
     n = [i for i in range(4, 10)]
 
     for n, leg in zip(n, hexapod.legs):
@@ -42,7 +42,8 @@ class HexapodPlot:
       fig['data'][n]['y'] = [point.y for point in points]
       fig['data'][n]['z'] = [point.z for point in points]
 
-    # draw a mesh for body contact on ground
+    # Hexapod Support Polygon
+    # Draw a mesh for body contact on ground
     dz = -1 # mesh must be slightly below ground
     ground_contacts = hexapod.ground_contacts
     fig['data'][10]['x'] = [point.x for point in ground_contacts]
@@ -84,7 +85,6 @@ class HexapodPlot:
     fig['data'][13]['z'] = [cog.z, cog.z + axis_scale * z_axis.z]
 
     # Scale the global coordinate frame
-
     fig['data'][14]['x'] = [0, axis_scale]
     fig['data'][14]['y'] = [0, 0]
     fig['data'][14]['z'] = [0, 0]
