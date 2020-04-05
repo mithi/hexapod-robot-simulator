@@ -1,4 +1,12 @@
+CHECK_POSE = True
+# The inverse kinematics solver already updates the points of the hexapod
+# but if you want to test whether the pose is indeed correct
+# ie use the poses returned by the inverse kinematics solve
+# set CHECK_POSE to true
+# otherwise for faster graph/plot updates, set CHECK_POSE to False
+
 import numpy as np
+from copy import deepcopy
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -15,12 +23,10 @@ from hexapod.const import (
   HEXAPOD_FIGURE,
   HEXAPOD_POSE
 )
-
 from hexapod.ik_solver import inverse_kinematics_update
 
 from widgets.ik_ui import IK_INPUTS, SECTION_IK
 from widgets.measurements import SECTION_LENGTHS_CONTROL, MEASUREMENT_INPUTS
-from copy import deepcopy
 
 from app import app
 
@@ -61,7 +67,7 @@ def display_variables(
   relayout_data,
   figure):
 
-  text = f'''
+  info = f'''
 +----------------+------------+------------+------------+
 | rot.x: {rot_x:<+7.2f} | x: {end_x:<+5.2f} % | coxia: {coxia:3d} | fro: {front:5d} |
 | rot.y: {rot_y:<+7.2f} | y: {end_y:<+5.2f} % | femur: {femur:3d} | sid: {side:5d} |
@@ -72,13 +78,12 @@ def display_variables(
 +---------------------+
 '''
 
-
   # If there's no figure, create the default one
   if figure is None:
     print('No hexapod figure')
     hexapod = deepcopy(BASE_HEXAPOD)
     hexapod.update(HEXAPOD_POSE)
-    return dcc.Markdown(f'```{text}```'), BASE_PLOTTER.update(HEXAPOD_FIGURE, hexapod)
+    return dcc.Markdown(f'```{info}```'), BASE_PLOTTER.update(HEXAPOD_FIGURE, hexapod)
 
   # Create a hexapod
   hexapod = VirtualHexapod().new(
@@ -89,18 +94,25 @@ def display_variables(
     femur or 0,
     tibia or 0
   )
-  hexapod_clone = deepcopy(hexapod)
+
+  if CHECK_POSE:
+    hexapod_clone = deepcopy(hexapod)
 
   hexapod.update_stance(start_hip_stance, start_leg_stance)
-  hexapod, poses, msg = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
-  if msg is not None:
-    text = f'''{msg} | {text}'''
-    BASE_PLOTTER.update(figure, hexapod)
-  else:
-    hexapod_clone.update(poses)
-    BASE_PLOTTER.update(figure, hexapod_clone)
-    text = add_poses_to_text(text, poses)
+  hexapod, poses, alert = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
 
+  if alert is not None:
+    text = add_alert_to_text(info, alert)
+    if CHECK_POSE:
+      BASE_PLOTTER.update(figure, hexapod)
+  else:
+    if CHECK_POSE:
+      text = add_poses_to_text(info, poses)
+      hexapod_clone.update(poses)
+      BASE_PLOTTER.update(figure, hexapod_clone)
+
+  if not CHECK_POSE:
+    BASE_PLOTTER.update(figure, hexapod)
 
   # Use current camera view to display plot
   if relayout_data and 'scene.camera' in relayout_data:
@@ -120,3 +132,11 @@ def add_poses_to_text(postfix_text, poses):
 | {pose['name']:14} | {pose['coxia']:<+10.2f} | {pose['femur']:<+10.2f} | {pose['tibia']:<+10.2f} |'''
 
   return message + postfix_text
+
+
+def add_alert_to_text(postfix_text, alert):
+  return f'''
+----------------------------
+## ALERT: {alert}
+----------------------------
+{postfix_text}'''
