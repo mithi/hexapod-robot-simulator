@@ -1,3 +1,8 @@
+# This module Contains the Point class
+# and functions for manipulating vectors
+# and finding properties and relationships of vectors
+# computing reference frames
+
 import numpy as np
 
 class Point:
