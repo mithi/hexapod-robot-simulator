@@ -91,7 +91,6 @@
 # *------ *  /
 # (p0)   (p1)
 ########################
-
 from copy import deepcopy
 from hexapod.const import HEXAPOD_POSE
 import numpy as np
@@ -286,10 +285,22 @@ def inverse_kinematics_update(
     # Update hexapod's points to what we computed
     update_hexapod_points(hexapod, i, points)
 
-    poses[i]['coxia'] = alpha - hexapod.body.COXIA_AXES[i]
+    alpha = (alpha - hexapod.body.COXIA_AXES[i]) % 360
+    if alpha > 180:
+      alpha = 360 - alpha
+    elif alpha < -180:
+      alpha =  360 + alpha
+
+    poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta
     poses[i]['tibia'] = gamma
 
-
-  #print(f'poses: {poses}')
   return hexapod, poses, None
+
+# Notes:
+# - Limit alpha to range between -90 to 90
+# - Also limit beta and gamma to better ranges
+# - When all left side or right side is above ground, make this an impossible pose.
+# - Make ik solver a class to breakdown the large method
+# - Name the updated points of the updated hexapod their correct names, right now they're names is None
+# - Check if the pose of the hexapod is stable (IE the center of gravity falls in Hexy's support polygon)
