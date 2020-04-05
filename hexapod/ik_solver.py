@@ -144,11 +144,15 @@ def find_twist_frame(hexapod, unit_coxia_vector):
 
 
 def update_hexapod_points(hexapod, leg_id, points):
+  points[0].name = hexapod.legs[leg_id].p0.name
+  points[1].name = hexapod.legs[leg_id].p1.name
+  points[2].name = hexapod.legs[leg_id].p2.name
+  points[3].name = hexapod.legs[leg_id].p3.name
+
   hexapod.legs[leg_id].p0 = points[0]
   hexapod.legs[leg_id].p1 = points[1]
   hexapod.legs[leg_id].p2 = points[2]
   hexapod.legs[leg_id].p3 = points[3]
-
 
 def body_contact_shoved_on_ground(hexapod):
   for i in range(hexapod.LEG_COUNT):
@@ -167,6 +171,24 @@ def compute_twist_wrt_to_world(alpha, coxia_axis):
 
   return alpha
 
+def legs_too_short(legs):
+  # True when
+  # if three of her left legs are up or
+  # if three of her right legs are up or
+  # if four legs are up
+  if len(legs) >= 4:
+    return True, f'Unstable. Too many legs off the floor: {legs}'
+
+  if len(legs) == 3:
+    leg_positions = [leg.split('-')[0] for leg in legs]
+    if leg_positions.count('left') == 3:
+      return True, f'Unstable. All left legs off the ground, {legs}'
+    if leg_positions.count('right') == 3:
+      return True, f'Unstable. All right legs off the ground, {legs}'
+
+  return False, None
+
+
 def inverse_kinematics_update(
   hexapod,
   rot_x,
@@ -176,8 +198,6 @@ def inverse_kinematics_update(
   end_y,
   end_z,
 ):
-  x_axis = Point(1, 0, 0)
-  poses = deepcopy(HEXAPOD_POSE)
 
   tx = end_x * hexapod.mid
   ty = end_y * hexapod.side
@@ -188,6 +208,10 @@ def inverse_kinematics_update(
 
   if body_contact_shoved_on_ground(hexapod):
     return detached_hexapod, None, 'Impossible rotation at given height: body contact shoved on ground'
+
+  x_axis = Point(1, 0, 0)
+  poses = deepcopy(HEXAPOD_POSE)
+  legs_up_in_the_air = []
 
   for i in range(hexapod.LEG_COUNT):
     leg_name = hexapod.legs[i].name
@@ -229,13 +253,13 @@ def inverse_kinematics_update(
 
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
     d = length(coxia_to_foot_vector2d)
-    theta = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
-    phi = angle_between(coxia_to_foot_vector2d, x_axis)
-
     # If we can form this triangle this means we can reach the target ground contact point
     CAN_REACH_TARGET_GROUND_POINT = is_triangle(hexapod.tibia, hexapod.femur, d)
 
     if CAN_REACH_TARGET_GROUND_POINT:
+      theta = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
+      phi = angle_between(coxia_to_foot_vector2d, x_axis)
+
       beta = theta - phi
       if p3.z > 0:
         beta = theta + phi
@@ -257,7 +281,11 @@ def inverse_kinematics_update(
         return detached_hexapod, None, f"Can't reach target ground point. {leg_name} leg's Tibia length is too long."
 
       # Then hexapod.femur + hexapod.tibia < d:
-      # This means leg's are too short, compute tibia end points in this case
+      legs_up_in_the_air.append(leg_name)
+      LEGS_TOO_SHORT, msg = legs_too_short(legs_up_in_the_air)
+      if LEGS_TOO_SHORT:
+        return detached_hexapod, None, msg
+
       femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
       femur_vector = scalar_multiply(femur_tibia_direction, hexapod.femur)
       p2 = add_vectors(p1, femur_vector)
@@ -302,9 +330,9 @@ def inverse_kinematics_update(
   return hexapod, poses, None
 
 # Notes:
+# - [x] When all left side or right side is above ground, make this an impossible pose.
+# - [x] Name the updated points of the updated hexapod their correct names, right now they're names is None
 # - Limit alpha to range between -90 to 90
 # - Also limit beta and gamma to better ranges
-# - When all left side or right side is above ground, make this an impossible pose.
 # - Make ik solver a class to breakdown the large method
-# - Name the updated points of the updated hexapod their correct names, right now they're names is None
 # - Check if the pose of the hexapod is stable (IE the center of gravity falls in Hexy's support polygon)
