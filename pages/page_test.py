@@ -53,16 +53,15 @@ layout = html.Div([
   # ----------------------
   # Radio items
   html.Label(dcc.Markdown('**PREDEFINED POSES**')),
-  html.Label("Important! \
+  dcc.Markdown('❗**`IMPORTANT! `**` Select NONE to listen to custom controls. \
     When a predefined pose is selected, \
-    custom leg angles input (alpha/beta/gamma) would be ignored. \
-    Select NONE to listen to custom controls."),
+    custom leg angles input (alpha/beta/gamma) would be ignored.`'),
   section_radio_items,
   html.Br(),
   # ----------------------
   # Camera adjustments
   html.Label(dcc.Markdown('**CAMERA VIEW ADJUSTMENT CONTROLS**')),
-  html.P('Important! Hover on any hexapod point/vertex to set current camera view as default'),
+  dcc.Markdown('❗**`IMPORTANT! `** `Hover on any hexapod point/vertex to set current camera view as default`'),
   SECTION_INPUT_CAMVIEW,
   html.Br(),
   # ----------------------
