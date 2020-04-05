@@ -46,9 +46,9 @@ INPUTS = IK_INPUTS + DIMENSION_INPUTS
 def display_variables(
   start_hip_stance,
   start_leg_stance,
-  end_x,
-  end_y,
-  end_z,
+  percent_x,
+  percent_y,
+  percent_z,
   rot_x,
   rot_y,
   rot_z,
@@ -63,9 +63,9 @@ def display_variables(
 
   info = f'''
 +----------------+------------+------------+------------+
-| rot.x: {rot_x:<+7.2f} | x: {end_x:<+5.2f} % | coxia: {coxia:3d} | fro: {front:5d} |
-| rot.y: {rot_y:<+7.2f} | y: {end_y:<+5.2f} % | femur: {femur:3d} | sid: {side:5d} |
-| rot.z: {rot_z:<+7.2f} | z: {end_z:<+5.2f} % | tibia: {tibia:3d} | mid: {mid:5d} |
+| rot.x: {rot_x:<+7.2f} | x: {percent_x:<+5.2f} % | coxia: {coxia:3d} | fro: {front:5d} |
+| rot.y: {rot_y:<+7.2f} | y: {percent_y:<+5.2f} % | femur: {femur:3d} | sid: {side:5d} |
+| rot.z: {rot_z:<+7.2f} | z: {percent_z:<+5.2f} % | tibia: {tibia:3d} | mid: {mid:5d} |
 +----------------+------------+------------+------------+
 | hip_stance: {start_hip_stance:<+7.2f} |
 | leg_stance: {start_leg_stance:<+7.2f} |
@@ -97,7 +97,7 @@ def display_variables(
     hexapod_clone = deepcopy(hexapod)
 
   hexapod.update_stance(start_hip_stance, start_leg_stance)
-  hexapod, poses, alert = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, end_x, end_y, end_z)
+  hexapod, poses, alert = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, percent_x, percent_y, percent_z)
 
   if not RECOMPUTE_HEXAPOD:
     BASE_PLOTTER.update(figure, hexapod)
