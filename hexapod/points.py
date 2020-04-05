@@ -35,6 +35,31 @@ class Point:
 
 # *********************************************
 
+def is_triangle(a, b, c):
+  return (a + b > c) and (a + c > b) and (b + c > a)
+
+
+#https://www.maplesoft.com/support/help/Maple/view.aspx?path=MathApps%2FProjectionOfVectorOntoPlane
+# u is the vector, n is the plane normal
+def project_vector_onto_plane(u, n):
+  s = dot(u, n) / (length(n) ** 2)
+  temporary_vector = scalar_multiply(n, s)
+  vector = subtract_vectors(u, temporary_vector)
+  return vector
+
+
+def angle_between(a, b):
+  # returns the shortest angle between two vectors
+  a_dot_b = dot(a, b)
+  cos_theta = a_dot_b /(length(a) * length(b))
+  return np.degrees(np.arccos(cos_theta))
+
+
+def angle_opposite_of_last_side(a, b, c):
+  ratio = (a**2 + b**2 - c**2) / (2 * a * b)
+  return np.degrees(np.arccos(ratio))
+
+
 def skew(p):
   return np.array([
     [0, -p.z, p.y],
@@ -159,8 +184,14 @@ def length(v):
 def add_vectors(a, b):
   return Point(a.x + b.x, a.y + b.y, a.z + b.z)
 
+def scalar_multiply(p, s):
+  return Point(s * p.x, s * p.y, s * p.z)
+
 def subtract_vectors(a, b):
   return Point(a.x - b.x, a.y - b.y, a.z - b.z)
+
+def get_unit_vector(v):
+  return scale(v, length(v))
 
 def get_unit_normal(a, b, c):
   ab = subtract_vectors(b, a)
@@ -205,3 +236,8 @@ def is_point_inside_triangle2(p, p0, p1, p2):
     x = (e * d - f * b) / det
     y = (a * f - c * e) / det
     return -0.01 <= x <= 1 and -0.01 <= y <= 1 and x + y <= 1
+
+# Check if angle from vector a to b about normal n is positive
+# Rotating from vector a to is moving into a conter clockwise direction
+def is_counter_clockwise(a, b, n):
+  return dot(a, cross(b, n)) > 0
