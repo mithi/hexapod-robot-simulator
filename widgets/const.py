@@ -1,0 +1,1 @@
+UPDATE_MODE='drag' # set UPDATE_MODE='mouseup'if too slow
