@@ -121,91 +121,6 @@ from hexapod.points import (
 )
 
 
-def sanity_leg_lengths_check(hexapod, leg_name, points):
-  coxia = length(vector_from_to(points[0], points[1]))
-  femur = length(vector_from_to(points[1], points[2]))
-  tibia = length(vector_from_to(points[2], points[3]))
-
-  assert np.isclose(hexapod.coxia, coxia, atol=1), f'wrong coxia vector length. {leg_name} coxia:{coxia}'
-  assert np.isclose(hexapod.femur, femur, atol=1), f'wrong femur vector length. {leg_name} femur:{femur}'
-  assert np.isclose(hexapod.tibia, tibia, atol=1), f'wrong tibia vector length. {leg_name} tibia:{tibia}'
-
-
-def print_points(points):
-  print(f'p0: {points[0]}')
-  print(f'p1: {points[1]}')
-  print(f'p2: {points[2]}')
-  print(f'p3: {points[3]}')
-
-
-def find_twist_frame(hexapod, unit_coxia_vector):
-  twist = angle_between(unit_coxia_vector, hexapod.x_axis)
-  is_ccw = is_counter_clockwise(unit_coxia_vector, hexapod.x_axis, hexapod.z_axis)
-  if is_ccw:
-    twist = -twist
-
-  twist_frame = rotz(twist)
-  return twist, twist_frame
-
-
-def update_hexapod_points(hexapod, leg_id, points):
-  points[0].name = hexapod.legs[leg_id].p0.name
-  points[1].name = hexapod.legs[leg_id].p1.name
-  points[2].name = hexapod.legs[leg_id].p2.name
-  points[3].name = hexapod.legs[leg_id].p3.name
-
-  hexapod.legs[leg_id].p0 = points[0]
-  hexapod.legs[leg_id].p1 = points[1]
-  hexapod.legs[leg_id].p2 = points[2]
-  hexapod.legs[leg_id].p3 = points[3]
-
-
-def body_contact_shoved_on_ground(hexapod):
-  for i in range(hexapod.LEG_COUNT):
-    body_contact = hexapod.body.vertices[i]
-    foot_tip = hexapod.legs[i].foot_tip()
-    if body_contact.z < foot_tip.z:
-      return True
-  return False
-
-
-def compute_twist_wrt_to_world(alpha, coxia_axis):
-  alpha = (alpha - coxia_axis) % 360
-  if alpha > 180:
-    alpha = 360 - alpha
-  elif alpha < -180:
-    alpha =  360 + alpha
-
-  return alpha
-
-
-def legs_too_short(legs):
-  # True when
-  # if three of her left legs are up or
-  # if three of her right legs are up or
-  # if four legs are up
-  if len(legs) >= 4:
-    return True, f'Unstable. Too many legs off the floor: {legs}'
-
-  if len(legs) == 3:
-    leg_positions = [leg.split('-')[0] for leg in legs]
-    if leg_positions.count('left') == 3:
-      return True, f'Unstable. All left legs off the ground, {legs}'
-    if leg_positions.count('right') == 3:
-      return True, f'Unstable. All right legs off the ground, {legs}'
-
-  return False, None
-
-
-def angle_above_limit(angle, angle_range, leg_name, angle_name):
-  if np.abs(angle) > angle_range:
-    return True, \
-      f"The {angle_name} of {leg_name} required \n \
-      to do this pose is above the range of motion. \n \
-      Required: {angle} degrees. Limit: {angle_range} degrees."
-
-  return False, None
-
 def inverse_kinematics_update(
   hexapod,
   rot_x,
@@ -316,29 +231,18 @@ def inverse_kinematics_update(
       if femur_vector.z < 0:
         beta = -beta
 
+
     # *******************
-    # Update hexapod points and get pose angles
+    # Compute alpha and twist_frame
     # *******************
-    points = [p0, p1, p2, p3]
-    #print_points(points)
 
     # Find frame used to twist the leg frame wrt to hexapod's body contact point's x axis
     alpha, twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
-
-    # Convert points from local leg coordinate frame to world coordinate frame
-    for point in points:
-      point.update_point_wrt(twist_frame)
-      assert hexapod.body_rotation_frame is not None
-      point.update_point_wrt(hexapod.body_rotation_frame)
-      point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
-
-    # Check if the leg length's are what we expect
-    sanity_leg_lengths_check(hexapod, leg_name, points)
-    # Update hexapod's points to what we computed
-    update_hexapod_points(hexapod, i, points)
-
     alpha = compute_twist_wrt_to_world(alpha, hexapod.body.COXIA_AXES[i])
 
+    # *******************
+    # Early exit is angles are not within range
+    # *******************
     alpha_limit, alpha_msg = angle_above_limit(alpha, ALPHA_RANGE, leg_name, 'coxia angle (alpha)')
     beta_limit, beta_msg = angle_above_limit(beta, BETA_RANGE, leg_name, 'beta angle (beta)')
     gamma_limit, gamma_msg = angle_above_limit(gamma, GAMMA_RANGE, leg_name, 'gamma angle (gamma)')
@@ -352,11 +256,118 @@ def inverse_kinematics_update(
     if gamma_limit:
       return detached_hexapod, None, gamma_msg
 
+    # *******************
+    # Update hexapod points
+    # *******************
+    points = [p0, p1, p2, p3]
+    #print_points(points)
+
+    # Convert points from local leg coordinate frame to world coordinate frame
+    for point in points:
+      point.update_point_wrt(twist_frame)
+      assert hexapod.body_rotation_frame is not None
+      point.update_point_wrt(hexapod.body_rotation_frame)
+      point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
+
+    # Check if the leg length's are what we expect
+    sanity_leg_lengths_check(hexapod, leg_name, points)
+    # Update hexapod's points to what we computed
+    update_hexapod_points(hexapod, i, points)
+
+    # *******************
+    # Finally update pose
+    # *******************
     poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta
     poses[i]['tibia'] = gamma
 
   return hexapod, poses, None
+
+
+def update_hexapod_points(hexapod, leg_id, points):
+  points[0].name = hexapod.legs[leg_id].p0.name
+  points[1].name = hexapod.legs[leg_id].p1.name
+  points[2].name = hexapod.legs[leg_id].p2.name
+  points[3].name = hexapod.legs[leg_id].p3.name
+
+  hexapod.legs[leg_id].p0 = points[0]
+  hexapod.legs[leg_id].p1 = points[1]
+  hexapod.legs[leg_id].p2 = points[2]
+  hexapod.legs[leg_id].p3 = points[3]
+
+
+def find_twist_frame(hexapod, unit_coxia_vector):
+  twist = angle_between(unit_coxia_vector, hexapod.x_axis)
+  is_ccw = is_counter_clockwise(unit_coxia_vector, hexapod.x_axis, hexapod.z_axis)
+  if is_ccw:
+    twist = -twist
+
+  twist_frame = rotz(twist)
+  return twist, twist_frame
+
+
+def compute_twist_wrt_to_world(alpha, coxia_axis):
+  alpha = (alpha - coxia_axis) % 360
+  if alpha > 180:
+    alpha = 360 - alpha
+  elif alpha < -180:
+    alpha =  360 + alpha
+
+  return alpha
+
+
+def body_contact_shoved_on_ground(hexapod):
+  for i in range(hexapod.LEG_COUNT):
+    body_contact = hexapod.body.vertices[i]
+    foot_tip = hexapod.legs[i].foot_tip()
+    if body_contact.z < foot_tip.z:
+      return True
+  return False
+
+
+def legs_too_short(legs):
+  # True when
+  # if three of her left legs are up or
+  # if three of her right legs are up or
+  # if four legs are up
+  if len(legs) >= 4:
+    return True, f'Unstable. Too many legs off the floor: {legs}'
+
+  if len(legs) == 3:
+    leg_positions = [leg.split('-')[0] for leg in legs]
+    if leg_positions.count('left') == 3:
+      return True, f'Unstable. All left legs off the ground, {legs}'
+    if leg_positions.count('right') == 3:
+      return True, f'Unstable. All right legs off the ground, {legs}'
+
+  return False, None
+
+
+def angle_above_limit(angle, angle_range, leg_name, angle_name):
+  if np.abs(angle) > angle_range:
+    return True, \
+      f"The {angle_name} of {leg_name} required \n \
+      to do this pose is above the range of motion. \n \
+      Required: {angle} degrees. Limit: {angle_range} degrees."
+
+  return False, None
+
+
+def sanity_leg_lengths_check(hexapod, leg_name, points):
+  coxia = length(vector_from_to(points[0], points[1]))
+  femur = length(vector_from_to(points[1], points[2]))
+  tibia = length(vector_from_to(points[2], points[3]))
+
+  assert np.isclose(hexapod.coxia, coxia, atol=1), f'wrong coxia vector length. {leg_name} coxia:{coxia}'
+  assert np.isclose(hexapod.femur, femur, atol=1), f'wrong femur vector length. {leg_name} femur:{femur}'
+  assert np.isclose(hexapod.tibia, tibia, atol=1), f'wrong tibia vector length. {leg_name} tibia:{tibia}'
+
+def print_points(points):
+  print(f'p0: {points[0]}')
+  print(f'p1: {points[1]}')
+  print(f'p2: {points[2]}')
+  print(f'p3: {points[3]}')
+
 
 # Notes:
 # - [x] When all left side or right side is above ground, make this an impossible pose.
