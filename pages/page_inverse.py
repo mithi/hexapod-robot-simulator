@@ -136,7 +136,6 @@ def add_poses_to_text(postfix_text, poses):
 
 def add_alert_to_text(postfix_text, alert):
   return f'''
-----------------------------
-## ALERT: {alert}
-----------------------------
+❗❗❗ALERT❗❗❗
+⚠️ {alert} 🔴
 {postfix_text}'''
