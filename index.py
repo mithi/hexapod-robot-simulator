@@ -3,8 +3,9 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
-from app import server
 from pages import page_inverse, page_kinematics, page_test
+
+server = app.server
 # --------------
 # Navigation bar partial
 # --------------
