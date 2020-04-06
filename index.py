@@ -18,6 +18,9 @@ div_nav = html.Div([
 
   dcc.Link('Test: Basic Changes', href='/test'),
   html.Br(),
+
+  html.A("Source Code ", href='https://github.com/mithi/hexapod-robot-simulator', target="_blank"),
+  html.Br(),
 ])
 
 # --------------
@@ -56,7 +59,7 @@ def display_page(pathname):
 # --------------
 if __name__ == '__main__':
   app.run_server(
-    debug=False,
-    dev_tools_ui=False,
-    dev_tools_props_check=False
+    debug=True,
+    dev_tools_ui=True,
+    dev_tools_props_check=True
   )
