@@ -2,7 +2,7 @@
 - A browser-based hexapod robot simulator built from first principles
 - This implementation uses matrices, not quaternions
 - You can currently check it out on https://hexapod-robot-simulator.herokuapp.com but I highly suggest that
-you run it on your own local server. When this application is run locally it's really snappy, while on the other hand the link above is barely usable.
+you run it on your own local server. When this application is run locally it's really snappy! On the other hand, the link above is barely usable. 
 
 ## Requirements
 - Python 3.8.1
