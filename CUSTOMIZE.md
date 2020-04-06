@@ -66,36 +66,6 @@ HIP_STANCE_MAX_ANGLE = 45
 # right_middle = 0
 ```
 
-## Predefining poses
-You can hardcode and save predefined poses in
-```
-. /hexapod/templates/pose_template.py
-```
-Check out lines `50-67`
-```
-pose_twisted_ground = {
-  0: {"coxia": -45, "femur": 5, "tibia": -1, "name": "right-middle", "id": 0},
-  1: {"coxia": -18, "femur": 40, "tibia": -30, "name": "right-front", "id": 1},
-  2: {"coxia": -45, "femur": 44, "tibia": -43, "name": "left-front", "id": 2},
-  3: {"coxia": 0, "femur": 80, "tibia": -43, "name": "left-middle", "id": 3},
-  4: {"coxia": -45, "femur": 45, "tibia": -41, "name": "left-back", "id": 4},
-  5: {"coxia": 28, "femur": 40, "tibia": 1, "name": "right-back", "id": 5}
-}
-
-PREDEFINED_POSES = {
-  'NONE': None,
-  'neutral': HEXAPOD_POSE,
-  'pose-tilted': pose_tilted,
-  'pose-lifted-up': pose_some_feet_lifted_up,
-  'pose-twist-lifted':pose_twisted_lifted_feet,
-  'pose-twist-ground':  pose_twisted_ground,
-}
-```
-It will show as a radio button you can select at the test page
-```
-  ./pages/page_test.py
-```
-
 ## Pose control user interface for kinematics page
 You can also select if you like to tweak poses via sliders, knobs or
 text field. You can do this by commenting out the other options in
@@ -109,3 +79,47 @@ from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
 #from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
 ```
+
+# Disabled functionality
+- This is no longer a feature of this app
+- Predefining poses
+You can hardcode and save predefined poses in
+```
+. /hexapod/templates/pose_template.py
+```
+You'll see
+```
+example_pose = {
+  0: {"coxia": 16.61, "femur": 28.93 , "tibia": -33.95, "name": "right-middle", "id": 0},
+  1: {"coxia": 23.46, "femur": 44.83, "tibia": -46.41, "name": "right-front", "id": 1},
+  2: {"coxia": 29.53, "femur": 44.86, "tibia": -44.22, "name": "left-front", "id": 2},
+  3: {"coxia": 28.19, "femur": 29.14, "tibia": -31.13 , "name": "left-middle", "id": 3},
+  4: {"coxia": 29.73, "femur": 15.62, "tibia": -13.95, "name": "left-back", "id": 4},
+  5: {"coxia": 20.00, "femur": 15.62, "tibia": -17.44 , "name": "right-back", "id": 5}
+}
+
+PREDEFINED_POSES = {
+  'NONE': None,
+  'neutral': HEXAPOD_POSE,
+  'example-pose': example_pose,
+}
+```
+When you include
+```
+widgets.radio_items_ui.section_predefined_pose_control in your layout
+```
+and add it on
+```
+INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS + [Input('camera-view-values', 'children')] + [Input( 'predefined-poses', 'value')]
+@app.callback(
+  Output('hexapod-plot', 'figure'),
+  INPUTS,
+  [State('hexapod-plot', 'figure')]
+)
+def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
+```
+It will show as a radio button you can select at the test page
+```
+  ./pages/page_test.py
+```
+
