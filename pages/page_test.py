@@ -6,15 +6,13 @@ from dash.exceptions import PreventUpdate
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 from widgets.camview_ui import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUTS, CAMVIEW_OUTPUTS
 from widgets.alpha_beta_gamma_ui import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
-
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import (
   BASE_PLOTTER,
   NAMES_LEG, BASE_HEXAPOD,
   HEXAPOD_FIGURE,
-  HEXAPOD_POSE,
-  PREDEFINED_POSES
+  HEXAPOD_POSE
 )
 
 from copy import deepcopy
@@ -24,13 +22,6 @@ from app import app
 # -----------
 # LAYOUT
 # -----------
-section_radio_items = dcc.RadioItems(
-  id='predefined-poses',
-  options=[{'label': i, 'value': i} for i in PREDEFINED_POSES.keys()],
-  value='NONE',
-  labelStyle={'display': 'inline-block'}
-)
-
 section_hexapod = html.Div([
   html.Div([
     html.H3(dcc.Markdown('**CUSTOM CONTROLS**')),
@@ -47,38 +38,23 @@ section_hexapod = html.Div([
 )
 
 layout = html.Div([
-  # ----------------------
-  # Hexapod graph and controls
   section_hexapod,
-  # ----------------------
-  # Radio items
-  html.Label(dcc.Markdown('**PREDEFINED POSES**')),
-  dcc.Markdown('❗**`IMPORTANT! `**` Select NONE to listen to custom controls. \
-    When a predefined pose is selected, \
-    custom leg angles input (alpha/beta/gamma) would be ignored.`'),
-  section_radio_items,
-  html.Br(),
-  # ----------------------
-  # Camera adjustments
-  html.Label(dcc.Markdown('**CAMERA VIEW ADJUSTMENT CONTROLS**')),
-  dcc.Markdown('❗**`IMPORTANT! `** `Hover on any hexapod point/vertex to set current camera view as default`'),
   SECTION_INPUT_CAMVIEW,
-  html.Br(),
-  # ----------------------
   html.Div(id='camera-view-values', style={'display': 'none'}),
   html.Div(id='variables', style={'display': 'none'}),
 ])
 
+
 # -----------
 # CALLBACKS
 # -----------
-INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS + [Input('camera-view-values', 'children')] + [Input('predefined-poses', 'value')]
+INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS + [Input('camera-view-values', 'children')]
 @app.callback(
   Output('hexapod-plot', 'figure'),
   INPUTS,
   [State('hexapod-plot', 'figure')]
 )
-def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, predefined_pose, figure):
+def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
 
   if figure is None:
     #print('No existing hexapod figure.')
@@ -99,17 +75,6 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, predefined
     k or 0,
     a or 0
   )
-
-  # If a predefined pose is selected, show it
-  if predefined_pose != 'NONE':
-    #print('Predefined mode activated, custom controls disabled.')
-    pose = PREDEFINED_POSES[predefined_pose]
-    virtual_hexapod.update(pose)
-    return BASE_PLOTTER.update(figure, virtual_hexapod)
-
-  # *******************************
-  # If no pose selected, show custom pose based on custom controls
-  # *******************************
 
   # Update Hexapod's pose given alpha, beta, and gamma
   poses = deepcopy(HEXAPOD_POSE)

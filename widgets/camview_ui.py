@@ -1,5 +1,6 @@
 # Widgets used to control the camera view / angle of the 3d plot
 import dash_core_components as dcc
+import dash_html_components as html
 from dash.dependencies import Input, Output
 from .sectioning import make_section_type4, make_section_type3
 from hexapod.const import HEXAPOD_FIGURE
@@ -45,6 +46,11 @@ INPUT_CAMVIEW = {
 section_input_up = make_section_type4(dcc.Markdown('`(UP)`'), INPUT_CAMVIEW['up-x'], INPUT_CAMVIEW['up-y'], INPUT_CAMVIEW['up-z'])
 section_input_center = make_section_type4(dcc.Markdown('`(CNTR)`'), INPUT_CAMVIEW['center-x'], INPUT_CAMVIEW['center-y'], INPUT_CAMVIEW['center-z'])
 section_input_eye = make_section_type4(dcc.Markdown('`(EYE)`'), INPUT_CAMVIEW['eye-x'], INPUT_CAMVIEW['eye-y'], INPUT_CAMVIEW['eye-z'])
-SECTION_INPUT_CAMVIEW = make_section_type3(section_input_up, section_input_center, section_input_eye)
 CAMVIEW_OUTPUTS = [Output(i, 'value') for i in CAMVIEW_INPUT_IDs]
 CAMVIEW_INPUTS = [Input(i, 'value') for i in CAMVIEW_INPUT_IDs]
+
+SECTION_INPUT_CAMVIEW = html.Div([
+  html.Label(dcc.Markdown('**CAMERA VIEW ADJUSTMENT CONTROLS**')),
+  dcc.Markdown('❗**`IMPORTANT! `** `Hover on any hexapod point/vertex to set current camera view as default`'),
+  make_section_type3(section_input_up, section_input_center, section_input_eye)
+])
