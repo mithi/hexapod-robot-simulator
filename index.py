@@ -1,3 +1,5 @@
+from settings import DEBUG_MODE
+
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
@@ -59,7 +61,7 @@ def display_page(pathname):
 # --------------
 if __name__ == '__main__':
   app.run_server(
-    debug=False,
-    dev_tools_ui=False,
-    dev_tools_props_check=False
+    debug=DEBUG_MODE,
+    dev_tools_ui=DEBUG_MODE,
+    dev_tools_props_check=DEBUG_MODE
   )
