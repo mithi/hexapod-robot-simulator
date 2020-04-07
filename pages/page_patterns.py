@@ -30,11 +30,11 @@ section_hexapod = html.Div([
     SECTION_SLIDERS_TEST,
     html.Br(),
     SECTION_DIMENSION_CONTROL,
+    html.Div(id='display-variables'),
   ],
     style={'width': '40%'}
   ),
-  html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '50%'}),
-  html.Div(id='display-variables', style={'width': '10%'}),
+  html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '60%'}),
   ],
   style={'display': 'flex'}
 )
@@ -58,6 +58,12 @@ INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS + [Input('camera-view-values', '
 )
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
 
+  no_body_dimensions = f is None or s is None or m is None
+  no_leg_dimensions = h is None or k is None or a is None
+  if no_leg_dimensions or no_body_dimensions:
+    raise PreventUpdate
+
+
   if figure is None:
     #print('No existing hexapod figure.')
     HEXAPOD = deepcopy(BASE_HEXAPOD)
@@ -69,14 +75,7 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
     figure = BASE_PLOTTER.change_camera_view(figure, json.loads(camera))
 
   # Create a hexapod
-  virtual_hexapod = VirtualHexapod().new(
-    f or 0,
-    m or 0,
-    s or 0,
-    h or 0,
-    k or 0,
-    a or 0
-  )
+  virtual_hexapod = VirtualHexapod().new(f, m, s, h, k, a)
 
   # Update Hexapod's pose given alpha, beta, and gamma
   poses = deepcopy(HEXAPOD_POSE)
@@ -168,8 +167,13 @@ def update_variables(alpha, beta, gamma, f, s, m, h, k, a):
 )
 def display_variables(pose_params):
   p = json.loads(pose_params)
-  s = ''
-  for k, v in p.items():
-    s += '- `{}: {}` \n'.format(k, v)
 
-  return dcc.Markdown(s)
+  info = f'''```
++----------------+------------+------------+
+| alpha: {p['alpha']:<+7.2f} | front:  {p['front']:3d} | coxia: {p['coxia']:3d} |
+| beta:  {p['beta']:<+7.2f} | side:   {p['side']:3d} | femur: {p['femur']:3d} |
+| gama:  {p['gamma']:<+7.2f} | middle: {p['middle']:3d} | tibia: {p['tibia']:3d} |
++----------------+------------+------------+
+```'''
+
+  return dcc.Markdown(info)
