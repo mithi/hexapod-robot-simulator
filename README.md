@@ -7,11 +7,16 @@ you run it on your own local server. When this application is run locally it's r
 #### Forward Kinematics
 - Given angles of each joint, what does the robot look like?
 #### Inverse Kinematics
-- What are the angles of each joint to make the robot look the way I want? Is it even possible?
+- What are the angles of each joint to make the robot look the way I want?
+- Is it even possible? Why or why not?
 #### Uniform Movements
 - If all of the legs behaved the same way, what will the robot look like?
 #### Stability Checking (❗❗WIP)
-- If we pose the robot in this particular way, will it fall over?
+- If we pose the robot in a particular way, will it fall over?
+### Customizability
+- Set the dimensions and shape of the robot's body and legs. (6 parameters)
+#### Usability
+- Control the camera view, pan, tilt or zoom.
 #### Simplicity
 - Only depends on Numpy for calculations
 - NOTE: This implementation uses matrices, not quaternions
