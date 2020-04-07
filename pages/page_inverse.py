@@ -81,14 +81,7 @@ def display_variables(
     return dcc.Markdown(f'```{info}```'), BASE_PLOTTER.update(HEXAPOD_FIGURE, hexapod)
 
   # Create a hexapod
-  hexapod = VirtualHexapod().new(
-    front or 0,
-    mid or 0,
-    side or 0,
-    coxia or 0,
-    femur or 0,
-    tibia or 0
-  )
+  hexapod = VirtualHexapod().new(front, mid, side, coxia, femur, tibia)
 
   # ***********************************
   # COMPUTE POSES AND UPDATE FIGURE WITH INVERSE KINEMATICS
