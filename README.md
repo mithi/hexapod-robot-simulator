@@ -5,7 +5,6 @@ you run it on your own local server. When this application is run locally it's r
 - NOTE: This implementation uses matrices, not quaternions
 
 ## Features
-|-----------|--------------|
 | Feature   | Description  |
 |-----------|--------------|
 | Forward Kinematics | Given angles of each joint, what does the robot look like?|
