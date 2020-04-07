@@ -1,24 +1,20 @@
 # hexapod-robot-simulator
 - A simple browser-based hexapod robot simulator built from first principles
 - You can currently check it out on https://hexapod-robot-simulator.herokuapp.com but I highly suggest that
-<<<<<<< HEAD
 you run it on your own local server. When this application is run locally it's really snappy! On the other hand, the link above is barely usable.
 
 ## Features
-### Forward Kinematics
+#### Forward Kinematics
 - Given angles of each joint, what does the robot look like?
-### Inverse Kinematics
+#### Inverse Kinematics
 - What are the angles of each joint to make the robot look the way I want? Is it even possible?
-### Uniform Movements
+#### Uniform Movements
 - If all of the legs behaved the same way, what will the robot look like?
-### Stability Checking (❗❗WIP)
-- Will this pose make the robot fall over?
-### Simplicity
+#### Stability Checking (❗❗WIP)
+- If we pose the robot in this particular way, will it fall over?
+#### Simplicity
 - Only depends on Numpy for calculations
 - NOTE: This implementation uses matrices, not quaternions
-=======
-you run it on your own local server. When this application is run locally it's really snappy! On the other hand, the link above is barely usable. 
->>>>>>> 3f3f5f015c9d3be19021aa1d6fe2fa6d534e0af5
 
 ## Requirements
 - Python 3.8.1
