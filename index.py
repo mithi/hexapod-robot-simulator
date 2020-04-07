@@ -5,7 +5,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
-from pages import page_inverse, page_kinematics, page_test
+from pages import page_inverse, page_kinematics, page_patterns
 
 server = app.server
 # --------------
@@ -18,7 +18,7 @@ div_nav = html.Div([
   dcc.Link('Inverse Kinematics', href='/inverse-kinematics'),
   html.Br(),
 
-  dcc.Link('Test: Basic Changes', href='/test'),
+  dcc.Link('Movement Patterns', href='/movement-patterns'),
   html.Br(),
 
   html.A("Source Code ", href='https://github.com/mithi/hexapod-robot-simulator', target="_blank"),
@@ -40,7 +40,7 @@ app.layout = html.Div([
 PAGES = {
   '/inverse-kinematics': page_inverse.layout,
   '/kinematics': page_kinematics.layout,
-  '/test': page_test.layout
+  '/movement-patterns': page_patterns.layout
 }
 
 # --------------

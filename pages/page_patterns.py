@@ -26,7 +26,7 @@ from app import app
 # -----------
 section_hexapod = html.Div([
   html.Div([
-    html.H3(dcc.Markdown('**CUSTOM CONTROLS**')),
+    html.Label(dcc.Markdown('**LEG POSE**')),
     SECTION_SLIDERS_TEST,
     html.Br(),
     SECTION_DIMENSION_CONTROL,
