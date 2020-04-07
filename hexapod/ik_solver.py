@@ -92,7 +92,13 @@
 # (p0)   (p1)
 #
 #
-from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE, PRINT_LEG_POINTS_IN_TERMINAL_IK
+from settings import (
+  PRINT_LEG_POINTS_IN_TERMINAL_IK,
+  DEBUG_MODE,
+  ALPHA_MAX_ANGLE,
+  BETA_MAX_ANGLE,
+  GAMMA_MAX_ANGLE,
+)
 from copy import deepcopy
 from hexapod.const import HEXAPOD_POSE
 import numpy as np
@@ -162,7 +168,6 @@ def inverse_kinematics_update(
     leg_name = hexapod.legs[i].name
     body_contact = hexapod.body.vertices[i]
     foot_tip = hexapod.legs[i].foot_tip()
-
     body_to_foot_vector = vector_from_to(body_contact, foot_tip)
 
     # find the coxia vector which is the vector
@@ -177,9 +182,8 @@ def inverse_kinematics_update(
       return detached_hexapod, None, 'Impossible rotation at given height. \n coxia joint shoved on ground'
 
     # *******************
-    # Compute p0, p1 and p3
+    # 1. Compute p0, p1 and (possible) p3 wrt leg frame
     # *******************
-    # p0 and p1 in the local leg frame is straight forward
     p0 = Point(0, 0, 0)
     p1 = Point(hexapod.coxia, 0, 0)
 
@@ -191,17 +195,20 @@ def inverse_kinematics_update(
     p3 = Point(p3x, 0, p3z)
 
     # *******************
-    # Compute p2, beta and gamma
+    # Compute p2, beta, gamma and final p3 wrt leg frame
     # *******************
+
     # These values are needed to compute
     # p2 aka tibia joint (point between femur limb and tibia limb)
-
     coxia_to_foot_vector2d = vector_from_to(p1, p3)
     d = length(coxia_to_foot_vector2d)
-    # If we can form this triangle this means we can reach the target ground contact point
-    CAN_REACH_TARGET_GROUND_POINT = is_triangle(hexapod.tibia, hexapod.femur, d)
 
-    if CAN_REACH_TARGET_GROUND_POINT:
+    # If we can form this triangle this means we probably can reach the target ground contact point
+    if is_triangle(hexapod.tibia, hexapod.femur, d):
+      # --------------------------------
+      # CASE A: a triangle can be formed with
+      # coxia to foot vector, hexapod's femur and tibia
+      # --------------------------------
       theta = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
       phi = angle_between(coxia_to_foot_vector2d, x_axis)
 
@@ -220,6 +227,9 @@ def inverse_kinematics_update(
       if p2.z < p3.z:
         return detached_hexapod, None, f"Can't reach target ground point. \n {leg_name} can't reach it because the ground is blocking the path."
     else:
+      # --------------------------------
+      # CASE B: It's impossible to reach target ground point
+      # --------------------------------
       if d + hexapod.tibia < hexapod.femur:
         return detached_hexapod, None, f"Can't reach target ground point. \n {leg_name} leg's Femur length is too long."
       if d + hexapod.femur < hexapod.tibia:
@@ -237,40 +247,31 @@ def inverse_kinematics_update(
       tibia_vector = scalar_multiply(femur_tibia_direction, hexapod.tibia)
       p3 = add_vectors(p2, tibia_vector)
 
-      # find beta and gamma
+      # Find beta and gamma
       gamma = 0.0
       leg_x_axis = Point(1, 0, 0)
       beta = angle_between(leg_x_axis, femur_vector)
       if femur_vector.z < 0:
         beta = -beta
 
+    # Final p1, p2, p3, beta and gamma computed at this point
+    not_within_range, alert_msg = beta_gamma_not_within_range(beta, gamma, leg_name)
+    if not_within_range:
+      return detached_hexapod, None, alert_msg
 
     # *******************
-    # Compute alpha and twist_frame
-    # *******************
-
+    # 2. Compute alpha and twist_frame
     # Find frame used to twist the leg frame wrt to hexapod's body contact point's x axis
+    # *******************
     alpha, twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
     alpha = compute_twist_wrt_to_world(alpha, hexapod.body.COXIA_AXES[i])
-
-    # *******************
-    # Early exit is angles are not within range
-    # *******************
-    alpha_limit, alpha_msg = angle_above_limit(alpha, ALPHA_MAX_ANGLE, leg_name, 'coxia angle (alpha)')
-    beta_limit, beta_msg = angle_above_limit(beta, BETA_MAX_ANGLE, leg_name, 'beta angle (beta)')
-    gamma_limit, gamma_msg = angle_above_limit(gamma, GAMMA_MAX_ANGLE, leg_name, 'gamma angle (gamma)')
+    alpha_limit, alert_msg = angle_above_limit(alpha, ALPHA_MAX_ANGLE, leg_name, 'coxia angle (alpha)')
 
     if alpha_limit:
-      return detached_hexapod, None, alpha_msg
-
-    if beta_limit:
-      return detached_hexapod, None, beta_msg
-
-    if gamma_limit:
-      return detached_hexapod, None, gamma_msg
+      return detached_hexapod, None, alert_msg
 
     # *******************
-    # Update hexapod points
+    # 3. Update hexapod points and finally update the pose
     # *******************
     points = [p0, p1, p2, p3]
     if PRINT_LEG_POINTS_IN_TERMINAL_IK:
@@ -279,18 +280,17 @@ def inverse_kinematics_update(
     # Convert points from local leg coordinate frame to world coordinate frame
     for point in points:
       point.update_point_wrt(twist_frame)
-      assert hexapod.body_rotation_frame is not None
+      if DEBUG_MODE:
+        assert hexapod.body_rotation_frame is not None
       point.update_point_wrt(hexapod.body_rotation_frame)
       point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
 
-    # Check if the leg length's are what we expect
-    sanity_leg_lengths_check(hexapod, leg_name, points)
+    if DEBUG_MODE:
+      sanity_leg_lengths_check(hexapod, leg_name, points)
+
     # Update hexapod's points to what we computed
     update_hexapod_points(hexapod, i, points)
 
-    # *******************
-    # Finally update pose
-    # *******************
     poses[i]['coxia'] = alpha
     poses[i]['femur'] = beta
     poses[i]['tibia'] = gamma
@@ -366,6 +366,17 @@ def angle_above_limit(angle, angle_range, leg_name, angle_name):
 
   return False, None
 
+
+def beta_gamma_not_within_range(beta, gamma, leg_name):
+  beta_limit, alert_msg = angle_above_limit(beta, BETA_MAX_ANGLE, leg_name, 'beta angle (beta)')
+  if beta_limit:
+    return True, alert_msg
+
+  gamma_limit, alert_msg = angle_above_limit(gamma, GAMMA_MAX_ANGLE, leg_name, 'gamma angle (gamma)')
+  if gamma_limit:
+    return True, alert_msg
+
+  return False, None
 
 def sanity_leg_lengths_check(hexapod, leg_name, points):
   coxia = length(vector_from_to(points[0], points[1]))

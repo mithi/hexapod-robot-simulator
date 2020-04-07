@@ -56,6 +56,12 @@ def display_variables(
   relayout_data,
   figure):
 
+  no_leg_dimensions = coxia is None or femur is None or tibia is None
+  no_body_dimensions = front is None or side is None or mid is None
+
+  if no_leg_dimensions or no_body_dimensions:
+    raise PreventUpdate
+
   info = f'''
 +----------------+------------+------------+------------+
 | rot.x: {rot_x:<+7.2f} | x: {percent_x:<+5.2f} % | coxia: {coxia:3d} | fro: {front:5d} |
@@ -99,6 +105,7 @@ def display_variables(
   else:
     if poses:
       hexapod_clone.update(poses)
+      hexapod_clone.move_xyz(percent_x, percent_y, percent_z)
       BASE_PLOTTER.update(figure, hexapod_clone)
     else:
       BASE_PLOTTER.update(figure, hexapod)
