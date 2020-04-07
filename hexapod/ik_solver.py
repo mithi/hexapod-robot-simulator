@@ -322,7 +322,7 @@ def find_twist_frame(hexapod, unit_coxia_vector):
 def compute_twist_wrt_to_world(alpha, coxia_axis):
   alpha = (alpha - coxia_axis) % 360
   if alpha > 180:
-    alpha = 360 - alpha
+    alpha = alpha - 360
   elif alpha < -180:
     alpha =  360 + alpha
 
