@@ -275,7 +275,7 @@ def inverse_kinematics_update(
     # *******************
     points = [p0, p1, p2, p3]
     if PRINT_LEG_POINTS_IN_TERMINAL_IK:
-      print_points(points)
+      print_points(points, leg_name)
 
     # Convert points from local leg coordinate frame to world coordinate frame
     for point in points:
@@ -388,11 +388,14 @@ def sanity_leg_lengths_check(hexapod, leg_name, points):
   assert np.isclose(hexapod.tibia, tibia, atol=1), f'wrong tibia vector length. {leg_name} tibia:{tibia}'
 
 
-def print_points(points):
-  print(f'p0: {points[0]}')
-  print(f'p1: {points[1]}')
-  print(f'p2: {points[2]}')
-  print(f'p3: {points[3]}')
+def print_points(points, leg_name):
+  print()
+  print(leg_name, "leg")
+  print(f'...p0: {points[0]}')
+  print(f'...p1: {points[1]}')
+  print(f'...p2: {points[2]}')
+  print(f'...p3: {points[3]}')
+  print()
 
 
 # Notes:
