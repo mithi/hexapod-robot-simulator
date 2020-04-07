@@ -1,9 +1,9 @@
 #-------------------
 # Settings
 #-------------------
-DEBUG_MODE = False
+DEBUG_MODE = True
 PRINT_POSE_IN_TERMINAL = False
-
+PRINT_LEG_POINTS_IN_TERMINAL_IK = False
 # Too slow?
 # set UPDATE_MODE='mouseup'
 # This will make widgets only start updating when you release the mouse button

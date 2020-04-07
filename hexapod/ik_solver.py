@@ -92,9 +92,9 @@
 # (p0)   (p1)
 #
 #
+from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE, PRINT_LEG_POINTS_IN_TERMINAL_IK
 from copy import deepcopy
 from hexapod.const import HEXAPOD_POSE
-from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
 import numpy as np
 from hexapod.models import VirtualHexapod, Linkage
 from hexapod.points import (
@@ -273,7 +273,8 @@ def inverse_kinematics_update(
     # Update hexapod points
     # *******************
     points = [p0, p1, p2, p3]
-    #print_points(points)
+    if PRINT_LEG_POINTS_IN_TERMINAL_IK:
+      print_points(points)
 
     # Convert points from local leg coordinate frame to world coordinate frame
     for point in points:
