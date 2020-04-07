@@ -70,6 +70,8 @@ class Hexagon:
       Point(f, -s, 0, name=Hexagon.VERTEX_NAMES[5]),
     ]
 
+    self.all_points = self.vertices + [self.cog, self.head]
+
 class VirtualHexapod:
   LEG_COUNT = 6
   def __init__(self, dimensions=None):
@@ -117,13 +119,26 @@ class VirtualHexapod:
     # then rotate and translate body as if a separate entity
     frame = frame_rotxyz(a, b, c)
     self.body_rotation_frame = frame
-    points = self.body.vertices + [self.body.head, self.body.cog]
 
-    for point in points:
+    for point in self.body.all_points:
       point.update_point_wrt(frame)
       point.move_xyz(x, y, z)
 
     self._update_local_frame(frame)
+
+  def move_xyz(self, percent_x, percent_y, percent_z):
+    # Translate hexapod in the x, y, z directions
+    tx = percent_x * self.mid
+    ty = percent_y * self.side
+    tz = percent_z * self.tibia
+
+    for point in self.body.all_points:
+      point.move_xyz(tx, ty, tz)
+
+    for leg in self.legs:
+      points = leg.all_points()
+      for point in points:
+        point.move_xyz(tx, ty, tz)
 
   def update_stance(self, hip_stance, leg_stance):
     pose = deepcopy(HEXAPOD_POSE)
@@ -177,12 +192,8 @@ class VirtualHexapod:
       # there's no gravity
 
   def rotate_and_shift(self, frame, height):
-    # Update cog and head
-    self.body.cog.update_point_wrt(frame, height)
-    self.body.head.update_point_wrt(frame, height)
-
-    # Update each point in body hexagon
-    for vertex in self.body.vertices:
+    # Update each point in body
+    for vertex in self.body.all_points:
       vertex.update_point_wrt(frame, height)
 
     # Update each point in each leg
