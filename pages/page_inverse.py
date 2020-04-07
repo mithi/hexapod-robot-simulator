@@ -1,9 +1,4 @@
-RECOMPUTE_HEXAPOD = False
-# The inverse kinematics solver already updates the points of the hexapod
-# but if you want to test whether the pose is indeed correct
-# ie use the poses returned by the inverse kinematics solve
-# set RECOMPUTE_HEXAPOD to true
-# otherwise for faster graph/plot updates, set RECOMPUTE_HEXAPOD to False
+from settings import RECOMPUTE_HEXAPOD, PRINT_POSE_IN_TERMINAL
 
 import numpy as np
 from copy import deepcopy
@@ -122,6 +117,9 @@ def display_variables(
   if relayout_data and 'scene.camera' in relayout_data:
     camera = relayout_data['scene.camera']
     BASE_PLOTTER.change_camera_view(figure, camera)
+
+  if PRINT_POSE_IN_TERMINAL:
+    print('Current pose: ', poses)
 
   return dcc.Markdown(f'```{text}```'), figure
 

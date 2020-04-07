@@ -3,7 +3,7 @@ from .models import VirtualHexapod, Hexagon, Linkage
 from .templates.figure_template import HEXAPOD_FIGURE
 from .templates.pose_template import HEXAPOD_POSE
 from .templates.pose_template import PREDEFINED_POSES
-from .MAX_ANGLES import (
+from settings import (
   ALPHA_MAX_ANGLE,
   BETA_MAX_ANGLE,
   GAMMA_MAX_ANGLE,

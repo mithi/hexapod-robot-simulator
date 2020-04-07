@@ -1,10 +1,11 @@
 # This module holds the widgets for the inverse kinematics page
+from settings import UPDATE_MODE
+from settings import BODY_MAX_ANGLE, HIP_STANCE_MAX_ANGLE, LEG_STANCE_MAX_ANGLE
+
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
 import dash_daq
-from widgets.const import UPDATE_MODE
-from hexapod.const import BODY_MAX_ANGLE, HIP_STANCE_MAX_ANGLE, LEG_STANCE_MAX_ANGLE
 
 IK_INPUT_IDs = [
   'input-start-hip-stance',

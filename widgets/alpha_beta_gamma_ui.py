@@ -2,8 +2,8 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
-from hexapod.const import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
-from widgets.const import UPDATE_MODE
+from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
+from settings import UPDATE_MODE
 
 SLIDERS_TEST_IDs = ['slider-alpha', 'slider-beta', 'slider-gamma']
 SLIDERS_TEST_INPUTS = [Input(i, 'value') for i in SLIDERS_TEST_IDs]

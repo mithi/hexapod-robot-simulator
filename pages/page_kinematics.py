@@ -1,10 +1,13 @@
-# *****************
-# Pick one of four, or make your own
-# *****************
-#from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
-#from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
-from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
-#from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
+from settings import WHICH_POSE_CONTROL_UI, PRINT_POSE_IN_TERMINAL
+
+if WHICH_POSE_CONTROL_UI == 1:
+  from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
+elif WHICH_POSE_CONTROL_UI == 2:
+  from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
+elif WHICH_POSE_CONTROL_UI == 3:
+  from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
+else:
+  from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -89,6 +92,9 @@ def update_graph(poses_json, dimensions_json, relayout_data, figure):
   if relayout_data and 'scene.camera' in relayout_data:
     camera = relayout_data['scene.camera']
     figure = BASE_PLOTTER.change_camera_view(figure, camera)
+
+  if PRINT_POSE_IN_TERMINAL:
+    print('Current pose: ', poses)
 
   return figure
 

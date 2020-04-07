@@ -4,8 +4,9 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_daq
-from hexapod.const import NAMES_JOINT, NAMES_LEG, ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
-from widgets.const import UPDATE_MODE
+from hexapod.const import NAMES_JOINT, NAMES_LEG
+from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
+from settings import UPDATE_MODE
 
 max_angles = {
   'coxia': ALPHA_MAX_ANGLE,

@@ -1,8 +1,20 @@
 # hexapod-robot-simulator
-- A browser-based hexapod robot simulator built from first principles
-- This implementation uses matrices, not quaternions
+- A simple browser-based hexapod robot simulator built from first principles
 - You can currently check it out on https://hexapod-robot-simulator.herokuapp.com but I highly suggest that
-you run it on your own local server. When this application is run locally it's really snappy, while on the other hand the link above is barely usable.
+you run it on your own local server. When this application is run locally it's really snappy! On the other hand, the link above is barely usable.
+
+## Features
+### Forward Kinematics
+- Given angles of each joint, what does the robot look like?
+### Inverse Kinematics
+- What are the angles of each joint to make the robot look the way I want? Is it even possible?
+### Uniform Movements
+- If all of the legs behaved the same way, what will the robot look like?
+### Stability Checking (❗❗WIP)
+- Will this pose make the robot fall over?
+### Simplicity
+- Only depends on Numpy for calculations
+- NOTE: This implementation uses matrices, not quaternions
 
 ## Requirements
 - Python 3.8.1
@@ -15,6 +27,7 @@ you run it on your own local server. When this application is run locally it's r
 ```
 $ python index.py
 ```
+- Modify default settings in [./settings.py](./settings.py)
 
 ## Priorities
   - [ ] Checking pose stability. The inverse kinematics solver doesn't yet actually check if the center of gravity is inside its support polygon.
@@ -25,14 +38,6 @@ $ python index.py
 
 ## Known Issues
   - [ ] ❗ Some unstable poses are not marked as unstable by the hexapod which might be a bug somewhere in [`hexapod.ground_contact_solver.three_ids_of_ground_contacts`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/ground_contact_solver.py#L45) or [`hexapod.models.VirtualHexapod.update`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/models.py#L141)
-  - [ ] ❗ When the right-middle leg is twisted by itself, the figure point-of-view changes, other legs don't do this. Might be a bug in [`hexapod.models.VirtualHexapod._find_if_might_twist`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/models.py#L192) or [`hexapod.models.find_twist_frame`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/models.py#L231)
+  - [ ] ❗ When the right-middle leg is twisted by itself (coxia angle changed), the figure point-of-view changes, other legs don't do this. Might be a bug in [`hexapod.models.VirtualHexapod._find_if_might_twist`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/models.py#L192) or [`hexapod.models.find_twist_frame`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/models.py#L231)
   - [ ] ❗ Leg can criss-cross each other which shouldn't be the case, I'm open to hearing ideas on how to go about this
   - [ ] [Other issues](https://github.com/mithi/hexapod-robot-simulator/issues)
-
-## Modifying default settings
-- See [./CUSTOMIZE.md](./CUSTOMIZE.md) for more information
-
-## Screenshots
-| ![](./img/screen_shot-v1-4.png) | ![](./img/screen_shot-v1-2.png) |
-| ------------- |:-------------:|
-| ![](./img/screen_shot-v1-3.png) | ![](./img/screen_shot-v1-1.png) |

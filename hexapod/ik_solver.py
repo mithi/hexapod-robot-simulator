@@ -93,7 +93,8 @@
 #
 #
 from copy import deepcopy
-from hexapod.const import HEXAPOD_POSE, ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
+from hexapod.const import HEXAPOD_POSE
+from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
 import numpy as np
 from hexapod.models import VirtualHexapod, Linkage
 from hexapod.points import (

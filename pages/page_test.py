@@ -1,3 +1,4 @@
+from settings import PRINT_POSE_IN_TERMINAL
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
@@ -10,7 +11,8 @@ from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import (
   BASE_PLOTTER,
-  NAMES_LEG, BASE_HEXAPOD,
+  NAMES_LEG,
+  BASE_HEXAPOD,
   HEXAPOD_FIGURE,
   HEXAPOD_POSE
 )
@@ -90,9 +92,12 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
 
   virtual_hexapod.update(poses)
 
+  if PRINT_POSE_IN_TERMINAL:
+    print('Current pose: ', poses)
+
   # Update figure of hexapod and return it
   BASE_PLOTTER.update(figure, virtual_hexapod)
-  return BASE_PLOTTER.update(figure, virtual_hexapod)
+  return figure
 
 
 @app.callback(
