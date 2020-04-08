@@ -5,7 +5,6 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
-from widgets.camview_ui import SECTION_INPUT_CAMVIEW, CAMVIEW_INPUTS, CAMVIEW_OUTPUTS
 from widgets.alpha_beta_gamma_ui import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
@@ -32,17 +31,15 @@ section_hexapod = html.Div([
     SECTION_DIMENSION_CONTROL,
     html.Div(id='display-variables'),
   ],
-    style={'width': '40%'}
+    style={'width': '35%'}
   ),
-  html.Div(dcc.Graph(id='hexapod-plot'), style={'width': '60%'}),
+  html.Div([dcc.Graph(id='hexapod-plot')], style={'width': '65%'}),
   ],
   style={'display': 'flex'}
 )
 
 layout = html.Div([
   section_hexapod,
-  SECTION_INPUT_CAMVIEW,
-  html.Div(id='camera-view-values', style={'display': 'none'}),
   html.Div(id='variables', style={'display': 'none'}),
 ])
 
@@ -50,13 +47,13 @@ layout = html.Div([
 # -----------
 # CALLBACKS
 # -----------
-INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS + [Input('camera-view-values', 'children')]
+INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS
 @app.callback(
   Output('hexapod-plot', 'figure'),
   INPUTS,
-  [State('hexapod-plot', 'figure')]
+  [State('hexapod-plot', 'relayoutData'), State('hexapod-plot', 'figure')]
 )
-def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
+def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, figure):
 
   no_body_dimensions = f is None or s is None or m is None
   no_leg_dimensions = h is None or k is None or a is None
@@ -69,10 +66,6 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
     HEXAPOD = deepcopy(BASE_HEXAPOD)
     HEXAPOD.update(HEXAPOD_POSE)
     return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
-
-  if camera is not None:
-    #print('Camera view changed.')
-    figure = BASE_PLOTTER.change_camera_view(figure, json.loads(camera))
 
   # Create a hexapod
   virtual_hexapod = VirtualHexapod().new(f, m, s, h, k, a)
@@ -94,53 +87,14 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, camera, figure):
   if PRINT_POSE_IN_TERMINAL:
     print('Current pose: ', poses)
 
+  # Use current camera view to display plot
+  if relayout_data and 'scene.camera' in relayout_data:
+    camera = relayout_data['scene.camera']
+    figure = BASE_PLOTTER.change_camera_view(figure, camera)
+
   # Update figure of hexapod and return it
   BASE_PLOTTER.update(figure, virtual_hexapod)
   return figure
-
-
-@app.callback(
-  CAMVIEW_OUTPUTS,
-  [Input('hexapod-plot', 'hoverData')],
-  [State('hexapod-plot', 'relayoutData')]
-)
-def update_camera_inputs(hover_data, relayout_data):
-  # We're only using the hover_data to trigger events
-  # Using relayout_data to trigger events, causes the program
-  # to crash (too many callbacks at a short period of time)
-
-  if relayout_data is None:
-    raise PreventUpdate
-
-  if 'scene.camera' not in relayout_data:
-    raise PreventUpdate
-
-  camera = relayout_data['scene.camera']
-
-  up = camera['up']
-  c = camera['center']
-  eye =  camera['eye']
-
-  ux, uy, uz = up['x'], up['y'], up['z']
-  cx, cy, cz = c['x'], c['y'], c['z']
-  ex, ey, ez = eye['x'], eye['y'], eye['z']
-
-  return ux, uy, uz, cx, cy, cz, ex, ey, ez
-
-
-@app.callback(
-  Output('camera-view-values', 'children'),
-  CAMVIEW_INPUTS
-)
-def update_camera_view(up_x, up_y, up_z, center_x, center_y, center_z, eye_x, eye_y, eye_z):
-
-  camera = {
-    'up': {'x': up_x or 0, 'y': up_y or 0, 'z': up_z or 0},
-    'center': {'x': center_x or 0, 'y': center_y or 0, 'z': center_z or 0},
-    'eye': {'x': (eye_x or 0), 'y': (eye_y or 0), 'z': (eye_z or 0)}
-  }
-
-  return json.dumps(camera)
 
 
 @app.callback(
@@ -169,11 +123,11 @@ def display_variables(pose_params):
   p = json.loads(pose_params)
 
   info = f'''```
-+----------------+------------+------------+
++----------------+-------------+------------+
 | alpha: {p['alpha']:<+7.2f} | front:  {p['front']:3d} | coxia: {p['coxia']:3d} |
 | beta:  {p['beta']:<+7.2f} | side:   {p['side']:3d} | femur: {p['femur']:3d} |
 | gama:  {p['gamma']:<+7.2f} | middle: {p['middle']:3d} | tibia: {p['tibia']:3d} |
-+----------------+------------+------------+
++----------------+-------------+------------+
 ```'''
 
   return dcc.Markdown(info)
