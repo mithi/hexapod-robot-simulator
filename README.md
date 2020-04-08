@@ -1,5 +1,9 @@
+
+# [☕](https://ko-fi.com/minimithi)
+
 # 🕷️ Mithi's Hexapod Robot Simulator 💕
-A simple browser-based hexapod robot simulator built (with love 💕) from first principles 🕷️
+- A simple browser-based hexapod robot simulator built from first principles 🕷️
+- If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi).
 
 |![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Leg pattern movements](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Customizing Hexapod Dimensions](https://mithi.github.io/robotics-blog/robot-only-x3.gif)|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
 |---------|---------|---------|---------|
