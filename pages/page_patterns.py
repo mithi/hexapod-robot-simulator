@@ -24,35 +24,26 @@ from app import app
 # -----------
 # LAYOUT
 # -----------
-section_hexapod = html.Div([
-  html.Div([
-    SECTION_DIMENSION_CONTROL,
-    SECTION_SLIDERS_TEST,
-    html.Div(id='display-variables'),
-  ],
-    style={'width': '35%'}
-  ),
-  html.Div([dcc.Graph(id='graph-hexapod-3')], style={'width': '65%'}),
-  ],
-  style={'display': 'flex'}
-)
+SECTION_CONTROLS = [
+  SECTION_DIMENSION_CONTROL,
+  SECTION_SLIDERS_TEST,
+  html.Div(id='display-variables'),
+]
 
 layout = html.Div([
-  section_hexapod,
-  html.Div(id='variables', style={'display': 'none'}),
-])
-
+  html.Div(SECTION_CONTROLS, style={'width': '35%'}),
+  dcc.Graph(id='graph-hexapod-3', style={'width': '65%'})],
+  style={'display': 'flex'}
+)
 
 # -----------
 # CALLBACKS
 # -----------
+OUTPUT = Output('graph-hexapod-3', 'figure')
 INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS
-@app.callback(
-  Output('graph-hexapod-3', 'figure'),
-  INPUTS,
-  [State('graph-hexapod-3', 'relayoutData'), State('graph-hexapod-3', 'figure')]
-)
-def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, figure):
+STATES = [State('graph-hexapod-3', 'relayoutData'), State('graph-hexapod-3', 'figure')]
+@app.callback(OUTPUT, INPUTS, STATES)
+def update_patterns_page(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, figure):
 
   no_body_dimensions = f is None or s is None or m is None
   no_leg_dimensions = h is None or k is None or a is None
@@ -70,10 +61,8 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, fig
   return figure
 
 
-@app.callback(
-  Output('variables', 'children'),
-  SLIDERS_TEST_INPUTS + DIMENSION_INPUTS
-)
+OUTPUT = Output('variables', 'children')
+@app.callback(OUTPUT, INPUTS)
 def update_variables(alpha, beta, gamma, f, s, m, h, k, a):
   return json.dumps({
     'alpha': alpha,
@@ -87,20 +76,3 @@ def update_variables(alpha, beta, gamma, f, s, m, h, k, a):
     'tibia': a,
   })
 
-
-@app.callback(
-  Output('display-variables', 'children'),
-  [Input('variables', 'children')]
-)
-def display_variables(pose_params):
-  p = json.loads(pose_params)
-
-  info = f'''```
-+----------------+-------------+------------+
-| alpha: {p['alpha']:<+7.2f} | front:  {p['front']:3d} | coxia: {p['coxia']:3d} |
-| beta:  {p['beta']:<+7.2f} | side:   {p['side']:3d} | femur: {p['femur']:3d} |
-| gama:  {p['gamma']:<+7.2f} | middle: {p['middle']:3d} | tibia: {p['tibia']:3d} |
-+----------------+-------------+------------+
-```'''
-
-  return dcc.Markdown(info)
