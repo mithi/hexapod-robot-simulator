@@ -34,11 +34,13 @@ HIDDEN_BODY_DIMENSIONS = [html.Div(id='hexapod-dimensions-values', style={'displ
 HIDDEN_LEG_POSES_ALL = [html.Div(id='hexapod-poses-values', style={'display': 'none'})]
 HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_BODY_DIMENSIONS +  HIDDEN_LEG_POSES_ALL
 
+SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_POSE_CONTROL]
 layout = html.Div([
-  html.Div([SECTION_DIMENSION_CONTROL, SECTION_POSE_CONTROL], style={'width': '45%'}),
+  html.Div(SECTION_CONTROLS, style={'width': '45%'}),
   dcc.Graph(id='graph-hexapod', style={'width': '55%'}),
-  html.Div(HIDDEN_LEG_POSES + HIDDEN_BODY_DIMENSIONS +  HIDDEN_LEG_POSES_ALL)],
-  style={'display': 'flex'})
+  html.Div(HIDDEN_DIVS)],
+  style={'display': 'flex'}
+)
 
 # *********************
 # *  CALLBACKS        *
@@ -52,7 +54,7 @@ INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexap
   INPUT_ALL,
   [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 )
-def update_graph(poses_json, dimensions_json, relayout_data, figure):
+def update_kinematics_page(poses_json, dimensions_json, relayout_data, figure):
 
   if figure is None:
     return HEXAPOD_FIGURE
@@ -112,7 +114,7 @@ def update_hexapod_pose_values(rm, rf, lf, lm, lb, rb):
       pose['id'] = i
       poses_json[i] = pose
     except:
-      print("? can't parse:", pose)
+      print(" can't parse:", pose)
 
   return json.dumps(poses_json)
 
