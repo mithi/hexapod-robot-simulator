@@ -1,8 +1,10 @@
+# 🕷️ Mithi's Hexapod Robot Simulator
+- A simple browser-based hexapod robot simulator built from first principles
+
 |![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Leg pattern movements](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Customizing Hexapod Dimensions](https://mithi.github.io/robotics-blog/robot-only-x3.gif)|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
 |---------|---------|---------|---------|
-| 1 | 2 | 3 | 4 |
+| . | . | . | . |
 
-- A simple browser-based hexapod robot simulator built from first principles
 
 | Feature   | Description  |
 |-----------|--------------|
@@ -11,10 +13,10 @@
 | 💕 Uniform Movements | If all of the legs behaved the same way, what will the robot look like? |
 | 💕 Customizability | Set the dimensions and shape of the robot's body and legs. (6 parameters) |
 | 💕 Usability | Control the camera view, pan, tilt, zoom, whatever. |
-| 💕 Simplicity | Minimal dependencies. Only depends on Numpy for calculations. Plotly-dash for plotting, Plotly can be safely replaced if a better 3d plotting library is available. |
+| 💕 Simplicity | Minimal dependencies. Depends solely on Numpy for calculations. Uses only Plotly-dash for plotting, Dash can be safely replaced if a better 3d plotting library is available. |
 | ❗ Stability Check (WIP) | If we pose the robot in a particular way, will it fall over? |
 | ❗ Fast | Okay, it's not as fast as I wanted, but on a local server, it's okay |
-| ❗ Bug-free | Okay, right now there's still room for improvement |
+| ❗ Bug-free | Fine, right now there's still room for improvement |
 | ❗ Well-tested | Yeah, I need to compile test cases first |
 
 
