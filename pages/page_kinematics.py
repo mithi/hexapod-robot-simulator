@@ -79,8 +79,6 @@ def update_graph(poses_json, dimensions_json, relayout_data, figure):
     poses = HEXAPOD_POSE
     try:
       poses = json.loads(poses_json)
-      #print(poses)
-      #print()
     except:
       print("can't parse:", poses_json)
     virtual_hexapod.update(poses)
