@@ -32,7 +32,7 @@ section_hexapod = html.Div([
   ],
     style={'width': '35%'}
   ),
-  html.Div([dcc.Graph(id='hexapod-plot')], style={'width': '65%'}),
+  html.Div([dcc.Graph(id='graph-hexapod-3')], style={'width': '65%'}),
   ],
   style={'display': 'flex'}
 )
@@ -48,9 +48,9 @@ layout = html.Div([
 # -----------
 INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS
 @app.callback(
-  Output('hexapod-plot', 'figure'),
+  Output('graph-hexapod-3', 'figure'),
   INPUTS,
-  [State('hexapod-plot', 'relayoutData'), State('hexapod-plot', 'figure')]
+  [State('graph-hexapod-3', 'relayoutData'), State('graph-hexapod-3', 'figure')]
 )
 def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, figure):
 
