@@ -33,7 +33,7 @@ INPUTS = IK_INPUTS + DIMENSION_INPUTS
    INPUTS,
   [State('graph-hexapod-2', 'relayoutData'), State('graph-hexapod-2', 'figure')]
 )
-def display_variables(
+def update_inverse_page(
   start_hip_stance,
   start_leg_stance,
   percent_x,
