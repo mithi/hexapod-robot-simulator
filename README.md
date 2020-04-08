@@ -4,6 +4,11 @@
 - You can currently check it out on https://hexapod-robot-simulator.herokuapp.com but I highly suggest that
 you run it on your own local server. When this application is run locally it's really snappy! On the other hand, the link above is barely usable.
 - This implementation uses matrices, not quaternions. I'm aware that quaternions is far superior in every single way, this uses matrices because I haven't studied quaternions yet. Maybe in the future
+https://mithi.github.io
+
+| 1 | 2 | 3 | 4 |
+|---------|---------|---------|---------|
+|![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Leg pattern movements](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Customizing Hexapod Dimensions](https://mithi.github.io/robotics-blog/robot-only-x3.gif)|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
 
 | Feature   | Description  |
 |-----------|--------------|
