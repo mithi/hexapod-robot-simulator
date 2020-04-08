@@ -31,3 +31,10 @@ NAMES_JOINT = Linkage.POINT_NAMES
 
 BASE_HEXAPOD = VirtualHexapod().new(100, 100, 100, 100, 100, 100)
 BASE_PLOTTER = HexapodPlot()
+
+from copy import deepcopy
+HEXAPOD = deepcopy(BASE_HEXAPOD)
+HEXAPOD.update(HEXAPOD_POSE)
+BASE_FIGURE = BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
+def base_figure():
+  return BASE_FIGURE

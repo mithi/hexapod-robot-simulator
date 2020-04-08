@@ -11,9 +11,8 @@ from hexapod.plotter import HexapodPlot
 from hexapod.const import (
   BASE_PLOTTER,
   NAMES_LEG,
-  BASE_HEXAPOD,
-  HEXAPOD_FIGURE,
-  HEXAPOD_POSE
+  HEXAPOD_POSE,
+  base_figure
 )
 
 from copy import deepcopy
@@ -60,12 +59,9 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, fig
   if no_leg_dimensions or no_body_dimensions:
     raise PreventUpdate
 
-
   if figure is None:
     #print('No existing hexapod figure.')
-    HEXAPOD = deepcopy(BASE_HEXAPOD)
-    HEXAPOD.update(HEXAPOD_POSE)
-    return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
+    return base_figure()
 
   # Create a hexapod
   virtual_hexapod = VirtualHexapod().new(f, m, s, h, k, a)

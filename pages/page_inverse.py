@@ -8,12 +8,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
-from hexapod.const import (
-  BASE_PLOTTER,
-  BASE_HEXAPOD,
-  HEXAPOD_FIGURE,
-  HEXAPOD_POSE
-)
+from hexapod.const import BASE_PLOTTER, HEXAPOD_FIGURE
 from hexapod.ik_solver import inverse_kinematics_update
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
@@ -68,17 +63,13 @@ def display_variables(
 | rot.y: {rot_y:<+7.2f} | y: {percent_y:<+5.2f} % | femur: {femur:3d} | sid: {side:5d} |
 | rot.z: {rot_z:<+7.2f} | z: {percent_z:<+5.2f} % | tibia: {tibia:3d} | mid: {mid:5d} |
 +----------------+------------+------------+------------+
-| hip_stance: {start_hip_stance:<+7.2f} |
-| leg_stance: {start_leg_stance:<+7.2f} |
-+---------------------+
+| hip_stance: {start_hip_stance:<+6.2f} | leg_stance: {start_leg_stance:<+6.2f} |
++--------------------+--------------------+
 '''
 
   # If there's no figure, create the default one
   if figure is None:
-    print('No hexapod figure')
-    hexapod = deepcopy(BASE_HEXAPOD)
-    hexapod.update(HEXAPOD_POSE)
-    return dcc.Markdown(f'```{info}```'), BASE_PLOTTER.update(HEXAPOD_FIGURE, hexapod)
+    return dcc.Markdown(f'```{info}```'), HEXAPOD_FIGURE
 
   # Create a hexapod
   hexapod = VirtualHexapod().new(front, mid, side, coxia, femur, tibia)

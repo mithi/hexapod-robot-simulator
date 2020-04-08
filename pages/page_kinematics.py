@@ -18,7 +18,6 @@ from hexapod.const import (
   NAMES_LEG,
   NAMES_JOINT,
   BASE_PLOTTER,
-  BASE_HEXAPOD,
   HEXAPOD_FIGURE,
   HEXAPOD_POSE
 )
@@ -60,14 +59,10 @@ def update_graph(poses_json, dimensions_json, relayout_data, figure):
 
   # If there's no figure, create the default one
   if figure is None:
-    print('No hexapod figure')
-    HEXAPOD = deepcopy(BASE_HEXAPOD)
-    HEXAPOD.update(HEXAPOD_POSE)
-    return BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
+    return HEXAPOD_FIGURE
 
   # If there's no dimensions given, use the latest one before this
   if dimensions_json is None:
-    print('No hexapod dimensions')
     raise PreventUpdate
 
   # Make base hexapod model given body dimensions
