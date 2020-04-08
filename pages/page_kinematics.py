@@ -1,4 +1,5 @@
 from settings import WHICH_POSE_CONTROL_UI, PRINT_POSE_IN_TERMINAL
+from pages import helpers
 
 if WHICH_POSE_CONTROL_UI == 1:
   from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
@@ -21,6 +22,7 @@ from hexapod.const import (
   HEXAPOD_FIGURE,
   HEXAPOD_POSE
 )
+
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 from copy import deepcopy
 import json
@@ -57,38 +59,25 @@ INPUT_ALL = [Input(name, 'children') for name in ['hexapod-poses-values', 'hexap
 )
 def update_graph(poses_json, dimensions_json, relayout_data, figure):
 
-  # If there's no figure, create the default one
   if figure is None:
     return HEXAPOD_FIGURE
 
-  # If there's no dimensions given, use the latest one before this
   if dimensions_json is None:
+    raise PreventUpdate
+
+  try:
+    poses = json.loads(poses_json)
+  except:
+    print("can't parse:", poses_json)
     raise PreventUpdate
 
   # Make base hexapod model given body dimensions
   dimensions = json.loads(dimensions_json)
   virtual_hexapod = VirtualHexapod(dimensions)
+  virtual_hexapod.update(poses)
 
-  # Configure the pose of the hexapod given joint angles
-  if poses_json is not None:
-    poses = HEXAPOD_POSE
-    try:
-      poses = json.loads(poses_json)
-    except:
-      print("can't parse:", poses_json)
-    virtual_hexapod.update(poses)
-
-  # Update the plot to reflect pose of hexapod
   figure = BASE_PLOTTER.update(figure, virtual_hexapod)
-
-  # Use current camera view to display plot
-  if relayout_data and 'scene.camera' in relayout_data:
-    camera = relayout_data['scene.camera']
-    figure = BASE_PLOTTER.change_camera_view(figure, camera)
-
-  if PRINT_POSE_IN_TERMINAL:
-    print('Current pose: ', poses)
-
+  figure = helpers.change_camera_view(figure, relayout_data)
   return figure
 
 # -------------------

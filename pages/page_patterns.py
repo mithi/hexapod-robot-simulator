@@ -1,4 +1,6 @@
 from settings import PRINT_POSE_IN_TERMINAL
+from pages import helpers
+
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
@@ -60,10 +62,8 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, fig
     raise PreventUpdate
 
   if figure is None:
-    #print('No existing hexapod figure.')
     return base_figure()
 
-  # Create a hexapod
   virtual_hexapod = VirtualHexapod().new(f, m, s, h, k, a)
 
   # Update Hexapod's pose given alpha, beta, and gamma
@@ -79,17 +79,8 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, fig
     }
 
   virtual_hexapod.update(poses)
-
-  if PRINT_POSE_IN_TERMINAL:
-    print('Current pose: ', poses)
-
-  # Use current camera view to display plot
-  if relayout_data and 'scene.camera' in relayout_data:
-    camera = relayout_data['scene.camera']
-    figure = BASE_PLOTTER.change_camera_view(figure, camera)
-
-  # Update figure of hexapod and return it
   BASE_PLOTTER.update(figure, virtual_hexapod)
+  figure = helpers.change_camera_view(figure, relayout_data)
   return figure
 
 
