@@ -20,7 +20,8 @@ DIMENSION_INPUTS = [Input(input_id, 'value') for input_id in INPUT_DIMENSIONS_ID
 # NUMBER INPUTS FOR DIMENSIONS
 # -----------
 def make_positive_number_input(_name, _value):
-  return dcc.Input(id=_name, type='number', value=_value, step=5, min=0, style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
+  input_style = {'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'}
+  return dcc.Input(id=_name, type='number', value=_value, step=5, min=0, style=input_style)
 
 # Hexapod dimension s inputs
 INPUT_DIMENSIONS = {
@@ -39,11 +40,13 @@ INPUT_DIMENSIONS = {
 section_input_body = make_section_type3(INPUT_DIMENSIONS['front'], INPUT_DIMENSIONS['middle'], INPUT_DIMENSIONS['side'], 'front', 'middle', 'side')
 section_input_leg = make_section_type3(INPUT_DIMENSIONS['coxia'], INPUT_DIMENSIONS['femur'], INPUT_DIMENSIONS['tibia'], 'coxia', 'femur', 'tibia')
 
+input_style = {'width':  '50%', 'fontFamily': 'Courier', 'fontSize': '0.9em'}
+
 SECTION_DIMENSION_CONTROL = html.Div([
   html.Label(dcc.Markdown('**HEXAPOD ROBOT DIMENSIONS**')),
   html.Div([
-  html.Div(section_input_body, style={'width':  '50%'}),
-  html.Div(section_input_leg, style={'width': '50%'}),
+  html.Div(section_input_body, style=input_style),
+  html.Div(section_input_leg, style=input_style),
   ],
   style={'display': 'flex'}
   )
