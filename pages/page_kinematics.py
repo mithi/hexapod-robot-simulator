@@ -5,8 +5,6 @@ if WHICH_POSE_CONTROL_UI == 1:
   from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
 elif WHICH_POSE_CONTROL_UI == 2:
   from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
-elif WHICH_POSE_CONTROL_UI == 3:
-  from widgets.pose_control.generic_knob_ui import SECTION_POSE_CONTROL
 else:
   from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
 
@@ -37,13 +35,10 @@ HIDDEN_LEG_POSES_ALL = [html.Div(id='hexapod-poses-values', style={'display': 'n
 HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_BODY_DIMENSIONS +  HIDDEN_LEG_POSES_ALL
 
 layout = html.Div([
-  html.Div([
-    dcc.Graph(id='graph-hexapod', style={'width': '45%'}),
-    html.Div([SECTION_POSE_CONTROL, SECTION_DIMENSION_CONTROL], style={'width': '55%'})],
-    style={'display': 'flex'}
-  ),
-  html.Div(HIDDEN_LEG_POSES + HIDDEN_BODY_DIMENSIONS +  HIDDEN_LEG_POSES_ALL),
-])
+  html.Div([SECTION_DIMENSION_CONTROL, SECTION_POSE_CONTROL], style={'width': '45%'}),
+  dcc.Graph(id='graph-hexapod', style={'width': '55%'}),
+  html.Div(HIDDEN_LEG_POSES + HIDDEN_BODY_DIMENSIONS +  HIDDEN_LEG_POSES_ALL)],
+  style={'display': 'flex'})
 
 # *********************
 # *  CALLBACKS        *
@@ -71,13 +66,12 @@ def update_graph(poses_json, dimensions_json, relayout_data, figure):
     print("can't parse:", poses_json)
     raise PreventUpdate
 
-  # Make base hexapod model given body dimensions
   dimensions = json.loads(dimensions_json)
   virtual_hexapod = VirtualHexapod(dimensions)
   virtual_hexapod.update(poses)
 
-  figure = BASE_PLOTTER.update(figure, virtual_hexapod)
-  figure = helpers.change_camera_view(figure, relayout_data)
+  BASE_PLOTTER.update(figure, virtual_hexapod)
+  helpers.change_camera_view(figure, relayout_data)
   return figure
 
 # -------------------
@@ -118,7 +112,7 @@ def update_hexapod_pose_values(rm, rf, lf, lm, lb, rb):
       pose['id'] = i
       poses_json[i] = pose
     except:
-      print("can't parse:", pose)
+      print("? can't parse:", pose)
 
   return json.dumps(poses_json)
 
