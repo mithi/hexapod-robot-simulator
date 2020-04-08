@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
-from widgets.alpha_beta_gamma_ui import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
+from widgets.leg_patterns_ui import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
 from hexapod.models import VirtualHexapod
 from hexapod.plotter import HexapodPlot
 from hexapod.const import (
@@ -21,13 +21,12 @@ from copy import deepcopy
 import json
 from app import app
 
-# -----------
-# LAYOUT
-# -----------
+# *********************
+# *  LAYOUT           *
+# *********************
 SECTION_CONTROLS = [
   SECTION_DIMENSION_CONTROL,
   SECTION_SLIDERS_TEST,
-  html.Div(id='display-variables'),
 ]
 
 layout = html.Div([
@@ -36,9 +35,9 @@ layout = html.Div([
   style={'display': 'flex'}
 )
 
-# -----------
-# CALLBACKS
-# -----------
+# *********************
+# *  CALLBACKS        *
+# *********************
 OUTPUT = Output('graph-hexapod-3', 'figure')
 INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS
 STATES = [State('graph-hexapod-3', 'relayoutData'), State('graph-hexapod-3', 'figure')]
@@ -59,20 +58,3 @@ def update_patterns_page(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, fi
   BASE_PLOTTER.update(figure, virtual_hexapod)
   helpers.change_camera_view(figure, relayout_data)
   return figure
-
-
-OUTPUT = Output('variables', 'children')
-@app.callback(OUTPUT, INPUTS)
-def update_variables(alpha, beta, gamma, f, s, m, h, k, a):
-  return json.dumps({
-    'alpha': alpha,
-    'beta': beta,
-    'gamma': gamma,
-    'front': f,
-    'side': s,
-    'middle': m,
-    'coxia': h,
-    'femur': k,
-    'tibia': a,
-  })
-
