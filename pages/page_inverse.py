@@ -18,10 +18,8 @@ from app import app
 
 layout = html.Div([
     html.Div([
-      html.Label(dcc.Markdown('**INVERSE KINEMATICS CONTROLS**')),
-      SECTION_IK,
-      html.Br(),
       SECTION_DIMENSION_CONTROL,
+      SECTION_IK,
       html.Div(id='ik-variables')],
       style={'width': '40%'}),
     dcc.Graph(id='graph-hexapod-2', style={'width': '60%'}),

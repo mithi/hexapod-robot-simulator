@@ -24,6 +24,7 @@ def make_leg_sections():
 SECTION_LEG_SLIDERS = make_leg_sections()
 
 SECTION_POSE_CONTROL = html.Div([
+  html.Label(dcc.Markdown('**KINEMATICS CONTROL**')),
   SECTION_LEG_SLIDERS,
   html.Br()
 ])

@@ -24,10 +24,14 @@ SLIDER_ALPHA = make_slider('slider-alpha', ALPHA_MAX_ANGLE)
 SLIDER_BETA = make_slider('slider-beta', BETA_MAX_ANGLE)
 SLIDER_GAMMA = make_slider('slider-gamma', GAMMA_MAX_ANGLE)
 
-SECTION_SLIDERS_TEST = html.Div([
-  html.Div([html.Label('ALPHA'), SLIDER_ALPHA], style={'width': '33%'}),
-  html.Div([html.Label('BETA'), SLIDER_BETA], style={'width': '33%'}),
-  html.Div([html.Label('GAMMA'), SLIDER_GAMMA], style={'width': '33%'}),
+section_sliders = html.Div([
+  html.Div([dcc.Markdown('`ALPHA`'), SLIDER_ALPHA], style={'width': '33%'}),
+  html.Div([dcc.Markdown('`BETA`'), SLIDER_BETA], style={'width': '33%'}),
+  html.Div([dcc.Markdown('`GAMMA`'), SLIDER_GAMMA], style={'width': '33%'}),
   ],
   style={'display': 'flex'}
 )
+
+header = html.Label(dcc.Markdown('**LEG POSE CONTROL**'))
+
+SECTION_SLIDERS_TEST = html.Div([header, section_sliders])

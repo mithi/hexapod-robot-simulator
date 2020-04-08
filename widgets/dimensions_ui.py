@@ -45,9 +45,8 @@ input_style = {'width':  '50%', 'fontFamily': 'Courier', 'fontSize': '0.9em'}
 SECTION_DIMENSION_CONTROL = html.Div([
   html.Label(dcc.Markdown('**HEXAPOD ROBOT DIMENSIONS**')),
   html.Div([
-  html.Div(section_input_body, style=input_style),
-  html.Div(section_input_leg, style=input_style),
-  ],
-  style={'display': 'flex'}
-  )
+    html.Div(section_input_body, style=input_style),
+    html.Div(section_input_leg, style=input_style),
+  ], style={'display': 'flex'}),
+  html.Br()
 ])
