@@ -2,9 +2,8 @@
 
 - A simple browser-based hexapod robot simulator built from first principles
 - You can currently check it out on https://hexapod-robot-simulator.herokuapp.com but I highly suggest that
-you run it on your own local server. When this application is run locally it's really snappy! On the other hand, the link above is barely usable.
-- This implementation uses matrices, not quaternions. I'm aware that quaternions is far superior in every single way, this uses matrices because I haven't studied quaternions yet. Maybe in the future
-https://mithi.github.io
+you run it on your own local server. When this application is run locally, it's pretty speedy! On the other hand, the link above is barely usable. Might convert this to to be a fully client-side javascript app later. Who knows what the future holds?
+- This implementation uses matrices, not quaternions. I'm aware that quaternions is far superior in every single way, I used matrices because I'm not that confident about my quaternion skills yet. Again, in the future maybe?
 
 | 1 | 2 | 3 | 4 |
 |---------|---------|---------|---------|
