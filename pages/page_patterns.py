@@ -26,10 +26,8 @@ from app import app
 # -----------
 section_hexapod = html.Div([
   html.Div([
-    html.Label(dcc.Markdown('**LEG POSE**')),
-    SECTION_SLIDERS_TEST,
-    html.Br(),
     SECTION_DIMENSION_CONTROL,
+    SECTION_SLIDERS_TEST,
     html.Div(id='display-variables'),
   ],
     style={'width': '35%'}
@@ -65,22 +63,10 @@ def update_hexapod_plot(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, fig
     return base_figure()
 
   virtual_hexapod = VirtualHexapod().new(f, m, s, h, k, a)
-
-  # Update Hexapod's pose given alpha, beta, and gamma
-  poses = deepcopy(HEXAPOD_POSE)
-
-  for k, _ in poses.items():
-    poses[k] = {
-      'id': k,
-      'name': NAMES_LEG[k],
-      'coxia': alpha,
-      'femur': beta,
-      'tibia': gamma,
-    }
-
+  poses = helpers.make_pose(alpha, beta, gamma)
   virtual_hexapod.update(poses)
   BASE_PLOTTER.update(figure, virtual_hexapod)
-  figure = helpers.change_camera_view(figure, relayout_data)
+  helpers.change_camera_view(figure, relayout_data)
   return figure
 
 
