@@ -12,6 +12,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
+
 from hexapod.models import VirtualHexapod
 from hexapod.const import (
   NAMES_LEG,
@@ -33,12 +34,11 @@ HIDDEN_LEG_POSES = [html.Div(id='pose-{}'.format(leg_name), style={'display': 'n
 HIDDEN_BODY_DIMENSIONS = [html.Div(id='hexapod-dimensions-values', style={'display': 'none'})]
 HIDDEN_LEG_POSES_ALL = [html.Div(id='hexapod-poses-values', style={'display': 'none'})]
 HIDDEN_DIVS = HIDDEN_LEG_POSES + HIDDEN_BODY_DIMENSIONS +  HIDDEN_LEG_POSES_ALL
+SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_POSE_CONTROL] + HIDDEN_DIVS
 
-SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_POSE_CONTROL]
 layout = html.Div([
   html.Div(SECTION_CONTROLS, style={'width': '45%'}),
-  dcc.Graph(id='graph-hexapod', style={'width': '55%'}),
-  html.Div(HIDDEN_DIVS)],
+  dcc.Graph(id='graph-hexapod', style={'width': '55%'})],
   style={'display': 'flex'}
 )
 

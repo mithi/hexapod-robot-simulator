@@ -16,17 +16,24 @@ from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 
 from app import app
 
+# *********************
+# *  LAYOUT           *
+# *********************
+SECTION_CONTROLS =[
+  SECTION_DIMENSION_CONTROL,
+  SECTION_IK,
+  html.Div(id='ik-variables')
+]
+
 layout = html.Div([
-    html.Div([
-      SECTION_DIMENSION_CONTROL,
-      SECTION_IK,
-      html.Div(id='ik-variables')],
-      style={'width': '40%'}),
-    dcc.Graph(id='graph-hexapod-2', style={'width': '60%'}),
-  ],
+  html.Div(SECTION_CONTROLS, style={'width': '40%'}),
+  dcc.Graph(id='graph-hexapod-2', style={'width': '60%'})],
   style={'display': 'flex'}
 )
 
+# *********************
+# *  CALLBACKS        *
+# *********************
 INPUTS = IK_INPUTS + DIMENSION_INPUTS
 @app.callback(
   [Output('ik-variables', 'children'), Output('graph-hexapod-2', 'figure')],

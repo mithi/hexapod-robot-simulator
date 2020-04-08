@@ -11,5 +11,4 @@ img_row = html.Div([
   style={'display': 'flex', 'flex-direction': 'row'}
 )
 
-
 layout = html.Div([img_row])
