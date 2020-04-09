@@ -4,18 +4,6 @@ from hexapod.const import HEXAPOD_POSE, NAMES_LEG, BASE_DIMENSIONS
 from copy import deepcopy
 import json
 
-poses = deepcopy(HEXAPOD_POSE)
-def make_pose(alpha, beta, gamma):
-
-  for k, _ in poses.items():
-    poses[k] = {
-      'id': k,
-      'name': NAMES_LEG[k],
-      'coxia': alpha,
-      'femur': beta,
-      'tibia': gamma,
-    }
-  return poses
 
 def change_camera_view(figure, relayout_data):
   # Use current camera view to display plot
@@ -32,6 +20,21 @@ def load_dimensions(dimensions_json):
   except:
     dimensions = BASE_DIMENSIONS
   return dimensions
+
+
+poses = deepcopy(HEXAPOD_POSE)
+def make_pose(alpha, beta, gamma):
+
+  for k, _ in poses.items():
+    poses[k] = {
+      'id': k,
+      'name': NAMES_LEG[k],
+      'coxia': alpha,
+      'femur': beta,
+      'tibia': gamma,
+    }
+  return poses
+
 
 def format_info(
     dimensions,

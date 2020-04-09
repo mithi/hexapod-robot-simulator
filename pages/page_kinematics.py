@@ -65,14 +65,12 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
 def leg_inputs(leg_name):
   return [Input(f'input-{leg_name}-{joint_name}', 'value') for joint_name in NAMES_JOINT]
 
-INPUT_POSES = []
+OUTPUT_POSES = Output(ID_POSES_DIV, 'children')
+INPUTS_POSES = []
 for leg_name in NAMES_LEG:
-  INPUT_POSES += leg_inputs(leg_name)
+  INPUTS_POSES += leg_inputs(leg_name)
 
-@app.callback(
-  Output('hexapod-poses-values', 'children'),
-  INPUT_POSES
-)
+@app.callback(OUTPUT_POSES, INPUTS_POSES)
 def update_hexapod_pose_values(
   rmc, rmf, rmt,
   rfc, rff, rft,
