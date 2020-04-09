@@ -1,8 +1,10 @@
+from copy import deepcopy
 from .plotter import HexapodPlot
 from .models import VirtualHexapod, Hexagon, Linkage
 from .templates.figure_template import HEXAPOD_FIGURE
 from .templates.pose_template import HEXAPOD_POSE
 from .templates.pose_template import PREDEFINED_POSES
+
 from settings import (
   ALPHA_MAX_ANGLE,
   BETA_MAX_ANGLE,
@@ -29,12 +31,14 @@ from settings import (
 NAMES_LEG = Hexagon.VERTEX_NAMES
 NAMES_JOINT = Linkage.POINT_NAMES
 
-BASE_HEXAPOD = VirtualHexapod().new(100, 100, 100, 100, 100, 100)
+BASE_DIMENSIONS = {'front': 100, 'side': 100, 'middle': 100, 'coxia': 100, 'femur': 100, 'tibia': 100}
+
+BASE_HEXAPOD = VirtualHexapod(BASE_DIMENSIONS)
 BASE_PLOTTER = HexapodPlot()
 
-from copy import deepcopy
 HEXAPOD = deepcopy(BASE_HEXAPOD)
 HEXAPOD.update(HEXAPOD_POSE)
 BASE_FIGURE = BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
 def base_figure():
   return BASE_FIGURE
+

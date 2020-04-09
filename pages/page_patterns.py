@@ -14,24 +14,24 @@ from hexapod.const import (
   BASE_PLOTTER,
   NAMES_LEG,
   HEXAPOD_POSE,
+  BASE_DIMENSIONS,
   base_figure
 )
 
 from copy import deepcopy
 import json
 from app import app
-
+from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
 # *********************
 # *  LAYOUT           *
 # *********************
-SECTION_CONTROLS = [
-  SECTION_DIMENSION_CONTROL,
-  SECTION_SLIDERS_TEST,
-]
+SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_SLIDERS_TEST]
 
 layout = html.Div([
   html.Div(SECTION_CONTROLS, style={'width': '35%'}),
-  dcc.Graph(id='graph-hexapod-3', style={'width': '65%'})],
+  dcc.Graph(id='graph-hexapod-3', style={'width': '65%'}),
+  HIDDEN_BODY_DIMENSIONS
+  ],
   style={'display': 'flex'}
 )
 
@@ -39,20 +39,20 @@ layout = html.Div([
 # *  CALLBACKS        *
 # *********************
 OUTPUT = Output('graph-hexapod-3', 'figure')
-INPUTS = SLIDERS_TEST_INPUTS + DIMENSION_INPUTS
+INPUTS = [INPUT_DIMENSIONS_JSON] + SLIDERS_TEST_INPUTS
 STATES = [State('graph-hexapod-3', 'relayoutData'), State('graph-hexapod-3', 'figure')]
 @app.callback(OUTPUT, INPUTS, STATES)
-def update_patterns_page(alpha, beta, gamma, f, s, m, h, k, a, relayout_data, figure):
-
-  no_body_dimensions = f is None or s is None or m is None
-  no_leg_dimensions = h is None or k is None or a is None
-  if no_leg_dimensions or no_body_dimensions:
-    raise PreventUpdate
+def update_patterns_page(dimensions_json, alpha, beta, gamma, relayout_data, figure):
 
   if figure is None:
     return base_figure()
 
-  virtual_hexapod = VirtualHexapod().new(f, m, s, h, k, a)
+  try:
+    dimensions = json.loads(dimensions_json)
+  except:
+    dimensions = BASE_DIMENSIONS
+
+  virtual_hexapod = VirtualHexapod(dimensions)
   poses = helpers.make_pose(alpha, beta, gamma)
   virtual_hexapod.update(poses)
   BASE_PLOTTER.update(figure, virtual_hexapod)
