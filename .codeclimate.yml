@@ -1,6 +1,7 @@
 version: "2"         # required to adjust maintainability checks
 exclude_patterns:
 - "hexapod/plotter.py"
+- "hexapod/templates/figure_template.py"
 
 checks:
   argument-count:
