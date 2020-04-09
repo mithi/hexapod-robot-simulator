@@ -1,5 +1,4 @@
-
-# [☕](https://ko-fi.com/minimithi)
+# [☕](https://ko-fi.com/minimithi) ![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg)
 
 # 🕷️ Mithi's Hexapod Robot Simulator 💕
 - A simple browser-based hexapod robot simulator built from first principles 🕷️
