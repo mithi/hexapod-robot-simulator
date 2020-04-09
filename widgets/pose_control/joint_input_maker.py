@@ -35,42 +35,16 @@ def make_all_joint_inputs(joint_input_function):
 
 def make_joint_daq_slider_input(name, max_angle):
   _, _, _, angle = name.split('-')
-
   return dash_daq.Slider( # pylint: disable=not-callable
-    id=name,
-    min=-max_angle,
-    max=max_angle,
-    value=10,
-    size=150,
-    updatemode=UPDATE_MODE,
-    handleLabel={"showCurrentValue": True,"label": angle},
-    step=5,
-  )
+    id=name, min=-max_angle, max=max_angle, value=1.5, step=1.5, size=150, updatemode=UPDATE_MODE,
+    handleLabel={"showCurrentValue": True,"label": angle})
 
 
 def make_joint_slider_input(name, max_angle):
-  slider_marks = {tick: str(tick) for tick in [-90, -45, 0, 45, 90]}
+  slider_marks = {tick: str(tick) for tick in [-45, 0, 45]}
   return dcc.Slider(id=name, min=-max_angle, max=max_angle, marks=slider_marks, value=0, step=5)
 
 
 def make_joint_number_input(name, max_angle):
-  return dcc.Input(
-    id=name,
-    type='number',
-    value=0.0,
-    step=5.0,
-    min=-max_angle,
-    max=max_angle,
+  return dcc.Input(id=name, type='number', value=0.0, step=1.5, min=-max_angle, max=max_angle,
     style={'marginRight': '5%', 'width': '95%', 'marginBottom': '5%'})
-
-
-def make_joint_knob_input(name, max_angle):
-  return dash_daq.Knob( # pylint: disable=not-callable
-    id=name,
-    min=-max_angle,
-    max=max_angle,
-    value=0,
-    size=75,
-    scale = {'custom': {0: '|', -90: '.', 90: '.',  -45: '.', 45: '.'}}
-  )
-

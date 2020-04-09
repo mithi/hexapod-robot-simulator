@@ -46,7 +46,6 @@ INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
 STATES = [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
 @app.callback(OUTPUT, INPUTS, STATES)
 def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
-
   if figure is None:
     return BASE_FIGURE
 
@@ -54,7 +53,6 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
   virtual_hexapod = VirtualHexapod(dimensions)
   poses = json.loads(poses_json)
   virtual_hexapod.update(poses)
-
   BASE_PLOTTER.update(figure, virtual_hexapod)
   helpers.change_camera_view(figure, relayout_data)
   return figure
