@@ -1,8 +1,11 @@
 version: "2"         # required to adjust maintainability checks
+exclude_patterns:
+- "hexapod/plotter.py"
+
 checks:
   argument-count:
     config:
-      threshold: 6
+      threshold: 6 # 4
   complex-logic:
     config:
       threshold: 4
