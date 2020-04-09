@@ -11,16 +11,21 @@ server = app.server
 # --------------
 # Navigation bar partial
 # --------------
+
+header = dcc.Markdown(
+    f"""
+[👾][1] [☕][2] [🕷️][3] [🕷️](/kinematics) [🕷️](/leg-patterns) [🕷️](/)
+[1]: https://github.com/mithi/hexapod-robot-simulator
+[2]: https://ko-fi.com/minimithi
+[3]: /inverse-kinematics
+[4]: /kinematics
+[5]: /leg-patterns
+[6]: /
+"""
+)
+
 div_nav = html.Div(
     [
-        html.Br(),
-        dcc.Link("🕷️ Kinematics", href="/kinematics"),
-        html.Br(),
-        dcc.Link("🕷️ Inverse Kinematics", href="/inverse-kinematics"),
-        html.Br(),
-        dcc.Link("🕷️ Leg Patterns", href="/leg-patterns"),
-        html.Br(),
-        dcc.Link("🕷️ Root", href="/"),
         html.Br(),
         html.A(
             "👾 Source Code",
@@ -29,8 +34,16 @@ div_nav = html.Div(
         ),
         html.Br(),
         html.A(
-            "☕ Buy Mithi coffee", href="https://ko-fi.com/minimithi", target="_blank"
+            "☕ Buy Mithi coffee", href="https://ko-fi.com/minimithi", target="_blank",
         ),
+        html.Br(),
+        dcc.Link("🕷️ Root", href="/"),
+        html.Br(),
+        dcc.Link("🕷️ Inverse Kinematics", href="/inverse-kinematics"),
+        html.Br(),
+        dcc.Link("🕷️ Kinematics", href="/kinematics"),
+        html.Br(),
+        dcc.Link("🕷️ Leg Patterns", href="/leg-patterns"),
     ]
 )
 
@@ -38,7 +51,12 @@ div_nav = html.Div(
 # Layout
 # --------------
 app.layout = html.Div(
-    [dcc.Location(id="url", refresh=False), html.Div(id="page-content"), div_nav,]
+    [
+        header,
+        dcc.Location(id="url", refresh=False),
+        html.Div(id="page-content"),
+        div_nav,
+    ],
 )
 
 # --------------
