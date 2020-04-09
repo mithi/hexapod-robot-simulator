@@ -20,65 +20,80 @@ from pages import helpers
 # *********************
 # *  LAYOUT           *
 # *********************
-ID_MESSAGE_DISPLAY_DIV =  'display-message-div'
-ID_IK_PARAMETERS_DIV = 'ik-parameters'
-HIDDEN_IK_PARAMETERS = html.Div(id=ID_IK_PARAMETERS_DIV, style={'display': 'none'})
+ID_MESSAGE_DISPLAY_DIV = "display-message-div"
+ID_IK_PARAMETERS_DIV = "ik-parameters"
+HIDDEN_IK_PARAMETERS = html.Div(id=ID_IK_PARAMETERS_DIV, style={"display": "none"})
 
-SECTION_CONTROLS =[
-  SECTION_DIMENSION_CONTROL,
-  SECTION_IK,
-  html.Div(id=ID_MESSAGE_DISPLAY_DIV),
-  HIDDEN_IK_PARAMETERS,
+SECTION_CONTROLS = [
+    SECTION_DIMENSION_CONTROL,
+    SECTION_IK,
+    html.Div(id=ID_MESSAGE_DISPLAY_DIV),
+    HIDDEN_IK_PARAMETERS,
 ]
 
-layout = html.Div([
-  html.Div(SECTION_CONTROLS, style={'width': '40%'}),
-  dcc.Graph(id='graph-hexapod-2', style={'width': '60%'}),
-  HIDDEN_BODY_DIMENSIONS
-  ],
-  style={'display': 'flex'}
+layout = html.Div(
+    [
+        html.Div(SECTION_CONTROLS, style={"width": "40%"}),
+        dcc.Graph(id="graph-hexapod-2", style={"width": "60%"}),
+        HIDDEN_BODY_DIMENSIONS,
+    ],
+    style={"display": "flex"},
 )
 
 # *********************
 # *  CALLBACKS        *
 # *********************
-OUTPUT =  Output(ID_IK_PARAMETERS_DIV, 'children')
+OUTPUT = Output(ID_IK_PARAMETERS_DIV, "children")
+
+
 @app.callback(OUTPUT, IK_INPUTS)
-def update_ik_parameters(hip_stance, leg_stance, percent_x, percent_y, percent_z, rot_x, rot_y, rot_z):
-  return json.dumps({
-    'hip_stance': hip_stance,
-    'leg_stance': leg_stance,
-    'percent_x': percent_x,
-    'percent_y': percent_y,
-    'percent_z': percent_z,
-    'rot_x': rot_x,
-    'rot_y': rot_y,
-    'rot_z': rot_z
-  })
+def update_ik_parameters(
+    hip_stance, leg_stance, percent_x, percent_y, percent_z, rot_x, rot_y, rot_z
+):
+    return json.dumps(
+        {
+            "hip_stance": hip_stance,
+            "leg_stance": leg_stance,
+            "percent_x": percent_x,
+            "percent_y": percent_y,
+            "percent_z": percent_z,
+            "rot_x": rot_x,
+            "rot_y": rot_y,
+            "rot_z": rot_z,
+        }
+    )
 
 
-OUTPUTS = [Output('graph-hexapod-2', 'figure'), Output(ID_MESSAGE_DISPLAY_DIV, 'children')]
-INPUTS = [INPUT_DIMENSIONS_JSON, Input(ID_IK_PARAMETERS_DIV, 'children')]
-STATES = [State('graph-hexapod-2', 'relayoutData'), State('graph-hexapod-2', 'figure')]
+OUTPUTS = [
+    Output("graph-hexapod-2", "figure"),
+    Output(ID_MESSAGE_DISPLAY_DIV, "children"),
+]
+INPUTS = [INPUT_DIMENSIONS_JSON, Input(ID_IK_PARAMETERS_DIV, "children")]
+STATES = [State("graph-hexapod-2", "relayoutData"), State("graph-hexapod-2", "figure")]
+
+
 @app.callback(OUTPUTS, INPUTS, STATES)
 def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figure):
-  if figure is None:
-    return BASE_FIGURE, ''
+    if figure is None:
+        return BASE_FIGURE, ""
 
-  dimensions = helpers.load_dimensions(dimensions_json)
-  hexapod = VirtualHexapod(dimensions)
-  ik_parameters = json.loads(ik_parameters_json)
-  hexapod, poses, alert = inverse_kinematics_update(hexapod, ik_parameters)
-
-  if RECOMPUTE_HEXAPOD and poses:
+    dimensions = helpers.load_dimensions(dimensions_json)
     hexapod = VirtualHexapod(dimensions)
-    hexapod.update(poses)
-    hexapod.move_xyz(ik_parameters['percent_x'], ik_parameters['percent_y'], ik_parameters['percent_z'])
+    ik_parameters = json.loads(ik_parameters_json)
+    hexapod, poses, alert = inverse_kinematics_update(hexapod, ik_parameters)
 
-  BASE_PLOTTER.update(figure, hexapod)
-  helpers.change_camera_view(figure, relayout_data)
+    if RECOMPUTE_HEXAPOD and poses:
+        hexapod = VirtualHexapod(dimensions)
+        hexapod.update(poses)
+        hexapod.move_xyz(
+            ik_parameters["percent_x"],
+            ik_parameters["percent_y"],
+            ik_parameters["percent_z"],
+        )
 
-  info = helpers.format_info(dimensions, ik_parameters)
-  text = helpers.update_display_message(info, poses, alert)
-  return figure, helpers.make_monospace(text)
+    BASE_PLOTTER.update(figure, hexapod)
+    helpers.change_camera_view(figure, relayout_data)
 
+    info = helpers.format_info(dimensions, ik_parameters)
+    text = helpers.update_display_message(info, poses, alert)
+    return figure, helpers.make_monospace(text)

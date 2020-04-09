@@ -1,6 +1,6 @@
-#***************************
+# ***************************
 # Settings
-#***************************
+# ***************************
 
 # The range of each leg joint in degrees
 ALPHA_MAX_ANGLE = 90
@@ -29,9 +29,9 @@ HIP_STANCE_MAX_ANGLE = 45
 # Too slow?
 # set UPDATE_MODE='mouseup'
 # This will make widgets only start updating when you release the mouse button
-UPDATE_MODE='drag'
+UPDATE_MODE = "drag"
 
-DEBUG_MODE = False
+DEBUG_MODE = True
 PRINT_POSE_IN_TERMINAL = False
 PRINT_LEG_POINTS_IN_TERMINAL_IK = False
 
@@ -41,7 +41,7 @@ PRINT_LEG_POINTS_IN_TERMINAL_IK = False
 # set RECOMPUTE_HEXAPOD to true
 # otherwise for faster graph/plot updates, set RECOMPUTE_HEXAPOD to False
 # Useful for debugging
-RECOMPUTE_HEXAPOD = False
+RECOMPUTE_HEXAPOD = True
 
 # Pick a number between 0 and 3
 # 0 - Using the daq slider UI
@@ -50,4 +50,3 @@ RECOMPUTE_HEXAPOD = False
 # 3 - Using the knob UI
 # Anything else defaults to Using the daq slider UI
 WHICH_POSE_CONTROL_UI = 0
-

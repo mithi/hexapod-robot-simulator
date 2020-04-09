@@ -59,129 +59,148 @@
 
 import numpy as np
 from copy import deepcopy
-from .points import (Point,
-  get_unit_normal,
-  is_point_inside_triangle,
-  frame_yrotate_xtranslate,
-  frame_zrotate_xytranslate
+from .points import (
+    Point,
+    get_unit_normal,
+    is_point_inside_triangle,
+    frame_yrotate_xtranslate,
+    frame_zrotate_xytranslate,
 )
 
+
 class Linkage:
-  POINT_NAMES = ['coxia', 'femur', 'tibia']
-  def __init__(self, a, b, c, alpha=0, beta=0, gamma=0, coxia_axis=0, new_origin=Point(0, 0, 0), name=None, id_number=None):
-    self.store_linkage_attributes(a, b, c, coxia_axis, new_origin, name, id_number)
-    self.save_new_pose(alpha, beta, gamma)
+    POINT_NAMES = ["coxia", "femur", "tibia"]
 
-  def all_points(self):
-      return [self.p0, self.p1, self.p2, self.p3]
+    def __init__(
+        self,
+        a,
+        b,
+        c,
+        alpha=0,
+        beta=0,
+        gamma=0,
+        coxia_axis=0,
+        new_origin=Point(0, 0, 0),
+        name=None,
+        id_number=None,
+    ):
+        self.store_linkage_attributes(a, b, c, coxia_axis, new_origin, name, id_number)
+        self.save_new_pose(alpha, beta, gamma)
 
-  def coxia_angle(self):
-    return self._alpha
+    def all_points(self):
+        return [self.p0, self.p1, self.p2, self.p3]
 
-  def coxia_point(self):
-    return self.p1
+    def coxia_angle(self):
+        return self._alpha
 
-  def femur_point(self):
-    return self.p2
+    def coxia_point(self):
+        return self.p1
 
-  def foot_tip(self):
-    return self.p3
+    def femur_point(self):
+        return self.p2
 
-  def ground_contact(self):
-    return self.ground_contact_point
+    def foot_tip(self):
+        return self.p3
 
-  def store_linkage_attributes(self, a, b, c, coxia_axis, new_origin, name, id_number):
-    self._a = a
-    self._b = b
-    self._c = c
-    self._new_origin = new_origin
-    self._coxia_axis = coxia_axis
-    self.id = id_number
-    self.name = name
+    def ground_contact(self):
+        return self.ground_contact_point
 
-  def save_new_pose(self, alpha, beta, gamma):
-    self._alpha = alpha
-    self._beta = beta
-    self._gamma = gamma
+    def store_linkage_attributes(
+        self, a, b, c, coxia_axis, new_origin, name, id_number
+    ):
+        self._a = a
+        self._b = b
+        self._c = c
+        self._new_origin = new_origin
+        self._coxia_axis = coxia_axis
+        self.id = id_number
+        self.name = name
 
-    # frame_ab is the pose of frame_b wrt frame_a
-    frame_01 = frame_yrotate_xtranslate(theta=-self._beta, x=self._a)
-    frame_12 = frame_yrotate_xtranslate(theta=90-self._gamma, x=self._b)
-    frame_23 = frame_yrotate_xtranslate(theta=0, x=self._c)
+    def save_new_pose(self, alpha, beta, gamma):
+        self._alpha = alpha
+        self._beta = beta
+        self._gamma = gamma
 
-    frame_02 = np.matmul(frame_01, frame_12)
-    frame_03 = np.matmul(frame_02, frame_23)
-    new_frame = frame_zrotate_xytranslate(self._coxia_axis + self._alpha, self._new_origin.x, self._new_origin.y)
+        # frame_ab is the pose of frame_b wrt frame_a
+        frame_01 = frame_yrotate_xtranslate(theta=-self._beta, x=self._a)
+        frame_12 = frame_yrotate_xtranslate(theta=90 - self._gamma, x=self._b)
+        frame_23 = frame_yrotate_xtranslate(theta=0, x=self._c)
 
-    # find points wrt to body contact point
-    p0 = Point(0, 0, 0)
-    p1 = p0.get_point_wrt(frame_01)
-    p2 = p0.get_point_wrt(frame_02)
-    p3 = p0.get_point_wrt(frame_03)
+        frame_02 = np.matmul(frame_01, frame_12)
+        frame_03 = np.matmul(frame_02, frame_23)
+        new_frame = frame_zrotate_xytranslate(
+            self._coxia_axis + self._alpha, self._new_origin.x, self._new_origin.y
+        )
 
-    # find points wrt to center of gravity
-    self.p0 = deepcopy(self._new_origin)
-    self.p0.name += '-body-contact'
-    self.p1 = p1.get_point_wrt(new_frame, name=self.name+'-coxia')
-    self.p2 = p2.get_point_wrt(new_frame, name=self.name+'-femur')
-    self.p3 = p3.get_point_wrt(new_frame, name=self.name+'-tibia')
+        # find points wrt to body contact point
+        p0 = Point(0, 0, 0)
+        p1 = p0.get_point_wrt(frame_01)
+        p2 = p0.get_point_wrt(frame_02)
+        p3 = p0.get_point_wrt(frame_03)
 
-    self.ground_contact_point = self.compute_ground_contact()
+        # find points wrt to center of gravity
+        self.p0 = deepcopy(self._new_origin)
+        self.p0.name += "-body-contact"
+        self.p1 = p1.get_point_wrt(new_frame, name=self.name + "-coxia")
+        self.p2 = p2.get_point_wrt(new_frame, name=self.name + "-femur")
+        self.p3 = p3.get_point_wrt(new_frame, name=self.name + "-tibia")
 
-  def change_pose(self, alpha=None, beta=None, gamma=None):
-    alpha = alpha or self._alpha
-    beta = beta or self._beta
-    gamma = gamma or self._gamma
-    self.save_new_pose(alpha, beta, gamma)
+        self.ground_contact_point = self.compute_ground_contact()
 
-  def update_leg_wrt(self, frame, height):
-      self.p0.update_point_wrt(frame, height)
-      self.p1.update_point_wrt(frame, height)
-      self.p2.update_point_wrt(frame, height)
-      self.p3.update_point_wrt(frame, height)
+    def change_pose(self, alpha=None, beta=None, gamma=None):
+        alpha = alpha or self._alpha
+        beta = beta or self._beta
+        gamma = gamma or self._gamma
+        self.save_new_pose(alpha, beta, gamma)
 
-  def compute_ground_contact(self):
-    if self._tip_wrt_cog() <= 0:
-      if self._femur_wrt_cog() <= 0:
-        return self.coxia_point()
-      else:
-        return self.femur_point()
+    def update_leg_wrt(self, frame, height):
+        self.p0.update_point_wrt(frame, height)
+        self.p1.update_point_wrt(frame, height)
+        self.p2.update_point_wrt(frame, height)
+        self.p3.update_point_wrt(frame, height)
 
-    if self._tip_wrt_cog() >= self._femur_wrt_cog():
-      return self.foot_tip()
-    else:
-      return self.femur_point()
+    def compute_ground_contact(self):
+        if self._tip_wrt_cog() <= 0:
+            if self._femur_wrt_cog() <= 0:
+                return self.coxia_point()
+            else:
+                return self.femur_point()
 
-  def _tip_wrt_cog(self):
-    #
-    #          /*
-    #         //\\
-    #        //  \\
-    #       //    \\
-    #      //      \\
-    # *===* ---->   \\ ---------
-    #                \\       |
-    #                 \\   tip height (positive)
-    #                  \\     |
-    #                   \\ -----
-    #
-    #
-    # *===*=======*
-    #           | \\
-    #           |  \\
-    # (positive)|   \\
-    #    tip height  \\
-    #           |     \\
-    #         ------    *----
-    #
-    #                *=========* -----
-    #               //             |
-    #              // (negative) tip height
-    #             //               |
-    #*===*=======*  -------------------
-    # Negative only if body contact point
-    # is touching the ground
-    return -self.foot_tip().z
+        if self._tip_wrt_cog() >= self._femur_wrt_cog():
+            return self.foot_tip()
+        else:
+            return self.femur_point()
 
-  def _femur_wrt_cog(self):
-    return -self.femur_point().z
+    def _tip_wrt_cog(self):
+        #
+        #          /*
+        #         //\\
+        #        //  \\
+        #       //    \\
+        #      //      \\
+        # *===* ---->   \\ ---------
+        #                \\       |
+        #                 \\   tip height (positive)
+        #                  \\     |
+        #                   \\ -----
+        #
+        #
+        # *===*=======*
+        #           | \\
+        #           |  \\
+        # (positive)|   \\
+        #    tip height  \\
+        #           |     \\
+        #         ------    *----
+        #
+        #                *=========* -----
+        #               //             |
+        #              // (negative) tip height
+        #             //               |
+        # *===*=======*  -------------------
+        # Negative only if body contact point
+        # is touching the ground
+        return -self.foot_tip().z
+
+    def _femur_wrt_cog(self):
+        return -self.femur_point().z
