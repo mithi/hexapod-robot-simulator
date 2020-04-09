@@ -6,7 +6,7 @@ exclude_patterns:
 checks:
   argument-count:
     config:
-      threshold: 6 # 4
+      threshold: 8 # 4
   complex-logic:
     config:
       threshold: 4
