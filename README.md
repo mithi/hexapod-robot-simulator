@@ -1,6 +1,6 @@
-# [☕](https://ko-fi.com/minimithi) ![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# [☕](https://ko-fi.com/minimithi) ![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-# 🕷️ Mithi's Hexapod Robot Simulator 💕
+# 🕷️ Mithi's Hexapod Robot Simulator
 - A simple browser-based hexapod robot simulator built from first principles 🕷️
 - If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi).
 
