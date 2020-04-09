@@ -9,7 +9,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
-from hexapod.const import BASE_PLOTTER, HEXAPOD_FIGURE
+from hexapod.const import BASE_PLOTTER, BASE_FIGURE
 from hexapod.ik_solver import inverse_kinematics_update
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
@@ -68,7 +68,7 @@ def update_inverse_page(
     side, mid, coxia, femur, tibia)
 
   if figure is None:
-    return dcc.Markdown(f'```{info}```'), HEXAPOD_FIGURE
+    return dcc.Markdown(f'```{info}```'), BASE_FIGURE
 
   # ***********************************
   # COMPUTE POSES AND UPDATE FIGURE WITH INVERSE KINEMATICS

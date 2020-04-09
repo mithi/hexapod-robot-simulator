@@ -13,9 +13,8 @@ from hexapod.plotter import HexapodPlot
 from hexapod.const import (
   BASE_PLOTTER,
   NAMES_LEG,
-  HEXAPOD_POSE,
   BASE_DIMENSIONS,
-  base_figure
+  BASE_FIGURE
 )
 
 from copy import deepcopy
@@ -45,7 +44,7 @@ STATES = [State('graph-hexapod-3', 'relayoutData'), State('graph-hexapod-3', 'fi
 def update_patterns_page(dimensions_json, alpha, beta, gamma, relayout_data, figure):
 
   if figure is None:
-    return base_figure()
+    return BASE_FIGURE
 
   try:
     dimensions = json.loads(dimensions_json)

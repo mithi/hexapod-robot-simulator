@@ -19,8 +19,7 @@ from hexapod.const import (
   NAMES_JOINT,
   BASE_PLOTTER,
   BASE_DIMENSIONS,
-  HEXAPOD_FIGURE,
-  HEXAPOD_POSE
+  BASE_FIGURE,
 )
 
 from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
@@ -58,16 +57,14 @@ INPUT_ALL = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
 def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
 
   if figure is None:
-    return HEXAPOD_FIGURE
+    return BASE_FIGURE
 
   try:
     dimensions = json.loads(dimensions_json)
   except:
     dimensions = BASE_DIMENSIONS
 
-
   poses = json.loads(poses_json)
-
   virtual_hexapod = VirtualHexapod(dimensions)
   virtual_hexapod.update(poses)
   BASE_PLOTTER.update(figure, virtual_hexapod)
