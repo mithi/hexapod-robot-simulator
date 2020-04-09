@@ -39,11 +39,12 @@ def make_joint_daq_slider_input(name, max_angle):
     _, _, _, angle = name.split("-")
     return dash_daq.Slider(  # pylint: disable=not-callable
         id=name,
+        vertical=True,
         min=-max_angle,
         max=max_angle,
         value=1.5,
         step=1.5,
-        size=150,
+        size=80,
         updatemode=UPDATE_MODE,
         handleLabel={"showCurrentValue": True, "label": angle},
     )
@@ -61,7 +62,6 @@ def make_joint_number_input(name, max_angle):
         id=name,
         type="number",
         value=0.0,
-        step=1.5,
         min=-max_angle,
         max=max_angle,
         style={"marginRight": "5%", "width": "95%", "marginBottom": "5%"},

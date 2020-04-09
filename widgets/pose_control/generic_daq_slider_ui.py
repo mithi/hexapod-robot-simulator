@@ -14,26 +14,40 @@ from widgets.pose_control.joint_input_maker import (
 JOINT_INPUTS = make_all_joint_inputs(joint_input_function=make_joint_daq_slider_input)
 
 
-def make_leg_sections():
-    sections = [html.Br(), html.Br()]
-
-    for leg in NAMES_LEG:
-        header = html.Label(dcc.Markdown(f"**`{leg.upper()}`**"))
-        coxia = JOINT_INPUTS[leg]["coxia"]
-        femur = JOINT_INPUTS[leg]["femur"]
-        tibia = JOINT_INPUTS[leg]["tibia"]
-        section = make_section_type4(header, coxia, femur, tibia)
-        sections.append(section)
-        sections.append(html.Br())
-
-    return html.Div(sections)
+def code(name):
+    return dcc.Markdown(f"`{name}`")
 
 
-# section displaying all legs
-SECTION_LEG_SLIDERS = make_leg_sections()
+def make_leg_section(name):
+    coxia = JOINT_INPUTS[name]["coxia"]
+    femur = JOINT_INPUTS[name]["femur"]
+    tibia = JOINT_INPUTS[name]["tibia"]
 
-SECTION_POSE_CONTROL = html.Div(
-    [html.Label(dcc.Markdown("**KINEMATICS CONTROL**")), SECTION_LEG_SLIDERS, html.Br()]
+    return html.Div(
+        [
+            make_section_type3(
+                coxia, femur, tibia, code("coxia"), code("femur"), code("tibia")
+            ),
+            html.Label(dcc.Markdown(f"**`{name.upper()}`**"), style={"padding": "1em"}),
+        ]
+    )
+
+
+lf = make_leg_section("left-front")
+rf = make_leg_section("right-front")
+lm = make_leg_section("left-middle")
+rm = make_leg_section("right-middle")
+lb = make_leg_section("left-back")
+rb = make_leg_section("right-back")
+
+header = html.Label(dcc.Markdown("**KINEMATICS CONTROL**"))
+sliders = html.Div(
+    [
+        make_section_type2(lf, rf),
+        make_section_type2(lm, rm),
+        make_section_type2(lb, rb),
+    ],
+    style={"padding": "0 0 0 3em"},
 )
 
-SECTION_POSE_CONTROL_DAQ = html.Div([SECTION_LEG_SLIDERS, html.Br()])
+SECTION_POSE_CONTROL = html.Div([header, sliders])

@@ -32,9 +32,7 @@ def make_leg_sections():
     return html.Div(sections)
 
 
-# section displaying all legs
+header = html.Label(dcc.Markdown("**KINEMATICS CONTROL**"))
 SECTION_LEG_SLIDERS = make_leg_sections()
 
-SECTION_POSE_CONTROL = html.Div(
-    [html.H4("Joint Angles (pose of each leg)"), SECTION_LEG_SLIDERS, html.Br()]
-)
+SECTION_POSE_CONTROL = html.Div([header, SECTION_LEG_SLIDERS])
