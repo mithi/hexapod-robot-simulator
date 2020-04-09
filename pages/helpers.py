@@ -1,7 +1,8 @@
 from hexapod.const import BASE_PLOTTER
 from settings import PRINT_POSE_IN_TERMINAL
-from hexapod.const import HEXAPOD_POSE, NAMES_LEG
+from hexapod.const import HEXAPOD_POSE, NAMES_LEG, BASE_DIMENSIONS
 from copy import deepcopy
+import json
 
 poses = deepcopy(HEXAPOD_POSE)
 def make_pose(alpha, beta, gamma):
@@ -25,6 +26,12 @@ def change_camera_view(figure, relayout_data):
   return figure
 
 
+def load_dimensions(dimensions_json):
+  try:
+    dimensions = json.loads(dimensions_json)
+  except:
+    dimensions = BASE_DIMENSIONS
+  return dimensions
 
 def format_info(
     dimensions,

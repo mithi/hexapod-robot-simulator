@@ -1,22 +1,21 @@
 from settings import RECOMPUTE_HEXAPOD, PRINT_POSE_IN_TERMINAL
-from pages import helpers
 
-import numpy as np
-from copy import deepcopy
-import json
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
-from hexapod.const import BASE_PLOTTER, BASE_FIGURE, BASE_DIMENSIONS
+from hexapod.const import BASE_PLOTTER, BASE_FIGURE
 from hexapod.ik_solver import inverse_kinematics_update
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 
+import numpy as np
+from copy import deepcopy
+import json
 from app import app
 from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
+from pages import helpers
 
 # *********************
 # *  LAYOUT           *
@@ -55,10 +54,7 @@ def update_inverse_page(
   relayout_data,
   figure):
 
-  try:
-    dimensions = json.loads(dimensions_json)
-  except:
-    dimensions = BASE_DIMENSIONS
+  dimensions = helpers.load_dimensions(dimensions_json)
 
   info = helpers.format_info(dimensions, start_hip_stance, start_leg_stance,
     percent_x, percent_y, percent_z, rot_x, rot_y, rot_z)

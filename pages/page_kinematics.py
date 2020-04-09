@@ -7,24 +7,16 @@ elif WHICH_POSE_CONTROL_UI == 2:
 else:
   from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
 
-from copy import deepcopy
-import json
-
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
-from hexapod.const import (
-  NAMES_LEG,
-  NAMES_JOINT,
-  BASE_PLOTTER,
-  BASE_DIMENSIONS,
-  BASE_FIGURE,
-)
-
+from hexapod.const import BASE_PLOTTER, BASE_FIGURE, NAMES_LEG, NAMES_JOINT
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
+
+from copy import deepcopy
+import json
 from app import app
 from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
 from pages import helpers
@@ -58,13 +50,10 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
   if figure is None:
     return BASE_FIGURE
 
-  try:
-    dimensions = json.loads(dimensions_json)
-  except:
-    dimensions = BASE_DIMENSIONS
+  dimensions = helpers.load_dimensions(dimensions_json)
+  virtual_hexapod = VirtualHexapod(dimensions)
 
   poses = json.loads(poses_json)
-  virtual_hexapod = VirtualHexapod(dimensions)
   virtual_hexapod.update(poses)
   BASE_PLOTTER.update(figure, virtual_hexapod)
   helpers.change_camera_view(figure, relayout_data)
