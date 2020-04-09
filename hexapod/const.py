@@ -39,6 +39,4 @@ BASE_PLOTTER = HexapodPlot()
 HEXAPOD = deepcopy(BASE_HEXAPOD)
 HEXAPOD.update(HEXAPOD_POSE)
 BASE_FIGURE = BASE_PLOTTER.update(HEXAPOD_FIGURE, HEXAPOD)
-def base_figure():
-  return BASE_FIGURE
 
