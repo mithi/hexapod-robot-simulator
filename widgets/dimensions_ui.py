@@ -40,7 +40,7 @@ INPUT_DIMENSIONS = {
 section_input_body = make_section_type3(INPUT_DIMENSIONS['front'], INPUT_DIMENSIONS['middle'], INPUT_DIMENSIONS['side'], 'front', 'middle', 'side')
 section_input_leg = make_section_type3(INPUT_DIMENSIONS['coxia'], INPUT_DIMENSIONS['femur'], INPUT_DIMENSIONS['tibia'], 'coxia', 'femur', 'tibia')
 
-input_style = {'width':  '50%', 'fontFamily': 'Courier', 'fontSize': '0.9em'}
+input_style = {'width':  '50%', 'fontFamily': 'Courier', 'fontSize': '0.8em'}
 
 SECTION_DIMENSION_CONTROL = html.Div([
   html.Label(dcc.Markdown('**HEXAPOD ROBOT DIMENSIONS**')),

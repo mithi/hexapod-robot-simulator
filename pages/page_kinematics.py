@@ -52,9 +52,9 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
 
   dimensions = helpers.load_dimensions(dimensions_json)
   virtual_hexapod = VirtualHexapod(dimensions)
-
   poses = json.loads(poses_json)
   virtual_hexapod.update(poses)
+
   BASE_PLOTTER.update(figure, virtual_hexapod)
   helpers.change_camera_view(figure, relayout_data)
   return figure
