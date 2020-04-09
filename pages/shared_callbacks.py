@@ -4,7 +4,7 @@ import dash_html_components as html
 from widgets.dimensions_ui import DIMENSION_INPUTS
 from app import app
 
-ID_DIMENSIONS_DIV = 'hexapod-dimensions-values-2'
+ID_DIMENSIONS_DIV = 'hexapod-dimensions-values'
 HIDDEN_BODY_DIMENSIONS = html.Div(id=ID_DIMENSIONS_DIV , style={'display': 'none'})
 INPUT_DIMENSIONS_JSON = Input(ID_DIMENSIONS_DIV, 'children')
 OUTPUT_DIMENSIONS_JSON = Output(ID_DIMENSIONS_DIV, 'children')

@@ -24,7 +24,7 @@ from pages import helpers
 # *********************
 # *  LAYOUT           *
 # *********************
-ID_POSES_DIV = 'hexapod-poses-values'
+ID_POSES_DIV = 'hexapod-poses-values-kinematics'
 HIDDEN_JOINT_POSES = html.Div(id=ID_POSES_DIV, style={'display': 'none'})
 SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_POSE_CONTROL]
 

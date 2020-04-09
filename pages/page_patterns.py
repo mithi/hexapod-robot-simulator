@@ -18,15 +18,15 @@ from pages import helpers
 # *********************
 # *  LAYOUT           *
 # *********************
-ID_POSES_DIV = 'hexapod-poses-values-2'
+ID_POSES_DIV = 'hexapod-poses-values-patterns'
 HIDDEN_JOINT_POSES = html.Div(id=ID_POSES_DIV, style={'display': 'none'})
 SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_SLIDERS_TEST]
 
 layout = html.Div([
   html.Div(SECTION_CONTROLS, style={'width': '35%'}),
   dcc.Graph(id='graph-hexapod-3', style={'width': '65%'}),
-  HIDDEN_BODY_DIMENSIONS,
   HIDDEN_JOINT_POSES,
+  HIDDEN_BODY_DIMENSIONS
   ],
   style={'display': 'flex'}
 )
