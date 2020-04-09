@@ -27,6 +27,7 @@ def change_camera_view(figure, relayout_data):
 
 
 def format_info(
+    dimensions,
     start_hip_stance,
     start_leg_stance,
     percent_x,
@@ -34,18 +35,12 @@ def format_info(
     percent_z,
     rot_x,
     rot_y,
-    rot_z,
-    front,
-    side,
-    mid,
-    coxia,
-    femur,
-    tibia):
+    rot_z):
   return f'''
 +----------------+------------+------------+------------+
-| rot.x: {rot_x:<+7.2f} | x: {percent_x:<+5.2f} % | coxia: {coxia:3d} | fro: {front:5d} |
-| rot.y: {rot_y:<+7.2f} | y: {percent_y:<+5.2f} % | femur: {femur:3d} | sid: {side:5d} |
-| rot.z: {rot_z:<+7.2f} | z: {percent_z:<+5.2f} % | tibia: {tibia:3d} | mid: {mid:5d} |
+| rot.x: {rot_x:<+7.2f} | x: {percent_x:<+5.2f} % | coxia: {dimensions['coxia']:3d} | fro: {dimensions['front']:5d} |
+| rot.y: {rot_y:<+7.2f} | y: {percent_y:<+5.2f} % | femur: {dimensions['femur']:3d} | sid: {dimensions['side']:5d} |
+| rot.z: {rot_z:<+7.2f} | z: {percent_z:<+5.2f} % | tibia: {dimensions['tibia']:3d} | mid: {dimensions['middle']:5d} |
 +----------------+------------+------------+------------+
 | hip_stance: {start_hip_stance:<+6.2f} | leg_stance: {start_leg_stance:<+6.2f} |
 +--------------------+--------------------+

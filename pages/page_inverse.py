@@ -3,18 +3,20 @@ from pages import helpers
 
 import numpy as np
 from copy import deepcopy
+import json
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from hexapod.models import VirtualHexapod
-from hexapod.const import BASE_PLOTTER, BASE_FIGURE
+from hexapod.const import BASE_PLOTTER, BASE_FIGURE, BASE_DIMENSIONS
 from hexapod.ik_solver import inverse_kinematics_update
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
 
 from app import app
+from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
 
 # *********************
 # *  LAYOUT           *
@@ -27,20 +29,21 @@ SECTION_CONTROLS =[
 
 layout = html.Div([
   html.Div(SECTION_CONTROLS, style={'width': '40%'}),
-  dcc.Graph(id='graph-hexapod-2', style={'width': '60%'})],
+  dcc.Graph(id='graph-hexapod-2', style={'width': '60%'}),
+  HIDDEN_BODY_DIMENSIONS
+  ],
   style={'display': 'flex'}
 )
 
 # *********************
 # *  CALLBACKS        *
 # *********************
-INPUTS = IK_INPUTS + DIMENSION_INPUTS
-@app.callback(
-  [Output('ik-variables', 'children'), Output('graph-hexapod-2', 'figure')],
-   INPUTS,
-  [State('graph-hexapod-2', 'relayoutData'), State('graph-hexapod-2', 'figure')]
-)
+OUTPUTS = [Output('graph-hexapod-2', 'figure'), Output('ik-variables', 'children')]
+INPUTS = [INPUT_DIMENSIONS_JSON] + IK_INPUTS
+STATES = [State('graph-hexapod-2', 'relayoutData'), State('graph-hexapod-2', 'figure')]
+@app.callback(OUTPUTS, INPUTS, STATES)
 def update_inverse_page(
+  dimensions_json,
   start_hip_stance,
   start_leg_stance,
   percent_x,
@@ -49,31 +52,24 @@ def update_inverse_page(
   rot_x,
   rot_y,
   rot_z,
-  front,
-  side,
-  mid,
-  coxia,
-  femur,
-  tibia,
   relayout_data,
   figure):
 
-  no_leg_dimensions = coxia is None or femur is None or tibia is None
-  no_body_dimensions = front is None or side is None or mid is None
-  if no_leg_dimensions or no_body_dimensions:
-    raise PreventUpdate
+  try:
+    dimensions = json.loads(dimensions_json)
+  except:
+    dimensions = BASE_DIMENSIONS
 
-  info = helpers.format_info( start_hip_stance, start_leg_stance,
-    percent_x, percent_y, percent_z, rot_x, rot_y, rot_z, front,
-    side, mid, coxia, femur, tibia)
+  info = helpers.format_info(dimensions, start_hip_stance, start_leg_stance,
+    percent_x, percent_y, percent_z, rot_x, rot_y, rot_z)
 
   if figure is None:
-    return dcc.Markdown(f'```{info}```'), BASE_FIGURE
+    return BASE_FIGURE, dcc.Markdown(f'```{info}```')
 
   # ***********************************
   # COMPUTE POSES AND UPDATE FIGURE WITH INVERSE KINEMATICS
   # ***********************************
-  hexapod = VirtualHexapod().new(front, mid, side, coxia, femur, tibia)
+  hexapod = VirtualHexapod(dimensions)
 
   if RECOMPUTE_HEXAPOD:
     hexapod_clone = deepcopy(hexapod)
@@ -93,4 +89,4 @@ def update_inverse_page(
 
   text = helpers.update_display_message(info, poses, alert)
   figure = helpers.change_camera_view(figure, relayout_data)
-  return dcc.Markdown(f'```{text}```'), figure
+  return figure, dcc.Markdown(f'```{text}```')

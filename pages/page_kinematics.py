@@ -1,5 +1,4 @@
 from settings import WHICH_POSE_CONTROL_UI, PRINT_POSE_IN_TERMINAL
-from pages import helpers
 
 if WHICH_POSE_CONTROL_UI == 1:
   from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
@@ -7,6 +6,9 @@ elif WHICH_POSE_CONTROL_UI == 2:
   from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 else:
   from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
+
+from copy import deepcopy
+import json
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -22,11 +24,10 @@ from hexapod.const import (
   BASE_FIGURE,
 )
 
-from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
-from copy import deepcopy
-import json
 from app import app
+from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
+from pages import helpers
 
 # *********************
 # *  LAYOUT           *
@@ -48,12 +49,10 @@ layout = html.Div([
 # *  CALLBACKS        *
 # *********************
 INPUT_POSES_JSON = Input(ID_POSES_DIV, 'children')
-INPUT_ALL = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
-@app.callback(
-  Output('graph-hexapod', 'figure'),
-  INPUT_ALL,
-  [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
-)
+OUTPUT = Output('graph-hexapod', 'figure')
+INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
+STATES = [State('graph-hexapod', 'relayoutData'), State('graph-hexapod', 'figure')]
+@app.callback(OUTPUT, INPUTS, STATES)
 def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
 
   if figure is None:
