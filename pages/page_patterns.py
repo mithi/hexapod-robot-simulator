@@ -1,11 +1,11 @@
-from settings import PRINT_POSE_IN_TERMINAL
+from settings import UI_CONTROLS_WIDTH, UI_GRAPH_WIDTH, UI_GRAPH_HEIGHT
 
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
-from widgets.leg_patterns_ui import SECTION_SLIDERS_TEST, SLIDERS_TEST_INPUTS
+from widgets.leg_patterns_ui import SECTION_LEG_POSE_SLIDERS, LEG_SLIDERS_INPUTS
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE, NAMES_LEG
 
@@ -20,12 +20,15 @@ from pages import helpers
 # *********************
 ID_POSES_DIV = "hexapod-poses-values-patterns"
 HIDDEN_JOINT_POSES = html.Div(id=ID_POSES_DIV, style={"display": "none"})
-SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_SLIDERS_TEST]
+SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_LEG_POSE_SLIDERS]
 
 layout = html.Div(
     [
-        html.Div(SECTION_CONTROLS, style={"width": "35%"}),
-        dcc.Graph(id="graph-hexapod-3", style={"width": "65%"}),
+        html.Div(SECTION_CONTROLS, style={"width": UI_CONTROLS_WIDTH}),
+        dcc.Graph(
+            id="graph-hexapod-3",
+            style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
+        ),
         HIDDEN_JOINT_POSES,
         HIDDEN_BODY_DIMENSIONS,
     ],
@@ -57,7 +60,7 @@ def update_patterns_page(dimensions_json, poses_json, relayout_data, figure):
 
 
 OUTPUT = Output(ID_POSES_DIV, "children")
-INPUTS = SLIDERS_TEST_INPUTS
+INPUTS = LEG_SLIDERS_INPUTS
 
 
 @app.callback(OUTPUT, INPUTS)

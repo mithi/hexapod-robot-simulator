@@ -1,4 +1,9 @@
-from settings import RECOMPUTE_HEXAPOD, PRINT_POSE_IN_TERMINAL
+from settings import (
+    RECOMPUTE_HEXAPOD,
+    UI_CONTROLS_WIDTH,
+    UI_GRAPH_WIDTH,
+    UI_GRAPH_HEIGHT,
+)
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -33,11 +38,14 @@ SECTION_CONTROLS = [
 
 layout = html.Div(
     [
-        html.Div(SECTION_CONTROLS, style={"width": "40%"}),
-        dcc.Graph(id="graph-hexapod-2", style={"width": "60%"}),
+        html.Div(SECTION_CONTROLS, style={"width": UI_CONTROLS_WIDTH}),
+        dcc.Graph(
+            id="graph-hexapod-2",
+            style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
+        ),
         HIDDEN_BODY_DIMENSIONS,
     ],
-    style={"display": "flex"},
+    style={"display": "flex",},
 )
 
 # *********************

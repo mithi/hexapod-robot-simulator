@@ -43,10 +43,12 @@ PRINT_LEG_POINTS_IN_TERMINAL_IK = False
 # Useful for debugging
 RECOMPUTE_HEXAPOD = True
 
-# Pick a number between 0 and 3
-# 0 - Using the daq slider UI
 # 1 - Using the generic slider UI
 # 2 - Using the generic input UI
-# 3 - Using the knob UI
 # Anything else defaults to Using the daq slider UI
-WHICH_POSE_CONTROL_UI = 0
+WHICH_POSE_CONTROL_UI = 2
+
+
+UI_GRAPH_HEIGHT = "600px"
+UI_GRAPH_WIDTH = "63%"
+UI_CONTROLS_WIDTH = "37%"

@@ -1,4 +1,10 @@
-from settings import WHICH_POSE_CONTROL_UI, PRINT_POSE_IN_TERMINAL
+from settings import (
+    WHICH_POSE_CONTROL_UI,
+    PRINT_POSE_IN_TERMINAL,
+    UI_CONTROLS_WIDTH,
+    UI_GRAPH_WIDTH,
+    UI_GRAPH_HEIGHT,
+)
 
 if WHICH_POSE_CONTROL_UI == 1:
     from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
@@ -30,8 +36,11 @@ SECTION_CONTROLS = [SECTION_DIMENSION_CONTROL, SECTION_POSE_CONTROL]
 
 layout = html.Div(
     [
-        html.Div(SECTION_CONTROLS, style={"width": "45%"}),
-        dcc.Graph(id="graph-hexapod", style={"width": "55%"}),
+        html.Div(SECTION_CONTROLS, style={"width": UI_CONTROLS_WIDTH}),
+        dcc.Graph(
+            id="graph-hexapod",
+            style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
+        ),
         HIDDEN_JOINT_POSES,
         HIDDEN_BODY_DIMENSIONS,
     ],
