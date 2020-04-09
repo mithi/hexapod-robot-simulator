@@ -1,3 +1,4 @@
+import dash_core_components as dcc
 from hexapod.const import BASE_PLOTTER
 from settings import PRINT_POSE_IN_TERMINAL
 from hexapod.const import HEXAPOD_POSE, NAMES_LEG, BASE_DIMENSIONS
@@ -36,29 +37,26 @@ def make_pose(alpha, beta, gamma):
   return poses
 
 
-def format_info(
-    dimensions,
-    start_hip_stance,
-    start_leg_stance,
-    percent_x,
-    percent_y,
-    percent_z,
-    rot_x,
-    rot_y,
-    rot_z):
+def make_monospace(text):
+  return dcc.Markdown(f'```{text}```')
+
+
+def format_info(dimensions, ik_parameters):
+  px, py, pz = ik_parameters['percent_x'], ik_parameters['percent_y'], ik_parameters['percent_z']
+  rx, ry, rz = ik_parameters['rot_x'] ,ik_parameters['rot_y'] ,ik_parameters['rot_z']
+
   return f'''
 +----------------+------------+------------+------------+
-| rot.x: {rot_x:<+7.2f} | x: {percent_x:<+5.2f} % | coxia: {dimensions['coxia']:3d} | fro: {dimensions['front']:5d} |
-| rot.y: {rot_y:<+7.2f} | y: {percent_y:<+5.2f} % | femur: {dimensions['femur']:3d} | sid: {dimensions['side']:5d} |
-| rot.z: {rot_z:<+7.2f} | z: {percent_z:<+5.2f} % | tibia: {dimensions['tibia']:3d} | mid: {dimensions['middle']:5d} |
+| rot.x: {rx:<+7.2f} | x: {px:<+5.2f} % | coxia: {dimensions['coxia']:3d} | fro: {dimensions['front']:5d} |
+| rot.y: {ry:<+7.2f} | y: {py:<+5.2f} % | femur: {dimensions['femur']:3d} | sid: {dimensions['side']:5d} |
+| rot.z: {rz:<+7.2f} | z: {pz:<+5.2f} % | tibia: {dimensions['tibia']:3d} | mid: {dimensions['middle']:5d} |
 +----------------+------------+------------+------------+
-| hip_stance: {start_hip_stance:<+6.2f} | leg_stance: {start_leg_stance:<+6.2f} |
+| hip_stance: {ik_parameters['hip_stance']:<+6.2f} | leg_stance: {ik_parameters['leg_stance']:<+6.2f} |
 +--------------------+--------------------+
 '''
 
 
 def update_display_message(info, poses, alert):
-  # Update display message
   if poses:
     text = add_poses_to_text(info, poses)
   else:

@@ -20,10 +20,15 @@ from pages import helpers
 # *********************
 # *  LAYOUT           *
 # *********************
+ID_MESSAGE_DISPLAY_DIV =  'display-message-div'
+ID_IK_PARAMETERS_DIV = 'ik-parameters'
+HIDDEN_IK_PARAMETERS = html.Div(id=ID_IK_PARAMETERS_DIV, style={'display': 'none'})
+
 SECTION_CONTROLS =[
   SECTION_DIMENSION_CONTROL,
   SECTION_IK,
-  html.Div(id='ik-variables')
+  html.Div(id=ID_MESSAGE_DISPLAY_DIV),
+  HIDDEN_IK_PARAMETERS,
 ]
 
 layout = html.Div([
@@ -37,52 +42,43 @@ layout = html.Div([
 # *********************
 # *  CALLBACKS        *
 # *********************
-OUTPUTS = [Output('graph-hexapod-2', 'figure'), Output('ik-variables', 'children')]
-INPUTS = [INPUT_DIMENSIONS_JSON] + IK_INPUTS
+OUTPUT =  Output(ID_IK_PARAMETERS_DIV, 'children')
+@app.callback(OUTPUT, IK_INPUTS)
+def update_ik_parameters(hip_stance, leg_stance, percent_x, percent_y, percent_z, rot_x, rot_y, rot_z):
+  return json.dumps({
+    'hip_stance': hip_stance,
+    'leg_stance': leg_stance,
+    'percent_x': percent_x,
+    'percent_y': percent_y,
+    'percent_z': percent_z,
+    'rot_x': rot_x,
+    'rot_y': rot_y,
+    'rot_z': rot_z
+  })
+
+
+OUTPUTS = [Output('graph-hexapod-2', 'figure'), Output(ID_MESSAGE_DISPLAY_DIV, 'children')]
+INPUTS = [INPUT_DIMENSIONS_JSON, Input(ID_IK_PARAMETERS_DIV, 'children')]
 STATES = [State('graph-hexapod-2', 'relayoutData'), State('graph-hexapod-2', 'figure')]
 @app.callback(OUTPUTS, INPUTS, STATES)
-def update_inverse_page(
-  dimensions_json,
-  start_hip_stance,
-  start_leg_stance,
-  percent_x,
-  percent_y,
-  percent_z,
-  rot_x,
-  rot_y,
-  rot_z,
-  relayout_data,
-  figure):
+def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figure):
+  if figure is None:
+    return BASE_FIGURE, ''
 
   dimensions = helpers.load_dimensions(dimensions_json)
-
-  info = helpers.format_info(dimensions, start_hip_stance, start_leg_stance,
-    percent_x, percent_y, percent_z, rot_x, rot_y, rot_z)
-
-  if figure is None:
-    return BASE_FIGURE, dcc.Markdown(f'```{info}```')
-
-  # ***********************************
-  # COMPUTE POSES AND UPDATE FIGURE WITH INVERSE KINEMATICS
-  # ***********************************
   hexapod = VirtualHexapod(dimensions)
+  ik_parameters = json.loads(ik_parameters_json)
+  hexapod, poses, alert = inverse_kinematics_update(hexapod, ik_parameters)
 
-  if RECOMPUTE_HEXAPOD:
-    hexapod_clone = deepcopy(hexapod)
+  if RECOMPUTE_HEXAPOD and poses:
+    hexapod = VirtualHexapod(dimensions)
+    hexapod.update(poses)
+    hexapod.move_xyz(ik_parameters['percent_x'], ik_parameters['percent_y'], ik_parameters['percent_z'])
 
-  hexapod.update_stance(start_hip_stance, start_leg_stance)
-  hexapod, poses, alert = inverse_kinematics_update(hexapod, rot_x, rot_y, rot_z, percent_x, percent_y, percent_z)
+  BASE_PLOTTER.update(figure, hexapod)
+  helpers.change_camera_view(figure, relayout_data)
 
-  if not RECOMPUTE_HEXAPOD:
-    BASE_PLOTTER.update(figure, hexapod)
-  else:
-    if poses:
-      hexapod_clone.update(poses)
-      hexapod_clone.move_xyz(percent_x, percent_y, percent_z)
-      BASE_PLOTTER.update(figure, hexapod_clone)
-    else:
-      BASE_PLOTTER.update(figure, hexapod)
-
+  info = helpers.format_info(dimensions, ik_parameters)
   text = helpers.update_display_message(info, poses, alert)
-  figure = helpers.change_camera_view(figure, relayout_data)
-  return figure, dcc.Markdown(f'```{text}```')
+  return figure, helpers.make_monospace(text)
+

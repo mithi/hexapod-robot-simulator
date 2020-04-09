@@ -140,21 +140,15 @@ from hexapod.points import (
 # hexapod whose body is detached from its legs, the body having the pose required
 # an ALERT message will also be returned explaining why the pose is impossible
 #
-def inverse_kinematics_update(
-  hexapod,
-  rot_x,
-  rot_y,
-  rot_z,
-  percent_x,
-  percent_y,
-  percent_z,
-):
+def inverse_kinematics_update(hexapod, ik_parameters):
 
-  tx = percent_x * hexapod.mid
-  ty = percent_y * hexapod.side
-  tz = percent_z * hexapod.tibia
+  tx = ik_parameters['percent_x'] * hexapod.mid
+  ty = ik_parameters['percent_y'] * hexapod.side
+  tz = ik_parameters['percent_z'] * hexapod.tibia
+  rotx, roty, rotz = ik_parameters['rot_x'], ik_parameters['rot_y'], ik_parameters['rot_z']
 
-  hexapod.detach_body_rotate_and_translate(rot_x, rot_y, rot_z, tx, ty, tz)
+  hexapod.update_stance(ik_parameters['hip_stance'], ik_parameters['leg_stance'])
+  hexapod.detach_body_rotate_and_translate(rotx, roty, rotz, tx, ty, tz)
   detached_hexapod = deepcopy(hexapod)
 
   if body_contact_shoved_on_ground(hexapod):
