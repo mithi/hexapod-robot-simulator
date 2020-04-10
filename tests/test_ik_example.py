@@ -1,6 +1,6 @@
 from hexapod.models import VirtualHexapod
 from hexapod.ik_solver import inverse_kinematics_update
-
+import numpy as np
 
 def example_dimensions():
     return {
@@ -80,4 +80,10 @@ def test_ik_example():
     hexapod = VirtualHexapod(dimensions)
     _, result_poses, msg = inverse_kinematics_update(hexapod, ik_parameters)
     assert msg is None
-    assert correct_poses == result_poses
+    # assert correct_poses == result_poses # doesn't work with travis
+    for k, v in result_poses.items():
+        assert correct_poses[k]['name'] == v['name']
+        assert correct_poses[k]['id'] == v['id']
+        assert np.isclose(correct_poses[k]['coxia'], v['coxia'])
+        assert np.isclose(correct_poses[k]['femur'], v['femur'])
+        assert np.isclose(correct_poses[k]['tibia'], v['tibia'])
