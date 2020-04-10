@@ -82,7 +82,7 @@ def input_poses():
     inputs_poses = []
     for leg_name in NAMES_LEG:
         inputs_poses += leg_inputs(leg_name)
-    return INPUTS_POSES
+    return inputs_poses
 
 
 OUTPUT_POSES = Output(ID_POSES_DIV, "children")
