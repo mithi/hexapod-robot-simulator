@@ -87,6 +87,7 @@ class VirtualHexapod:
     LEG_COUNT = 6
 
     def __init__(self, dimensions=None):
+        self.dimensions = dimensions
         if dimensions is None:
             self.new()
         else:
@@ -356,7 +357,7 @@ def print_hexapod(hexapod):
     print(hexapod.body_dimensions)
     print("...leg dimensions")
     print(hexapod.body_dimensions)
-
+    print(json.dumps(hexapod.dimensions, indent=4))
     print("*********************")
     print("End Hexapod Model")
     print("*********************")
