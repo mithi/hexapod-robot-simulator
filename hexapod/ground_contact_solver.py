@@ -49,7 +49,9 @@ def three_ids_of_ground_contacts(legs):
         # Let p0 to p6 be leg ground contacts
         p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
 
-        if check_stability(p0, p1, p2) is True:
+        # ❗check_stability returns of type class 'numpy.bool_'>
+        # state 'numpy_boolean is True' will return False
+        if check_stability(p0, p1, p2):
             # The vector normal to plane defined by these points
             # ❗IMPORTANT: Normal is always pointing up
             # because of how we specified the order of the trio
