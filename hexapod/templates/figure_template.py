@@ -1,17 +1,35 @@
+from settings import (
+    BODY_MESH_COLOR,
+    BODY_MESH_OPACITY,
+    BODY_COLOR,
+    BODY_OUTLINE_WIDTH,
+    COG_COLOR,
+    COG_SIZE,
+    HEAD_SIZE,
+    LEG_COLOR,
+    LEG_OUTLINE_WIDTH,
+    SUPPORT_POLYGON_MESH_COLOR,
+    SUPPORT_POLYGON_MESH_OPACITY,
+    LEGENDS_BG_COLOR,
+    AXIS_ZERO_LINE_COLOR,
+    PAPER_BG_COLOR,
+    GROUND_COLOR,
+)
+
 data = [
     {
         "name": "body mesh",
         "showlegend": True,
         "type": "mesh3d",
-        "opacity": 0.6,
-        "color": "#8e44ad",
+        "opacity": BODY_MESH_OPACITY,
+        "color": BODY_MESH_COLOR,
         "uid": "1f821e07-2c02-4a64-8ce3-61ecfe2a91b6",
         "x": [100.0, 100.0, -100.0, -100.0, -100.0, 100.0, 100.0],
         "y": [0.0, 100.0, 100.0, 0.0, -100.0, -100.0, 0.0],
         "z": [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0],
     },
     {
-        "line": {"color": "#8e44ad", "width": 10},
+        "line": {"color": BODY_COLOR, "opacity": 1.0, "width": BODY_OUTLINE_WIDTH},
         "name": "body",
         "showlegend": True,
         "type": "scatter3d",
@@ -21,7 +39,7 @@ data = [
         "z": [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0],
     },
     {
-        "marker": {"color": "#ff4757", "opacity": 1, "size": 12},
+        "marker": {"color": COG_COLOR, "opacity": 1, "size": COG_SIZE},
         "mode": "markers",
         "name": "cog",
         "type": "scatter3d",
@@ -31,7 +49,7 @@ data = [
         "z": [100.0],
     },
     {
-        "marker": {"color": "#8e44ad", "opacity": 1, "size": 12},
+        "marker": {"color": BODY_COLOR, "opacity": 1.0, "size": HEAD_SIZE},
         "mode": "markers",
         "name": "head",
         "type": "scatter3d",
@@ -41,8 +59,8 @@ data = [
         "z": [100.0],
     },
     {
-        "line": {"color": "#2c3e50", "width": 10},
-        "name": "leg",
+        "line": {"color": LEG_COLOR, "width": LEG_OUTLINE_WIDTH},
+        "name": "leg 1",
         "showlegend": False,
         "type": "scatter3d",
         "uid": "f217db57-fe6e-4b40-90f8-4e1c20ef595e",
@@ -51,8 +69,8 @@ data = [
         "z": [100.0, 100.0, 100.0, 0.0],
     },
     {
-        "line": {"color": "#2c3e50", "width": 10},
-        "name": "leg",
+        "line": {"color": LEG_COLOR, "width": LEG_OUTLINE_WIDTH},
+        "name": "leg 2",
         "showlegend": False,
         "type": "scatter3d",
         "uid": "d5690122-cd54-460d-ab3e-1f910eb88f0f",
@@ -61,8 +79,8 @@ data = [
         "z": [100.0, 100.0, 100.0, 0.0],
     },
     {
-        "line": {"color": "#2c3e50", "width": 10},
-        "name": "leg",
+        "line": {"color": LEG_COLOR, "width": LEG_OUTLINE_WIDTH},
+        "name": "leg 3",
         "showlegend": False,
         "type": "scatter3d",
         "uid": "9f13f416-f2b7-4eb7-993c-1e26e2e7a908",
@@ -71,8 +89,8 @@ data = [
         "z": [100.0, 100.0, 100.0, 0.0],
     },
     {
-        "line": {"color": "#2c3e50", "width": 10},
-        "name": "leg",
+        "line": {"color": LEG_COLOR, "width": LEG_OUTLINE_WIDTH},
+        "name": "leg 4",
         "showlegend": False,
         "type": "scatter3d",
         "uid": "0d426c49-19a4-4051-b938-81b30c962dff",
@@ -86,8 +104,8 @@ data = [
         "z": [100.0, 100.0, 100.0, 0.0],
     },
     {
-        "line": {"color": "#2c3e50", "width": 10},
-        "name": "leg",
+        "line": {"color": LEG_COLOR, "width": LEG_OUTLINE_WIDTH},
+        "name": "leg 5",
         "showlegend": False,
         "type": "scatter3d",
         "uid": "5ba25594-2fb5-407e-a16f-118f12769e28",
@@ -96,8 +114,8 @@ data = [
         "z": [100.0, 100.0, 100.0, 0.0],
     },
     {
-        "line": {"color": "#2c3e50", "width": 10},
-        "name": "leg",
+        "line": {"color": LEG_COLOR, "width": LEG_OUTLINE_WIDTH},
+        "name": "leg 6",
         "showlegend": False,
         "type": "scatter3d",
         "uid": "fa4b5f98-7d68-4eb9-bd38-a6f8dabef8a4",
@@ -106,11 +124,11 @@ data = [
         "z": [100.0, 100.0, 100.0, 0.0],
     },
     {
-        "name": "ground contact mesh",
+        "name": "support polygon mesh",
         "showlegend": True,
         "type": "mesh3d",
-        "opacity": 0.2,
-        "color": "#2ecc71",
+        "opacity": SUPPORT_POLYGON_MESH_OPACITY,
+        "color": SUPPORT_POLYGON_MESH_COLOR,
         "uid": "1f821e07-2c02-4a64-8ce3-61ecfe2a91b6",
         "x": [
             300.0,
@@ -207,8 +225,9 @@ data = [
 HEXAPOD_FIGURE = {
     "data": data,
     "layout": {
-        "hovermode": "closest",  #'hoverdistance': 1000 doesn't look like it's going anything
-        "legend": {"x": 0, "y": 0, "bgcolor": "rgba(255, 255, 255, 0.5)"},
+        "paper_bgcolor": PAPER_BG_COLOR,
+        "hovermode": "closest",
+        "legend": {"x": 0, "y": 0, "bgcolor": LEGENDS_BG_COLOR},
         "margin": {"b": 20, "l": 10, "r": 10, "t": 20},
         "scene": {
             "aspectmode": "manual",
@@ -229,21 +248,21 @@ HEXAPOD_FIGURE = {
             "xaxis": {
                 "nticks": 1,
                 "range": [-600, 600],
-                "zerolinecolor": "white",
+                "zerolinecolor": AXIS_ZERO_LINE_COLOR,
                 "showbackground": False,
             },
             "yaxis": {
                 "nticks": 1,
                 "range": [-600, 600],
-                "zerolinecolor": "white",
+                "zerolinecolor": AXIS_ZERO_LINE_COLOR,
                 "showbackground": False,
             },
             "zaxis": {
                 "nticks": 1,
                 "range": [-600, -10],
-                "zerolinecolor": "white",
+                "zerolinecolor": AXIS_ZERO_LINE_COLOR,
                 "showbackground": True,
-                "backgroundcolor": "rgb(240, 240, 240)",
+                "backgroundcolor": GROUND_COLOR,
             },
         },
     },
