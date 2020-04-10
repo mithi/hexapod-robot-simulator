@@ -1,4 +1,3 @@
-import pytest
 from hexapod.models import VirtualHexapod
 from hexapod.points import Point
 
