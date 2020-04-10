@@ -104,4 +104,5 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
 
     info = helpers.format_info(dimensions, ik_parameters)
     text = helpers.update_display_message(info, poses, alert)
+
     return figure, helpers.make_monospace(text)

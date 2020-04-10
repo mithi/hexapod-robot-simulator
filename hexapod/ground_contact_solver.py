@@ -87,8 +87,7 @@ def three_ids_of_ground_contacts(legs):
             if condition_violated:
                 continue
             else:
-                #  Found one!
-                return trio
+                return trio  #  Found one!
 
     # Nothing met the condition
     return None
