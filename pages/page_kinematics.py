@@ -1,6 +1,5 @@
 from settings import (
     WHICH_POSE_CONTROL_UI,
-    PRINT_POSE_IN_TERMINAL,
     UI_CONTROLS_WIDTH,
     UI_GRAPH_WIDTH,
     UI_GRAPH_HEIGHT,
@@ -47,6 +46,7 @@ layout = html.Div(
     style={"display": "flex"},
 )
 
+# fmt: off
 # *********************
 # *  CALLBACKS        *
 # *********************
@@ -54,7 +54,6 @@ INPUT_POSES_JSON = Input(ID_POSES_DIV, "children")
 OUTPUT = Output("graph-hexapod", "figure")
 INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
 STATES = [State("graph-hexapod", "relayoutData"), State("graph-hexapod", "figure")]
-
 
 @app.callback(OUTPUT, INPUTS, STATES)
 def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
@@ -78,72 +77,28 @@ def leg_inputs(leg_name):
         Input(f"input-{leg_name}-{joint_name}", "value") for joint_name in NAMES_JOINT
     ]
 
-
 OUTPUT_POSES = Output(ID_POSES_DIV, "children")
 INPUTS_POSES = []
 for leg_name in NAMES_LEG:
     INPUTS_POSES += leg_inputs(leg_name)
 
-
 @app.callback(OUTPUT_POSES, INPUTS_POSES)
 def update_hexapod_pose_values(
-    rmc,
-    rmf,
-    rmt,
-    rfc,
-    rff,
-    rft,
-    lfc,
-    lff,
-    lft,
-    lmc,
-    lmf,
-    lmt,
-    lbc,
-    lbf,
-    lbt,
-    rbc,
-    rbf,
-    rbt,
+    rmc, rmf, rmt,
+    rfc, rff, rft,
+    lfc, lff, lft,
+    lmc, lmf, lmt,
+    lbc, lbf, lbt,
+    rbc, rbf, rbt,
 ):
 
     return json.dumps(
-        {
-            0: {
-                "coxia": rmc,
-                "femur": rmf,
-                "tibia": rmt,
-                "name": "right-middle",
-                "id": 0,
-            },
-            1: {
-                "coxia": rfc,
-                "femur": rff,
-                "tibia": rft,
-                "name": "right-front",
-                "id": 1,
-            },
-            2: {
-                "coxia": lfc,
-                "femur": lff,
-                "tibia": lft,
-                "name": "left-front",
-                "id": 2,
-            },
-            3: {
-                "coxia": lmc,
-                "femur": lmf,
-                "tibia": lmt,
-                "name": "left-middle",
-                "id": 3,
-            },
-            4: {"coxia": lbc, "femur": lbf, "tibia": lbt, "name": "left-back", "id": 4},
-            5: {
-                "coxia": rbc,
-                "femur": rbf,
-                "tibia": rbt,
-                "name": "right-back",
-                "id": 5,
-            },
+        { 0: { "coxia": rmc, "femur": rmf, "tibia": rmt, "name": "right-middle", "id": 0, },
+          1: { "coxia": rfc, "femur": rff, "tibia": rft, "name": "right-front", "id": 1, },
+          2: { "coxia": lfc, "femur": lff, "tibia": lft, "name": "left-front", "id": 2, },
+          3: { "coxia": lmc, "femur": lmf, "tibia": lmt, "name": "left-middle", "id": 3, },
+          4: { "coxia": lbc, "femur": lbf, "tibia": lbt, "name": "left-back", "id": 4 },
+          5: { "coxia": rbc, "femur": rbf, "tibia": rbt, "name": "right-back", "id": 5, },
         }
     )
+# fmt: on
