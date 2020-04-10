@@ -43,7 +43,7 @@ layout = html.Div(
         ),
         HIDDEN_BODY_DIMENSIONS,
     ],
-    style={"display": "flex", },
+    style={"display": "flex",},
 )
 
 

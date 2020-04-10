@@ -76,9 +76,9 @@ def _return_zero_after_msg(a, b):
         print(alert_msg)
     return 0.0
 
+
 def angle_between(a, b):
     # returns the shortest angle between two vectors
-
 
     if length(a) == 0.0 or length(b) == 0.0:
         return _return_zero_after_msg(a, b)
