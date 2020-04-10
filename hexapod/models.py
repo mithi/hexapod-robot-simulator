@@ -2,6 +2,8 @@
 # Use it to manipulate the pose of the hexapod
 import numpy as np
 from copy import deepcopy
+import json
+from settings import PRINT_MODEL_ON_UPDATE, PRINT_MODEL_POSE_ON_UPDATE
 from .linkage import Linkage
 from .ground_contact_solver import get_legs_on_ground
 from .templates.pose_template import HEXAPOD_POSE
@@ -98,18 +100,9 @@ class VirtualHexapod:
             self.new(f, m, s, h, k, a)
 
     def new(self, f=0, m=0, s=0, a=0, b=0, c=0):
-        # coxia length, femur length, tibia length
-        self.linkage_dimensions = [a, b, c]
-        # front length, middle length, side length
-        self.body_dimensions = [f, m, s]
-        self.coxia = a
-        self.femur = b
-        self.tibia = c
-        self.front = f
-        self.mid = m
-        self.side = s
         self.body_rotation_frame = None
         self.body = Hexagon(f, m, s)
+        self._store_body_dimensions(f, m, s, a, b, c)
 
         # Initialize local coordinate frame
         self.x_axis = Point(1, 0, 0, name="hexapod x axis")
@@ -135,6 +128,9 @@ class VirtualHexapod:
 
         return self
 
+    def print(self):
+        print_hexapod(self)
+
     def detach_body_rotate_and_translate(self, a, b, c, x, y, z):
         # Detaches the body of the hexapod from the legs
         # then rotate and translate body as if a separate entity
@@ -157,8 +153,7 @@ class VirtualHexapod:
             point.move_xyz(tx, ty, tz)
 
         for leg in self.legs:
-            points = leg.all_points()
-            for point in points:
+            for point in leg.all_points:
                 point.move_xyz(tx, ty, tz)
 
     def update_stance(self, hip_stance, leg_stance):
@@ -169,8 +164,8 @@ class VirtualHexapod:
         pose[5]["coxia"] = hip_stance  # right_back
 
         for key in pose.keys():
-            pose[key]["femur"] = -leg_stance
-            pose[key]["tibia"] = leg_stance
+            pose[key]["femur"] = leg_stance
+            pose[key]["tibia"] = -leg_stance
 
         self.update(pose)
 
@@ -213,6 +208,23 @@ class VirtualHexapod:
             # if the position is not stable, what to do?
             # right now it just displays the figure like
             # there's no gravity
+
+        if PRINT_MODEL_POSE_ON_UPDATE:
+            print(json.dumps(poses, indent=4))
+        if PRINT_MODEL_ON_UPDATE:
+            self.print()
+
+    def _store_body_dimensions(self, f=0, m=0, s=0, a=0, b=0, c=0):
+        # coxia length, femur length, tibia length
+        self.linkage_dimensions = [a, b, c]
+        # front length, middle length, side length
+        self.body_dimensions = [f, m, s]
+        self.coxia = a
+        self.femur = b
+        self.tibia = c
+        self.front = f
+        self.mid = m
+        self.side = s
 
     def rotate_and_shift(self, frame, height):
         # Update each point in body
@@ -324,3 +336,28 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
     # They should be at the same point after movement
     # I can't think of a case that contradicts this as of this moment
     return twist_frame
+
+
+def print_hexapod(hexapod):
+    print("*********************")
+    print("Hexapod Model")
+    print("*********************")
+
+    print("...Vertices")
+    for point in hexapod.body.all_points:
+        print("  ", point)
+
+    print("...legs")
+
+    for leg in hexapod.legs:
+        for point in leg.all_points:
+            print("  ", point)
+
+    print("...body dimensions")
+    print(hexapod.body_dimensions)
+    print("...leg dimensions")
+    print(hexapod.body_dimensions)
+
+    print("*********************")
+    print("End Hexapod Model")
+    print("*********************")

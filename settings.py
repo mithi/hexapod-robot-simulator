@@ -32,9 +32,6 @@ HIP_STANCE_MAX_ANGLE = 45
 UPDATE_MODE = "drag"
 
 DEBUG_MODE = True
-PRINT_POSE_IN_TERMINAL = False
-PRINT_LEG_POINTS_IN_TERMINAL_IK = False
-
 # The inverse kinematics solver already updates the points of the hexapod
 # but if you want to test whether the pose is indeed correct
 # ie use the poses returned by the inverse kinematics solver
@@ -43,11 +40,15 @@ PRINT_LEG_POINTS_IN_TERMINAL_IK = False
 # Useful for debugging
 RECOMPUTE_HEXAPOD = True
 
+PRINT_IK_LOCAL_LEG = True
+PRINT_IK = True
+PRINT_MODEL_ON_UPDATE = True
+PRINT_MODEL_POSE_ON_UPDATE = True
+
 # 1 - Using the generic slider UI
 # 2 - Using the generic input UI
 # Anything else defaults to Using the daq slider UI
 WHICH_POSE_CONTROL_UI = 2
-
 
 UI_GRAPH_HEIGHT = "600px"
 UI_GRAPH_WIDTH = "63%"

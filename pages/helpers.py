@@ -1,6 +1,5 @@
 import dash_core_components as dcc
 from hexapod.const import BASE_PLOTTER
-from settings import PRINT_POSE_IN_TERMINAL
 from hexapod.const import HEXAPOD_POSE, NAMES_LEG, BASE_DIMENSIONS
 from copy import deepcopy
 import json

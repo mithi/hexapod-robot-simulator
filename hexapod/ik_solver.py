@@ -93,15 +93,17 @@
 #
 #
 from settings import (
-    PRINT_LEG_POINTS_IN_TERMINAL_IK,
     DEBUG_MODE,
+    PRINT_IK_LOCAL_LEG,
+    PRINT_IK,
     ALPHA_MAX_ANGLE,
     BETA_MAX_ANGLE,
     GAMMA_MAX_ANGLE,
 )
+import json
+import numpy as np
 from copy import deepcopy
 from hexapod.const import HEXAPOD_POSE
-import numpy as np
 from hexapod.models import VirtualHexapod, Linkage
 from hexapod.points import (
     Point,
@@ -123,6 +125,7 @@ from hexapod.points import (
     rotz,
 )
 
+poses = deepcopy(HEXAPOD_POSE)
 
 # This function computes the joint angles required to
 # rotate and translate the hexapod given the parameters given
@@ -163,7 +166,6 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         )
 
     x_axis = Point(1, 0, 0)
-    poses = deepcopy(HEXAPOD_POSE)
     legs_up_in_the_air = []
 
     for i in range(hexapod.LEG_COUNT):
@@ -294,8 +296,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         # 3. Update hexapod points and finally update the pose
         # *******************
         points = [p0, p1, p2, p3]
-        if PRINT_LEG_POINTS_IN_TERMINAL_IK:
-            print_points(points, leg_name)
+        might_print_points(points, leg_name)
 
         # Convert points from local leg coordinate frame to world coordinate frame
         for point in points:
@@ -315,6 +316,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         poses[i]["femur"] = beta
         poses[i]["tibia"] = gamma
 
+    might_print_ik(poses, ik_parameters, hexapod)
     return hexapod, poses, None
 
 
@@ -405,6 +407,36 @@ def beta_gamma_not_within_range(beta, gamma, leg_name):
     return False, None
 
 
+def might_print_ik(poses, ik_parameters, hexapod):
+    if not PRINT_IK:
+        return
+
+    print("█████████████████████████████")
+    print("█ START INVERSE KINEMATICS  █")
+    print("█████████████████████████████")
+
+    print(".....................")
+    print("... ik_parameters: ")
+    print(".....................")
+
+    print(json.dumps(ik_parameters, indent=4))
+
+    print(".....................")
+    print("... poses: ")
+    print(".....................")
+
+    print(json.dumps(poses, indent=4))
+
+    print(".....................")
+    print("... hexapod: ")
+    print(".....................")
+
+    hexapod.print()
+    print("█████████████████████████████")
+    print("█ END INVERSE KINEMATICS    █")
+    print("█████████████████████████████")
+
+
 def sanity_leg_lengths_check(hexapod, leg_name, points):
     coxia = length(vector_from_to(points[0], points[1]))
     femur = length(vector_from_to(points[1], points[2]))
@@ -421,7 +453,10 @@ def sanity_leg_lengths_check(hexapod, leg_name, points):
     ), f"wrong tibia vector length. {leg_name} tibia:{tibia}"
 
 
-def print_points(points, leg_name):
+def might_print_points(points, leg_name):
+    if not PRINT_IK_LOCAL_LEG:
+        return
+
     print()
     print(leg_name, "leg")
     print(f"...p0: {points[0]}")
@@ -429,12 +464,3 @@ def print_points(points, leg_name):
     print(f"...p2: {points[2]}")
     print(f"...p3: {points[3]}")
     print()
-
-
-# Notes:
-# - [x] When all left side or right side is above ground, make this an impossible pose.
-# - [x] Name the updated points of the updated hexapod their correct names, right now they're names is None
-# - [x] Limit alpha to range between -90 to 90
-# - [x] Also limit beta and gamma to better ranges
-# - Make ik solver a class to breakdown the large method
-# - Check if the pose of the hexapod is stable (IE the center of gravity falls in Hexy's support polygon)

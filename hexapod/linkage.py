@@ -87,9 +87,6 @@ class Linkage:
         self.store_linkage_attributes(a, b, c, coxia_axis, new_origin, name, id_number)
         self.save_new_pose(alpha, beta, gamma)
 
-    def all_points(self):
-        return [self.p0, self.p1, self.p2, self.p3]
-
     def coxia_angle(self):
         return self._alpha
 
@@ -146,6 +143,7 @@ class Linkage:
         self.p3 = p3.get_point_wrt(new_frame, name=self.name + "-tibia")
 
         self.ground_contact_point = self.compute_ground_contact()
+        self.all_points = [self.p0, self.p1, self.p2, self.p3]
 
     def change_pose(self, alpha=None, beta=None, gamma=None):
         alpha = alpha or self._alpha

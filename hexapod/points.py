@@ -37,9 +37,7 @@ class Point:
         self.z += z
 
     def __str__(self):
-        return "Point(name={}, x={}, y={}, z={})".format(
-            self.name, self.x, self.y, self.z
-        )
+        return f"Point(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f} name={self.name})"
 
 
 # *********************************************
