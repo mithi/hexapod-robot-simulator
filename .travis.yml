@@ -11,3 +11,4 @@ script:
   - flake8 ./pages/helpers.py --ignore E722,E501 #ignore line too long (string) / do not use bare 'except'
   - flake8 ./widgets
   - flake8 ./index.py ./settings.py ./app.py
+  - python -m py_compile index.py
