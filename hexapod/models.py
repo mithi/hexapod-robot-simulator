@@ -9,11 +9,10 @@ from .ground_contact_solver import get_legs_on_ground
 from .templates.pose_template import HEXAPOD_POSE
 from .points import (
     Point,
-    frame_yrotate_xtranslate,
-    frame_zrotate_xytranslate,
     frame_to_align_vector_a_to_b,
     frame_rotxyz,
 )
+
 
 # Dimensions f, s, and m
 #
@@ -256,10 +255,10 @@ class VirtualHexapod:
             # new alpha pose
             try:
                 new_hip_angle = poses[leg_id]["coxia"]
-            except:
+            except KeyError:
                 try:
                     new_hip_angle = poses[str(leg_id)]["coxia"]
-                except:
+                except KeyError:
                     new_hip_angle = 0
 
             if not np.isclose(old_hip_angle, new_hip_angle or 0):
@@ -319,7 +318,7 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
     # know at least one point that's contacting the ground
     # before and after the movement
     # so we assume that the hexapod didn't move
-    if same_point_name == None:
+    if same_point_name is None:
         return np.eye(4)
 
     old = old_contacts[same_point_name]

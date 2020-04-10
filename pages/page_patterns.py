@@ -4,12 +4,11 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
-from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
+from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 from widgets.leg_patterns_ui import SECTION_LEG_POSE_SLIDERS, LEG_SLIDERS_INPUTS
 from hexapod.models import VirtualHexapod
-from hexapod.const import BASE_PLOTTER, BASE_FIGURE, NAMES_LEG
+from hexapod.const import BASE_PLOTTER, BASE_FIGURE
 
-from copy import deepcopy
 import json
 from app import app
 from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS

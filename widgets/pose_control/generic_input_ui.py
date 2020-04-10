@@ -2,7 +2,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 from widgets.sectioning import (
     make_section_type3,
-    make_section_type4,
     make_section_type2,
 )
 from widgets.pose_control.joint_input_maker import (

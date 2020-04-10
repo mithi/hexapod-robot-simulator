@@ -5,7 +5,7 @@ from dash.dependencies import Input
 import dash_daq
 from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
 from settings import UPDATE_MODE
-from .sectioning import make_section_type3
+
 
 LEG_SLIDERS_IDs = ["slider-alpha", "slider-beta", "slider-gamma"]
 LEG_SLIDERS_INPUTS = [Input(i, "value") for i in LEG_SLIDERS_IDs]

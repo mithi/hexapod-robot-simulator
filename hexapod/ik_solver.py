@@ -104,19 +104,13 @@ import json
 import numpy as np
 from copy import deepcopy
 from hexapod.const import HEXAPOD_POSE
-from hexapod.models import VirtualHexapod, Linkage
 from hexapod.points import (
     Point,
-    cross,
-    dot,
     length,
-    scale,
-    subtract_vectors,
     add_vectors,
     scalar_multiply,
     vector_from_to,
     get_unit_vector,
-    frame_to_align_vector_a_to_b,
     is_triangle,
     is_counter_clockwise,
     project_vector_onto_plane,
@@ -126,6 +120,7 @@ from hexapod.points import (
 )
 
 poses = deepcopy(HEXAPOD_POSE)
+
 
 # This function computes the joint angles required to
 # rotate and translate the hexapod given the parameters given

@@ -49,7 +49,7 @@ def three_ids_of_ground_contacts(legs):
         # Let p0 to p6 be leg ground contacts
         p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
 
-        if check_stability(p0, p1, p2) == True:
+        if check_stability(p0, p1, p2) is True:
             # The vector normal to plane defined by these points
             # ❗IMPORTANT: Normal is always pointing up
             # because of how we specified the order of the trio
@@ -87,7 +87,7 @@ def three_ids_of_ground_contacts(legs):
             if condition_violated:
                 continue
             else:
-                return trio  #  Found one!
+                return trio  # Found one!
 
     # Nothing met the condition
     return None

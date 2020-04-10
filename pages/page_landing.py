@@ -1,7 +1,4 @@
-import dash_core_components as dcc
 import dash_html_components as html
-
-from app import app
 
 img = html.Img(
     src="https://mithi.github.io/robotics-blog/robot-only-x1.gif",

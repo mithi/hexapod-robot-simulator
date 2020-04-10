@@ -61,8 +61,6 @@ import numpy as np
 from copy import deepcopy
 from .points import (
     Point,
-    get_unit_normal,
-    is_point_inside_triangle,
     frame_yrotate_xtranslate,
     frame_zrotate_xytranslate,
 )

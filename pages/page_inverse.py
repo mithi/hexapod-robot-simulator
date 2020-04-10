@@ -13,10 +13,8 @@ from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE
 from hexapod.ik_solver import inverse_kinematics_update
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
-from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
+from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 
-import numpy as np
-from copy import deepcopy
 import json
 from app import app
 from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
@@ -45,8 +43,9 @@ layout = html.Div(
         ),
         HIDDEN_BODY_DIMENSIONS,
     ],
-    style={"display": "flex",},
+    style={"display": "flex"},
 )
+
 
 # *********************
 # *  CALLBACKS        *
