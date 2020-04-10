@@ -5,26 +5,25 @@ from settings import (
     UI_GRAPH_HEIGHT,
 )
 
-if WHICH_POSE_CONTROL_UI == 1:
-    from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
-elif WHICH_POSE_CONTROL_UI == 2:
-    from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
-else:
-    from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
-
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE, NAMES_LEG, NAMES_JOINT
-from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL, DIMENSION_INPUTS
+from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 
-from copy import deepcopy
 import json
 from app import app
 from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
 from pages import helpers
+
+if WHICH_POSE_CONTROL_UI == 1:
+    from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
+elif WHICH_POSE_CONTROL_UI == 2:
+    from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
+else:
+    from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
 
 # *********************
 # *  LAYOUT           *
@@ -55,6 +54,7 @@ OUTPUT = Output("graph-hexapod", "figure")
 INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
 STATES = [State("graph-hexapod", "relayoutData"), State("graph-hexapod", "figure")]
 
+
 @app.callback(OUTPUT, INPUTS, STATES)
 def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
     if figure is None:
@@ -77,10 +77,17 @@ def leg_inputs(leg_name):
         Input(f"input-{leg_name}-{joint_name}", "value") for joint_name in NAMES_JOINT
     ]
 
+
+def input_poses():
+    inputs_poses = []
+    for leg_name in NAMES_LEG:
+        inputs_poses += leg_inputs(leg_name)
+    return INPUTS_POSES
+
+
 OUTPUT_POSES = Output(ID_POSES_DIV, "children")
-INPUTS_POSES = []
-for leg_name in NAMES_LEG:
-    INPUTS_POSES += leg_inputs(leg_name)
+INPUTS_POSES = input_poses()
+
 
 @app.callback(OUTPUT_POSES, INPUTS_POSES)
 def update_hexapod_pose_values(
@@ -93,12 +100,11 @@ def update_hexapod_pose_values(
 ):
 
     return json.dumps(
-        { 0: { "coxia": rmc, "femur": rmf, "tibia": rmt, "name": "right-middle", "id": 0, },
-          1: { "coxia": rfc, "femur": rff, "tibia": rft, "name": "right-front", "id": 1, },
-          2: { "coxia": lfc, "femur": lff, "tibia": lft, "name": "left-front", "id": 2, },
-          3: { "coxia": lmc, "femur": lmf, "tibia": lmt, "name": "left-middle", "id": 3, },
-          4: { "coxia": lbc, "femur": lbf, "tibia": lbt, "name": "left-back", "id": 4 },
-          5: { "coxia": rbc, "femur": rbf, "tibia": rbt, "name": "right-back", "id": 5, },
-        }
+        {0: {"coxia": rmc, "femur": rmf, "tibia": rmt, "name": "right-middle", "id": 0, },
+         1: {"coxia": rfc, "femur": rff, "tibia": rft, "name": "right-front", "id": 1, },
+         2: {"coxia": lfc, "femur": lff, "tibia": lft, "name": "left-front", "id": 2, },
+         3: {"coxia": lmc, "femur": lmf, "tibia": lmt, "name": "left-middle", "id": 3, },
+         4: {"coxia": lbc, "femur": lbf, "tibia": lbt, "name": "left-back", "id": 4, },
+         5: {"coxia": rbc, "femur": rbf, "tibia": rbt, "name": "right-back", "id": 5, }, },
     )
 # fmt: on

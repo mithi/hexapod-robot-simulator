@@ -2,7 +2,6 @@
 # see also: widgets.pose_control directory
 
 import dash_core_components as dcc
-import dash_html_components as html
 import dash_daq
 from hexapod.const import NAMES_JOINT, NAMES_LEG
 from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
@@ -13,6 +12,8 @@ max_angles = {
     "femur": BETA_MAX_ANGLE,
     "tibia": GAMMA_MAX_ANGLE,
 }
+
+
 # input id format:
 # 'input' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
 # input dictionary structure

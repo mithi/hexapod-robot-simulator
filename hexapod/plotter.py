@@ -4,7 +4,6 @@
 # it takes in a hexapod model, and the figure to update
 # you can also update the camera view with it by passing a camera dictionary
 # ********************
-from .templates.figure_template import HEXAPOD_FIGURE
 
 
 class HexapodPlot:

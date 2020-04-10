@@ -2,7 +2,7 @@
 # and functions for manipulating vectors
 # and finding properties and relationships of vectors
 # computing reference frames
-
+from settings import DEBUG_MODE
 import numpy as np
 
 
@@ -72,14 +72,23 @@ def project_vector_onto_plane(u, n):
 
 def angle_between(a, b):
     # returns the shortest angle between two vectors
-    a_dot_b = dot(a, b)
-    try:
-        cos_theta = a_dot_b / (length(a) * length(b))
-        theta = np.degrees(np.arccos(cos_theta))
-    except:
-        print(f"ALERT: a:{a} | b:{b}. Error getting angle between vector a and b.")
+
+    def return_zero_after_msg():
+        alert_msg = f"ALERT: a:{a} | b:{b}. Error getting angle between vector a and b."
+        if DEBUG_MODE:
+            print(alert_msg)
         return 0.0
 
+    if length(a) == 0.0 or length(b) == 0.0:
+        return return_zero_after_msg()
+
+    a_dot_b = dot(a, b)
+    cos_theta = a_dot_b / (length(a) * length(b))
+
+    if -1 <= cos_theta or cos_theta <= 1:
+        return return_zero_after_msg()
+
+    theta = np.degrees(np.arccos(cos_theta))
     return theta
 
 
