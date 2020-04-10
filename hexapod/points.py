@@ -37,7 +37,14 @@ class Point:
         self.z += z
 
     def __str__(self):
-        return f"Point(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f} name={self.name})"
+        return f"Point(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f}, name='{self.name}')"
+
+    def __eq__(self, other):
+        equal_x = np.isclose(self.x, other.x, atol=0.01)
+        equal_y = np.isclose(self.y, other.y, atol=0.01)
+        equal_z = np.isclose(self.z, other.z, atol=0.01)
+        equal_name = self.name == other.name
+        return equal_x and equal_y and equal_z and equal_name
 
 
 # *********************************************
