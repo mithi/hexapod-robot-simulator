@@ -2,6 +2,9 @@ version: "2"         # required to adjust maintainability checks
 exclude_patterns:
 - "hexapod/plotter.py"
 - "hexapod/templates/figure_template.py"
+- "hexapod/ik_solver/ik_solver.py"
+- "hexapod/ik_solver/helpers.py"
+
 - "tests/test_ik_example.py"
 - "tests/test_kinematics_example.py"
 
