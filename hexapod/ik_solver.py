@@ -354,15 +354,6 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         if DEBUG_MODE:
             sanity_leg_lengths_check(hexapod, leg_name, points)
 
-        # DEBUG
-        # if DEBUG_MODE:
-        #    coxia_vector = vector_from_to(p0, p1)
-        #    femur_vector = vector_from_to(p1, p2)
-        #    tibia_vector = vector_from_to(p2, p3)
-        #    new_alpha = angle_between(coxia_vector, hexapod.x_axis)
-        #    new_beta = angle_between(femur_vector, coxia_vector)
-        #    gamma_temp = angle_between(tibia_vector, femur_vector)
-
         # Update hexapod's points to what we computed
         update_hexapod_points(hexapod, i, points)
 
