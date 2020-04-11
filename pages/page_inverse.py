@@ -11,11 +11,12 @@ from dash.dependencies import Input, Output, State
 
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE
-from hexapod.ik_solver import inverse_kinematics_update
+from hexapod.ik_solver import inverse_kinematics_update, recompute_hexapod
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 
 import json
+from copy import deepcopy
 from app import app
 from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
 from pages import helpers
@@ -90,13 +91,7 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
     hexapod, poses, alert = inverse_kinematics_update(hexapod, ik_parameters)
 
     if RECOMPUTE_HEXAPOD and poses:
-        hexapod = VirtualHexapod(dimensions)
-        hexapod.update(poses)
-        hexapod.move_xyz(
-            ik_parameters["percent_x"],
-            ik_parameters["percent_y"],
-            ik_parameters["percent_z"],
-        )
+        hexapod = recompute_hexapod(dimensions, ik_parameters, poses)
 
     BASE_PLOTTER.update(figure, hexapod)
     helpers.change_camera_view(figure, relayout_data)
