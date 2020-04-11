@@ -1,13 +1,13 @@
-# [☕](https://ko-fi.com/minimithi) [![Build Status](https://travis-ci.com/mithi/hexapod-robot-simulator.svg?branch=master)](https://travis-ci.com/mithi/hexapod-robot-simulator) ![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+# [☕](https://ko-fi.com/minimithi) ![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues) [![HitCount](https://hits.dwyl.com/mithi/hexapod-robot-simulator.svg)](https://hits.dwyl.com/mithi/hexapod-robot-simulator) [![Build Status](https://travis-ci.com/mithi/hexapod-robot-simulator.svg?branch=master)]
 
 # 🕷️ Mithi's Hexapod Robot Simulator
+
 - A simple browser-based hexapod robot simulator built from first principles 🕷️
 - If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi).
 
 |![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Leg pattern movements](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Customizing Hexapod Dimensions](https://mithi.github.io/robotics-blog/robot-only-x3.gif)|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
 |---------|---------|---------|---------|
 | . | . | . | . |
-
 
 | Feature   | Description  |
 |-----------|--------------|
@@ -21,7 +21,6 @@
 | ❗ Fast | Okay, it's not as fast as I wanted, but on a local server, it's okay |
 | ❗ Bug-free | Fine, right now there's still room for improvement |
 | ❗ Well-tested | Yeah, I need to compile test cases first |
-
 
 ## 🕷️ Preview
 
@@ -53,7 +52,6 @@ you run it on your own local server. When this application is run locally, it's 
 
 - This implementation uses matrices, not quaternions. I'm aware that quaternions is far superior in every single way, I used matrices because I'm not that confident about my quaternion skills yet. In the (un)forseeable future, maybe?
 
-
 ## 🕷️ Priorities
 
 - [ ] Check pose stability. The inverse kinematics solver doesn't yet actually check if the center of gravity is inside its support polygon.
@@ -65,9 +63,8 @@ you run it on your own local server. When this application is run locally, it's 
 
 - [ ] ❗ Some unstable poses are not marked as unstable by the hexapod which might be a bug somewhere in [`hexapod.ground_contact_solver.three_ids_of_ground_contacts`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/ground_contact_solver.py#L45) or [`hexapod.models.VirtualHexapod.update`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/models.py#L141)
 - [ ] ❗ When the right-middle leg is twisted by itself (coxia angle changed), the figure point-of-view changes, other legs don't do this. Might be a bug in [`hexapod.models.VirtualHexapod._find_if_might_twist`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/models.py#L192) or [`hexapod.models.find_twist_frame`](https://github.com/mithi/hexapod-robot-simulator/blob/e19f5de5b1110bc78bd75091eb63f47907ffddc5/hexapod/models.py#L231)
-- [ ] ❗ Leg can criss-cross each other which shouldn't be the case, I'm open to hearing ideas on how to go about this  
+- [ ] ❗ Leg can criss-cross each other which shouldn't be the case, I'm open to hearing ideas on how to go about this
 - [ ] [Other issues](https://github.com/mithi/hexapod-robot-simulator/issues)
-
 
 | Additional screenshots |
 |----|
