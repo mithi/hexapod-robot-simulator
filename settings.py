@@ -33,7 +33,7 @@ HIP_STANCE_MAX_ANGLE = 45
 # This will make widgets only start updating when you release the mouse button
 UPDATE_MODE = "drag"
 
-DEBUG_MODE = False
+DEBUG_MODE = True
 # The inverse kinematics solver already updates the points of the hexapod
 # but if you want to test whether the pose is indeed correct
 # ie use the poses returned by the inverse kinematics solver
@@ -89,3 +89,16 @@ else:
     AXIS_ZERO_LINE_COLOR = "white"
     PAPER_BG_COLOR = "white"
     GROUND_COLOR = "rgb(240, 240, 240)"
+
+NUMBER_INPUT_STYLE = {
+    "marginRight": "5%",
+    "width": "95%",
+    "marginBottom": "5%",
+    "borderRadius": "10px",
+    "border": "solid 1px",
+    "fontFamily": "Courier New",
+}
+
+if DARKMODE:
+    NUMBER_INPUT_STYLE["backgroundColor"] = "#2c3e50"
+    NUMBER_INPUT_STYLE["color"] = "#FFFFFF"

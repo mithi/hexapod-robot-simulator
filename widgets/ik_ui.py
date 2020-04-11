@@ -34,7 +34,9 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
     )
 
 
-def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=140, vert=True):
+def make_rotate_slider(
+    name, slider_label, max_angle=BODY_MAX_ANGLE, size=140, vert=True
+):
     return dash_daq.Slider(  # pylint: disable=not-callable
         id=name,
         min=-max_angle,
@@ -66,7 +68,8 @@ section_ik_start = html.Div(
         html.Div(div_sh, style={"padding": "3em 0 0.25em 2em"}),
         html.Div(div_sl, style={"padding": "3em 0 0.25em 2em"}),
     ],
-    style={"display": "flex", "flex-direction": "row"})
+    style={"display": "flex", "flex-direction": "row"},
+)
 
 section_ik_sliders = html.Div(
     [
@@ -81,8 +84,9 @@ section_ik_sliders = html.Div(
 )
 
 SECTION_IK = html.Div(
-    [html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**")),
-     section_ik_sliders,
-     section_ik_start,
+    [
+        html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**")),
+        section_ik_sliders,
+        section_ik_start,
     ]
 )
