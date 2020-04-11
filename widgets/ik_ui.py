@@ -26,7 +26,7 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
         min=-1.0,
         max=1.0,
         value=0.05,
-        size=170,
+        size=140,
         updatemode=UPDATE_MODE,
         vertical=True,
         handleLabel={"showCurrentValue": True, "label": slider_label},
@@ -34,7 +34,7 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
     )
 
 
-def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=170):
+def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=140, vert=True):
     return dash_daq.Slider(  # pylint: disable=not-callable
         id=name,
         min=-max_angle,
@@ -42,7 +42,7 @@ def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=170):
         value=1.5,
         size=size,
         updatemode=UPDATE_MODE,
-        vertical=True,
+        vertical=vert,
         handleLabel={"showCurrentValue": True, "label": slider_label},
         step=1.5,
     )
@@ -51,21 +51,25 @@ def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=170):
 div_rx = make_rotate_slider("input-end-rot-x", "rot.x")
 div_ry = make_rotate_slider("input-end-rot-y", "rot.y")
 div_rz = make_rotate_slider("input-end-rot-z", "rot.z")
-div_ss = make_rotate_slider(
-    "input-start-hip-stance", "start \n hip.stance", HIP_STANCE_MAX_ANGLE, 80
+div_sh = make_rotate_slider(
+    "input-start-hip-stance", "start.hip.stance", HIP_STANCE_MAX_ANGLE, 140, False
 )
-div_sz = make_rotate_slider(
-    "input-start-leg-stance", "start \n leg.stance", LEG_STANCE_MAX_ANGLE, 80
+div_sl = make_rotate_slider(
+    "input-start-leg-stance", "start.leg.stance", LEG_STANCE_MAX_ANGLE, 140, False
 )
 div_ex = make_translate_slider("input-end-percent-x", "percent.x")
 div_ey = make_translate_slider("input-end-percent-y", "percent.y")
 div_ez = make_translate_slider("input-end-percent-z", "percent.z")
 
-section_ik_start = html.Div([div_ss, html.Br(), div_sz])
+section_ik_start = html.Div(
+    [
+        html.Div(div_sh, style={"padding": "3em 0 0.25em 2em"}),
+        html.Div(div_sl, style={"padding": "3em 0 0.25em 2em"}),
+    ],
+    style={"display": "flex", "flex-direction": "row"})
 
 section_ik_sliders = html.Div(
     [
-        html.Div(section_ik_start, style={"padding": "0 0 0 3.5em"}),
         html.Div(div_ex, style={"padding": "0 0 0 3.5em"}),
         html.Div(div_ey, style={"padding": "0 0 0 3.5em"}),
         html.Div(div_ez, style={"padding": "0 0 0 3.5em"}),
@@ -77,5 +81,8 @@ section_ik_sliders = html.Div(
 )
 
 SECTION_IK = html.Div(
-    [html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**")), section_ik_sliders]
+    [html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**")),
+     section_ik_sliders,
+     section_ik_start,
+    ]
 )
