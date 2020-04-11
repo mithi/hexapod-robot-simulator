@@ -1,14 +1,6 @@
 .DS_Store
-__pycache__/*
-widgets/__pycache__/*
-apps/__pycache__/*
-hexapod/__pycache__/*
-hexapod/quaternion.py
-widgets/pose_control/__pycache__/*
-hexapod/templates/__pycache__/*
-pages/__pycache__/*
+**/__pycache__
 .vscode/settings.json
 venv
-*.pyc
-.DS_Store
 .env
+*.pyc
