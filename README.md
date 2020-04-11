@@ -3,13 +3,13 @@
 # 🕷️ Mithi's Hexapod Robot Simulator
 
 - A simple browser-based hexapod robot simulator built from first principles 🕷️
-- If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi).
+- If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi). 💕
 
 |![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Leg pattern movements](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Customizing Hexapod Dimensions](https://mithi.github.io/robotics-blog/robot-only-x3.gif)|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
 |---------|---------|---------|---------|
 | . | . | . | . |
 
-| status | Feature   | Description  |
+| STATUS | FEATURE   | DESCRIPTION  |
 |---|-----------|--------------|
 | 🎉 | Forward Kinematics | Given angles of each joint, what does the robot look like?|
 | 🎉 | Inverse Kinematics | What are the angles of each joint to make the robot look the way I want? Is it even possible? Why or why not? |
@@ -51,7 +51,7 @@ Running on http://127.0.0.1:8050/
 
 - ❗This implementation uses matrices, **NOT** quaternions. I'm aware that quaternions is far superior in every single way. In the (un)forseeable future, maybe?
 
-## 🕷️ ⚠️ Known issues
+## ⚠️ Known issues
 
 - [ ] ❗[Priorities](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3APRIORITY)
 - [ ] ❗[Help Wanted](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
