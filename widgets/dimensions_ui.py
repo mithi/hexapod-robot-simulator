@@ -3,6 +3,20 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
 from .sectioning import make_section_type3
+from settings import DARKMODE
+
+number_input_style={
+    'marginRight': '5%',
+    'width': '95%',
+    'marginBottom': '5%',
+    'borderRadius': '10px',
+    'border': 'solid 1px',
+    'fontFamily': "Courier New"
+}
+
+if DARKMODE:
+    number_input_style['backgroundColor'] = '#2c3e50'
+    number_input_style['color'] = '#FFFFFF'
 
 INPUT_DIMENSIONS_IDs = [
     "input-length-front",
@@ -15,11 +29,9 @@ INPUT_DIMENSIONS_IDs = [
 
 DIMENSION_INPUTS = [Input(input_id, "value") for input_id in INPUT_DIMENSIONS_IDs]
 
-
 def make_positive_number_input(_name, _value):
-    input_style = {"marginRight": "5%", "width": "95%", "marginBottom": "5%"}
     return dcc.Input(
-        id=_name, type="number", value=_value, step=5, min=0, style=input_style
+        id=_name, type="number", value=_value, step=5, min=0, style=number_input_style
     )
 
 
