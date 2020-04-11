@@ -143,12 +143,8 @@ class VirtualHexapod:
 
         self._update_local_frame(frame)
 
-    def move_xyz(self, percent_x, percent_y, percent_z):
+    def move_xyz(self, tx, ty, tz):
         # Translate hexapod in the x, y, z directions
-        tx = percent_x * self.mid
-        ty = percent_y * self.side
-        tz = percent_z * self.tibia
-
         for point in self.body.all_points:
             point.move_xyz(tx, ty, tz)
 

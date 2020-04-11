@@ -33,14 +33,14 @@ HIP_STANCE_MAX_ANGLE = 45
 # This will make widgets only start updating when you release the mouse button
 UPDATE_MODE = "drag"
 
-DEBUG_MODE = True
+DEBUG_MODE = False
 # The inverse kinematics solver already updates the points of the hexapod
 # but if you want to test whether the pose is indeed correct
 # ie use the poses returned by the inverse kinematics solver
 # set RECOMPUTE_HEXAPOD to true
 # otherwise for faster graph/plot updates, set RECOMPUTE_HEXAPOD to False
 # Useful for debugging
-RECOMPUTE_HEXAPOD = True
+RECOMPUTE_HEXAPOD = False
 
 PRINT_IK_LOCAL_LEG = False
 PRINT_IK = False
