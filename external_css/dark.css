@@ -1,6 +1,6 @@
 .hljs {
   background: #222f3e;
-  color: #2ecc71;
+  color: #32ff7e;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300&display=swap');
@@ -26,7 +26,7 @@ font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body
 line-height: 1.6;
 font-weight: 400;
 font-family: "Libre Franklin", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-color: rgb(50, 50, 50);
+color: #32ff7e;
 background: #222f3e;
 }
 
