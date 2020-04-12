@@ -1,6 +1,6 @@
 # [☕](https://ko-fi.com/minimithi) ![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) [![HitCount](https://hits.dwyl.com/mithi/hexapod-robot-simulator.svg)](https://hits.dwyl.com/mithi/hexapod-robot-simulator) [![Build Status](https://travis-ci.com/mithi/hexapod-robot-simulator.svg?branch=master)](https://travis-ci.com/github/mithi/hexapod-robot-simulator)
 
-# 🕷️ Mithi's Hexapod Robot Simulator
+# 🕷️ Mithi's Bare Minimum (browser-based) Hexapod Robot Simulator
 
 - A simple browser-based hexapod robot simulator built from first principles 🕷️
 - If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi). 💕
@@ -44,6 +44,7 @@ Running on http://127.0.0.1:8050/
 ```
 
 - Modify default settings in [./settings.py](./settings.py)
+- Dark Mode default - modify default style settings in [./settings.py](./style settings.py) 
 
 ## 🕷️ Notes
 
@@ -57,10 +58,3 @@ Running on http://127.0.0.1:8050/
 - [ ] ❗[Help Wanted](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 - [ ] ❗[Bugs](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 - [ ] ❗[All](https://github.com/mithi/hexapod-robot-simulator/issues)
-
-| Additional screenshots |
-|----|
-| ![Inverse Kinematics](https://mithi.github.io/robotics-blog/screenshot-1.png) |
-| ![Kinematics](https://mithi.github.io/robotics-blog/screenshot-2.png) |
-| ![Leg patterns](https://mithi.github.io/robotics-blog/screenshot-3.png) |
-| ![Alternative Inverse Kinematics](https://mithi.github.io/robotics-blog/screenshot-4.png) |

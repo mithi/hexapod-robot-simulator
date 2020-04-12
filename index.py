@@ -15,7 +15,7 @@ server = app.server
 
 header = dcc.Markdown(
     f"""
-[👾][1] [☕][2] [🕷️][3] [🕷️](/kinematics) [🕷️](/leg-patterns) [🕷️](/)
+#### [👾][1] [☕][2] [●][3] [●](/kinematics) [●](/leg-patterns) [●](/)
 [1]: https://github.com/mithi/hexapod-robot-simulator
 [2]: https://ko-fi.com/minimithi
 [3]: /inverse-kinematics
@@ -38,13 +38,13 @@ div_nav = html.Div(
             "☕ Buy Mithi coffee", href="https://ko-fi.com/minimithi", target="_blank",
         ),
         html.Br(),
-        dcc.Link("🕷️ Root", href="/"),
+        dcc.Link("● Root", href="/"),
         html.Br(),
-        dcc.Link("🕷️ Inverse Kinematics", href="/inverse-kinematics"),
+        dcc.Link("● Inverse Kinematics", href="/inverse-kinematics"),
         html.Br(),
-        dcc.Link("🕷️ Kinematics", href="/kinematics"),
+        dcc.Link("● Kinematics", href="/kinematics"),
         html.Br(),
-        dcc.Link("🕷️ Leg Patterns", href="/leg-patterns"),
+        dcc.Link("● Leg Patterns", href="/leg-patterns"),
     ]
 )
 

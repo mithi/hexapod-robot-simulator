@@ -24,14 +24,15 @@ IK_INPUT_IDs = [
 ]
 IK_INPUTS = [Input(input_id, "value") for input_id in IK_INPUT_IDs]
 
-HANDLE_STYLE = {
-    "showCurrentValue": True,
-    "color": SLIDER_HANDLE_COLOR,
-}
 
 
 def make_translate_slider(name, slider_label, type="translate_slider"):
-    HANDLE_STYLE["label"] = slider_label
+    handle_style = {
+        "showCurrentValue": True,
+        "color": SLIDER_HANDLE_COLOR,
+        "label": slider_label
+    }
+
     return dash_daq.Slider(  # pylint: disable=not-callable
         id=name,
         min=-1.0,
@@ -41,7 +42,7 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
         vertical=True,
         size=140,
         updatemode=UPDATE_MODE,
-        handleLabel=HANDLE_STYLE,
+        handleLabel=handle_style,
         color={"default": SLIDER_COLOR},
         theme=SLIDER_THEME,
     )
@@ -50,7 +51,11 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
 def make_rotate_slider(
     name, slider_label, max_angle=BODY_MAX_ANGLE, size=140, vert=True
 ):
-    HANDLE_STYLE["label"] = slider_label
+    handle_style = {
+        "showCurrentValue": True,
+        "color": SLIDER_HANDLE_COLOR,
+        "label": slider_label
+    }
     return dash_daq.Slider(  # pylint: disable=not-callable
         id=name,
         min=-max_angle,
@@ -60,21 +65,22 @@ def make_rotate_slider(
         vertical=vert,
         size=140,
         updatemode=UPDATE_MODE,
-        handleLabel=HANDLE_STYLE,
+        handleLabel=handle_style,
         color={"default": SLIDER_COLOR},
         theme=SLIDER_THEME,
     )
 
 
-div_rx = make_rotate_slider("input-end-rot-x", "rot.x")
-div_ry = make_rotate_slider("input-end-rot-y", "rot.y")
-div_rz = make_rotate_slider("input-end-rot-z", "rot.z")
 div_sh = make_rotate_slider(
     "input-start-hip-stance", "start.hip.stance", HIP_STANCE_MAX_ANGLE, 140, False
 )
 div_sl = make_rotate_slider(
     "input-start-leg-stance", "start.leg.stance", LEG_STANCE_MAX_ANGLE, 140, False
 )
+
+div_rx = make_rotate_slider("input-end-rot-x", "rot.x")
+div_ry = make_rotate_slider("input-end-rot-y", "rot.y")
+div_rz = make_rotate_slider("input-end-rot-z", "rot.z")
 
 div_ex = make_translate_slider("input-end-percent-x", "percent.x")
 div_ey = make_translate_slider("input-end-percent-y", "percent.y")
@@ -87,8 +93,8 @@ section_ik_start = html.Div(
 )
 
 divs = [div_ex, div_ey, div_ez, div_rx, div_ry, div_rz]
-IK_SLIDERS_STYLE = {"padding": "0 0 0 4.0em"}
-SLIDERS_LIST = [html.Div(div, style=IK_SLIDERS_STYLE) for div in divs]
+ik_style = {"padding": "0 0 0 4.0em"}
+SLIDERS_LIST = [html.Div(div, style=ik_style) for div in divs]
 
 section_ik_sliders = html.Div(
     SLIDERS_LIST, style={"display": "flex", "flex-direction": "row"},
