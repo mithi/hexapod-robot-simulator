@@ -25,12 +25,11 @@ IK_INPUT_IDs = [
 IK_INPUTS = [Input(input_id, "value") for input_id in IK_INPUT_IDs]
 
 
-
 def make_translate_slider(name, slider_label, type="translate_slider"):
     handle_style = {
         "showCurrentValue": True,
         "color": SLIDER_HANDLE_COLOR,
-        "label": slider_label
+        "label": slider_label,
     }
 
     return dash_daq.Slider(  # pylint: disable=not-callable
@@ -54,7 +53,7 @@ def make_rotate_slider(
     handle_style = {
         "showCurrentValue": True,
         "color": SLIDER_HANDLE_COLOR,
-        "label": slider_label
+        "label": slider_label,
     }
     return dash_daq.Slider(  # pylint: disable=not-callable
         id=name,

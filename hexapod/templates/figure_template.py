@@ -232,7 +232,7 @@ HEXAPOD_FIGURE = {
             "x": 0,
             "y": 0,
             "bgcolor": LEGENDS_BG_COLOR,
-            "font": {"family": "courier", "size": 12, "color": LEGEND_FONT_COLOR, },
+            "font": {"family": "courier", "size": 12, "color": LEGEND_FONT_COLOR},
         },
         "margin": {"b": 20, "l": 10, "r": 10, "t": 20},
         "scene": {

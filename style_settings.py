@@ -10,9 +10,13 @@ LIGHT_CSS_PATH = "https://codepen.io/mithi-the-encoder/pen/eYpObwK.css"
 DARK_BG_COLOR = "#222f3e"
 DARK_FONT_COLOR = "#32ff7e"
 
-GLOBAL_PAGE_STYLE = {"background": DARK_BG_COLOR, "color": DARK_FONT_COLOR, "padding": "0em"}
+GLOBAL_PAGE_STYLE = {
+    "background": DARK_BG_COLOR,
+    "color": DARK_FONT_COLOR,
+    "padding": "0em",
+}
 if not DARKMODE:
-    GLOBAL_PAGE_STYLE = {"background": '#ffffff', "color": "#2c3e50", "padding": "0em"}
+    GLOBAL_PAGE_STYLE = {"background": "#ffffff", "color": "#2c3e50", "padding": "0em"}
 
 # ***************************************
 # NUMBER FIELD INPUT WIDGET
@@ -48,8 +52,8 @@ SLIDER_HANDLE_COLOR = "#2ecc71"
 SLIDER_COLOR = "#FC427B"
 
 if not DARKMODE:
-  SLIDER_HANDLE_COLOR = "#2c3e50"
-  SLIDER_COLOR = "#8e44ad"
+    SLIDER_HANDLE_COLOR = "#2c3e50"
+    SLIDER_COLOR = "#8e44ad"
 
 
 # ***************************************
