@@ -1,7 +1,11 @@
 import dash
 import os
+from style_settings import DARK_CSS_PATH, LIGHT_CSS_PATH, DARKMODE
 
-external_stylesheets = ["https://codepen.io/mithi-the-encoder/pen/BaoBOKa.css"]
+if DARKMODE:
+    external_stylesheets = [DARK_CSS_PATH]
+else:
+    external_stylesheets = [LIGHT_CSS_PATH]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server

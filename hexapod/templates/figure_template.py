@@ -1,4 +1,4 @@
-from settings import (
+from style_settings import (
     BODY_MESH_COLOR,
     BODY_MESH_OPACITY,
     BODY_COLOR,
@@ -14,6 +14,7 @@ from settings import (
     AXIS_ZERO_LINE_COLOR,
     PAPER_BG_COLOR,
     GROUND_COLOR,
+    LEGEND_FONT_COLOR,
 )
 
 data = [
@@ -227,7 +228,12 @@ HEXAPOD_FIGURE = {
     "layout": {
         "paper_bgcolor": PAPER_BG_COLOR,
         "hovermode": "closest",
-        "legend": {"x": 0, "y": 0, "bgcolor": LEGENDS_BG_COLOR},
+        "legend": {
+            "x": 0,
+            "y": 0,
+            "bgcolor": LEGENDS_BG_COLOR,
+            "font": {"family": "courier", "size": 12, "color": LEGEND_FONT_COLOR, },
+        },
         "margin": {"b": 20, "l": 10, "r": 10, "t": 20},
         "scene": {
             "aspectmode": "manual",

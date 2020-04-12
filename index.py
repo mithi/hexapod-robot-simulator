@@ -1,4 +1,5 @@
 from settings import DEBUG_MODE
+from style_settings import GLOBAL_PAGE_STYLE
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -57,6 +58,7 @@ app.layout = html.Div(
         html.Div(id="page-content"),
         div_nav,
     ],
+    style=GLOBAL_PAGE_STYLE,
 )
 
 # --------------

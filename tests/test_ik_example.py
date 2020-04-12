@@ -1,5 +1,5 @@
 from hexapod.models import VirtualHexapod
-from hexapod.ik_solver import inverse_kinematics_update
+from hexapod.ik_solver.ik_solver import inverse_kinematics_update
 import numpy as np
 
 

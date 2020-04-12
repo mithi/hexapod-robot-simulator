@@ -4,8 +4,13 @@
 import dash_core_components as dcc
 import dash_daq
 from hexapod.const import NAMES_JOINT, NAMES_LEG
-from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
-from settings import UPDATE_MODE
+from settings import (
+    ALPHA_MAX_ANGLE,
+    BETA_MAX_ANGLE,
+    GAMMA_MAX_ANGLE,
+    UPDATE_MODE,
+)
+from style_settings import NUMBER_INPUT_STYLE
 
 max_angles = {
     "coxia": ALPHA_MAX_ANGLE,
@@ -65,5 +70,5 @@ def make_joint_number_input(name, max_angle):
         value=0.0,
         min=-max_angle,
         max=max_angle,
-        style={"marginRight": "5%", "width": "95%", "marginBottom": "5%"},
+        style=NUMBER_INPUT_STYLE,
     )
