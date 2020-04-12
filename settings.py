@@ -1,9 +1,6 @@
 # ***************************
 # Settings
 # ***************************
-
-DARKMODE = True
-
 # The range of each leg joint in degrees
 ALPHA_MAX_ANGLE = 90
 BETA_MAX_ANGLE = 120
@@ -55,50 +52,3 @@ WHICH_POSE_CONTROL_UI = 2
 UI_GRAPH_HEIGHT = "600px"
 UI_GRAPH_WIDTH = "63%"
 UI_CONTROLS_WIDTH = "37%"
-
-if DARKMODE is True:
-    BODY_MESH_COLOR = "#ff6348"
-    BODY_MESH_OPACITY = 0.3
-    BODY_COLOR = "#FC427B"
-    BODY_OUTLINE_WIDTH = 12
-    COG_COLOR = "#32ff7e"
-    COG_SIZE = 14
-    HEAD_SIZE = 14
-    LEG_COLOR = "#EE5A24"  # "#b71540"
-    LEG_OUTLINE_WIDTH = 10
-    SUPPORT_POLYGON_MESH_COLOR = "#3c6382"
-    SUPPORT_POLYGON_MESH_OPACITY = 0.2
-    LEGENDS_BG_COLOR = "rgba(255, 255, 255, 0.5)"
-    AXIS_ZERO_LINE_COLOR = "#079992"
-    PAPER_BG_COLOR = "#222f3e"
-    GROUND_COLOR = "#0a3d62"
-else:
-    BODY_MESH_COLOR = "#8e44ad"
-    BODY_MESH_OPACITY = 0.6
-    BODY_COLOR = "#8e44ad"
-    BODY_OUTLINE_WIDTH = 10
-    COG_COLOR = "#ff4757"
-    COG_SIZE = 12
-    HEAD_COLOR = "#8e44ad"
-    HEAD_SIZE = 12
-    LEG_COLOR = "#2c3e50"
-    LEG_OUTLINE_WIDTH = 10
-    SUPPORT_POLYGON_MESH_COLOR = "#2ecc71"
-    SUPPORT_POLYGON_MESH_OPACITY = 0.2
-    LEGENDS_BG_COLOR = "rgba(255, 255, 255, 0.5)"
-    AXIS_ZERO_LINE_COLOR = "white"
-    PAPER_BG_COLOR = "white"
-    GROUND_COLOR = "rgb(240, 240, 240)"
-
-NUMBER_INPUT_STYLE = {
-    "marginRight": "5%",
-    "width": "95%",
-    "marginBottom": "5%",
-    "borderRadius": "10px",
-    "border": "solid 1px",
-    "fontFamily": "Courier New",
-}
-
-if DARKMODE:
-    NUMBER_INPUT_STYLE["backgroundColor"] = "#2c3e50"
-    NUMBER_INPUT_STYLE["color"] = "#FFFFFF"

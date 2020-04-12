@@ -9,8 +9,8 @@ from settings import (
     BETA_MAX_ANGLE,
     GAMMA_MAX_ANGLE,
     UPDATE_MODE,
-    NUMBER_INPUT_STYLE,
 )
+from style_settings import NUMBER_INPUT_STYLE
 
 max_angles = {
     "coxia": ALPHA_MAX_ANGLE,
