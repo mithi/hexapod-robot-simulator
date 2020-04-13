@@ -62,7 +62,12 @@ def update_patterns_page(dimensions_json, poses_json, relayout_data, figure):
     dimensions = helpers.load_dimensions(dimensions_json)
     poses = json.loads(poses_json)
     virtual_hexapod = VirtualHexapod(dimensions)
-    virtual_hexapod.update(poses)
+
+    try:
+        virtual_hexapod.update(poses)
+    except Exception as alert:
+        return figure, helpers.make_alert_message(str(alert))
+
     BASE_PLOTTER.update(figure, virtual_hexapod)
     helpers.change_camera_view(figure, relayout_data)
     return figure, ""

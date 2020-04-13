@@ -140,13 +140,10 @@ class Linkage:
         self.p2 = p2.get_point_wrt(new_frame, name=self.name + "-femur")
         self.p3 = p3.get_point_wrt(new_frame, name=self.name + "-tibia")
 
-        self.ground_contact_point = self.compute_ground_contact()
         self.all_points = [self.p0, self.p1, self.p2, self.p3]
+        self.ground_contact_point = self.compute_ground_contact()
 
-    def change_pose(self, alpha=None, beta=None, gamma=None):
-        alpha = alpha or self._alpha
-        beta = beta or self._beta
-        gamma = gamma or self._gamma
+    def change_pose(self, alpha, beta, gamma):
         self.save_new_pose(alpha, beta, gamma)
 
     def update_leg_wrt(self, frame, height):
@@ -156,47 +153,43 @@ class Linkage:
         self.p3.update_point_wrt(frame, height)
 
     def compute_ground_contact(self):
-        if self._tip_wrt_cog() <= 0:
-            if self._femur_wrt_cog() <= 0:
-                return self.coxia_point()
-            else:
-                return self.femur_point()
+        # ❗❗ IMPORTANT:
+        # Verify if this assumption is correct
+        # Which has the most negative z?
+        #  p0, p1, p2, or p3?
+        ground_contact = self.p3
+        for point in self.all_points:
+            if point.z < ground_contact.z:
+                ground_contact = point
 
-        if self._tip_wrt_cog() >= self._femur_wrt_cog():
-            return self.foot_tip()
-        else:
-            return self.femur_point()
+        return ground_contact
 
-    def _tip_wrt_cog(self):
-        #
-        #          /*
-        #         //\\
-        #        //  \\
-        #       //    \\
-        #      //      \\
-        # *===* ---->   \\ ---------
-        #                \\       |
-        #                 \\   tip height (positive)
-        #                  \\     |
-        #                   \\ -----
-        #
-        #
-        # *===*=======*
-        #           | \\
-        #           |  \\
-        # (positive)|   \\
-        #    tip height  \\
-        #           |     \\
-        #         ------    *----
-        #
-        #                *=========* -----
-        #               //             |
-        #              // (negative) tip height
-        #             //               |
-        # *===*=======*  -------------------
-        # Negative only if body contact point
-        # is touching the ground
-        return -self.foot_tip().z
 
-    def _femur_wrt_cog(self):
-        return -self.femur_point().z
+#
+#          /*
+#         //\\
+#        //  \\
+#       //    \\
+#      //      \\
+# *===* ---->   \\ ---------
+#                \\       |
+#                 \\   tip height (positive)
+#                  \\     |
+#                   \\ -----
+#
+#
+# *===*=======*
+#           | \\
+#           |  \\
+# (positive)|   \\
+#    tip height  \\
+#           |     \\
+#         ------    *----
+#
+#                *=========* -----
+#               //             |
+#              // (negative) tip height
+#             //               |
+# *===*=======*  -------------------
+# Negative only if body contact point
+# is touching the ground
