@@ -5,6 +5,9 @@ from copy import deepcopy
 import json
 
 
+poses = deepcopy(HEXAPOD_POSE)
+
+
 def change_camera_view(figure, relayout_data):
     # Use current camera view to display plot
     if relayout_data and "scene.camera" in relayout_data:
@@ -17,12 +20,10 @@ def change_camera_view(figure, relayout_data):
 def load_dimensions(dimensions_json):
     try:
         dimensions = json.loads(dimensions_json)
-    except:
+    except Exception as e:
+        print("Error loading dimension json", e)
         dimensions = BASE_DIMENSIONS
     return dimensions
-
-
-poses = deepcopy(HEXAPOD_POSE)
 
 
 def make_pose(alpha, beta, gamma):
@@ -48,8 +49,13 @@ def make_poses_message(poses):
 | leg name       | coxia      | femur      | tibia      |
 +----------------+------------+------------+------------+"""
     for pose in poses.values():
-        message += f"""
-| {pose['name']:14} | {pose['coxia']:<+10.2f} | {pose['femur']:<+10.2f} | {pose['tibia']:<+10.2f} |"""
+        name = pose["name"]
+        coxia = pose["coxia"]
+        femur = pose["femur"]
+        tibia = pose["tibia"]
+        message += (
+            f"\n| {name:14} | {coxia:<+10.2f} | {femur:<+10.2f} | {tibia:<+10.2f} |"
+        )
 
     message += "\n+----------------+------------+------------+------------+"
     return make_monospace(message)
