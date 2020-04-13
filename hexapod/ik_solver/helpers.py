@@ -1,5 +1,6 @@
 from settings import (
     PRINT_IK_LOCAL_LEG,
+    ASSERTION_ENABLED,
     PRINT_IK,
     BETA_MAX_ANGLE,
     GAMMA_MAX_ANGLE,
@@ -40,9 +41,10 @@ def angle_above_limit(angle, angle_range, leg_name, angle_name):
     if np.abs(angle) > angle_range:
         return (
             True,
-            f"The {angle_name} (of {leg_name} leg) required \n \
-      to do this pose is above the range of motion. \n \
-      Required: {angle} degrees. Limit: {angle_range} degrees.",
+            f"""
+    The {angle_name} (of {leg_name} leg) required \n \
+    to do this pose is above the range of motion. \n \
+    Required: {angle} degrees. Limit: {angle_range} degrees.""",
         )
 
     return False, None
@@ -62,6 +64,25 @@ def beta_gamma_not_within_range(beta, gamma, leg_name):
         return True, alert_msg
 
     return False, None
+
+
+def might_sanity_leg_lengths_check(hexapod, leg_name, points):
+    if not ASSERTION_ENABLED:
+        return
+
+    coxia = length(vector_from_to(points[0], points[1]))
+    femur = length(vector_from_to(points[1], points[2]))
+    tibia = length(vector_from_to(points[2], points[3]))
+
+    assert np.isclose(
+        hexapod.coxia, coxia, atol=1
+    ), f"wrong coxia vector length. {leg_name} coxia:{coxia}"
+    assert np.isclose(
+        hexapod.femur, femur, atol=1
+    ), f"wrong femur vector length. {leg_name} femur:{femur}"
+    assert np.isclose(
+        hexapod.tibia, tibia, atol=1
+    ), f"wrong tibia vector length. {leg_name} tibia:{tibia}"
 
 
 def might_print_ik(poses, ik_parameters, hexapod):
@@ -92,22 +113,6 @@ def might_print_ik(poses, ik_parameters, hexapod):
     print("█████████████████████████████")
     print("█ END INVERSE KINEMATICS    █")
     print("█████████████████████████████")
-
-
-def sanity_leg_lengths_check(hexapod, leg_name, points):
-    coxia = length(vector_from_to(points[0], points[1]))
-    femur = length(vector_from_to(points[1], points[2]))
-    tibia = length(vector_from_to(points[2], points[3]))
-
-    assert np.isclose(
-        hexapod.coxia, coxia, atol=1
-    ), f"wrong coxia vector length. {leg_name} coxia:{coxia}"
-    assert np.isclose(
-        hexapod.femur, femur, atol=1
-    ), f"wrong femur vector length. {leg_name} femur:{femur}"
-    assert np.isclose(
-        hexapod.tibia, tibia, atol=1
-    ), f"wrong tibia vector length. {leg_name} tibia:{tibia}"
 
 
 def might_print_points(points, leg_name):
