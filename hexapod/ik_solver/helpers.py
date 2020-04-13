@@ -27,12 +27,11 @@ def legs_too_short(legs):
     if len(legs) >= 4:
         return True, f"Unstable. Too many legs off the floor. \n {legs}"
 
-    if len(legs) == 3:
-        leg_positions = [leg.split("-")[0] for leg in legs]
-        if leg_positions.count("left") == 3:
-            return True, f"Unstable. All left legs off the ground. \n {legs}"
-        if leg_positions.count("right") == 3:
-            return True, f"Unstable. All right legs off the ground. \n {legs}"
+    leg_positions = [leg.split("-")[0] for leg in legs]
+    if leg_positions.count("left") == 3:
+        return True, f"Unstable. All left legs off the ground. \n {legs}"
+    if leg_positions.count("right") == 3:
+        return True, f"Unstable. All right legs off the ground. \n {legs}"
 
     return False, None
 

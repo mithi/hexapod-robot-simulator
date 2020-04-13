@@ -120,9 +120,6 @@ from hexapod.points import (
     rotz,
 )
 
-poses = deepcopy(HEXAPOD_POSE)
-
-
 # This function computes the joint angles required to
 # rotate and translate the hexapod given the parameters given
 # - rot_x, rot_y, rot_z are how the hexapod should be rotated
@@ -139,6 +136,9 @@ poses = deepcopy(HEXAPOD_POSE)
 # hexapod whose body is detached from its legs, the body having the pose required
 # an ALERT message will also be returned explaining why the pose is impossible
 #
+poses = deepcopy(HEXAPOD_POSE)
+
+
 def inverse_kinematics_update(hexapod, ik_parameters):
 
     tx = ik_parameters["percent_x"] * hexapod.mid
