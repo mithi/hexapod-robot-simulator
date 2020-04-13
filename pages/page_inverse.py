@@ -11,7 +11,8 @@ from dash.dependencies import Input, Output, State
 
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE
-from hexapod.ik_solver.ik_solver import inverse_kinematics_update, recompute_hexapod
+from hexapod.ik_solver.ik_solver import inverse_kinematics_update
+from hexapod.ik_solver.recompute_hexapod import recompute_hexapod
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 
