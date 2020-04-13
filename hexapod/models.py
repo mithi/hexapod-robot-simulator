@@ -349,10 +349,7 @@ def print_hexapod(hexapod):
         for point in leg.all_points:
             print("  ", point)
 
-    print("...body dimensions")
-    print(hexapod.body_dimensions)
-    print("...leg dimensions")
-    print(hexapod.body_dimensions)
+    print("...dimensions")
     print(json.dumps(hexapod.dimensions, indent=4))
     print("*********************")
     print("End Hexapod Model")

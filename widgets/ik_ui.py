@@ -12,6 +12,7 @@ import dash_html_components as html
 from dash.dependencies import Input
 import dash_daq
 
+HEADER = html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**"))
 IK_INPUT_IDs = [
     "input-start-hip-stance",
     "input-start-leg-stance",
@@ -39,7 +40,7 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
         value=0.05,
         step=0.05,
         vertical=True,
-        size=140,
+        size=90,
         updatemode=UPDATE_MODE,
         handleLabel=handle_style,
         color={"default": SLIDER_COLOR},
@@ -47,9 +48,7 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
     )
 
 
-def make_rotate_slider(
-    name, slider_label, max_angle=BODY_MAX_ANGLE, size=140, vert=True
-):
+def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=140):
     handle_style = {
         "showCurrentValue": True,
         "color": SLIDER_HANDLE_COLOR,
@@ -61,8 +60,8 @@ def make_rotate_slider(
         max=max_angle,
         value=1.5,
         step=1.5,
-        vertical=vert,
-        size=140,
+        vertical=True,
+        size=90,
         updatemode=UPDATE_MODE,
         handleLabel=handle_style,
         color={"default": SLIDER_COLOR},
@@ -71,10 +70,10 @@ def make_rotate_slider(
 
 
 div_sh = make_rotate_slider(
-    "input-start-hip-stance", "start.hip.stance", HIP_STANCE_MAX_ANGLE, 140, False
+    "input-start-hip-stance", "start \n hip.stance", HIP_STANCE_MAX_ANGLE
 )
 div_sl = make_rotate_slider(
-    "input-start-leg-stance", "start.leg.stance", LEG_STANCE_MAX_ANGLE, 140, False
+    "input-start-leg-stance", "start \n leg.stance", LEG_STANCE_MAX_ANGLE
 )
 
 div_rx = make_rotate_slider("input-end-rot-x", "rot.x")
@@ -85,24 +84,18 @@ div_ex = make_translate_slider("input-end-percent-x", "percent.x")
 div_ey = make_translate_slider("input-end-percent-y", "percent.y")
 div_ez = make_translate_slider("input-end-percent-z", "percent.z")
 
-stance_style = {"padding": "3em 0 0.25em 2em"}
-section_ik_start = html.Div(
-    [html.Div(div_sh, style=stance_style), html.Div(div_sl, style=stance_style)],
-    style={"display": "flex", "flex-direction": "row"},
+ik_style = {"padding": "1.0em 0 0 4.0em"}
+divs1 = [div_sh, div_ex, div_ey, div_ez]
+divs2 = [div_sl, div_rx, div_ry, div_rz]
+sliders_row1 = [html.Div(div, style=ik_style) for div in divs1]
+sliders_row2 = [html.Div(div, style=ik_style) for div in divs2]
+
+section_row1 = html.Div(
+    sliders_row1, style={"display": "flex", "flex-direction": "row"},
 )
 
-divs = [div_ex, div_ey, div_ez, div_rx, div_ry, div_rz]
-ik_style = {"padding": "0 0 0 4.0em"}
-SLIDERS_LIST = [html.Div(div, style=ik_style) for div in divs]
-
-section_ik_sliders = html.Div(
-    SLIDERS_LIST, style={"display": "flex", "flex-direction": "row"},
+section_row2 = html.Div(
+    sliders_row2, style={"display": "flex", "flex-direction": "row"},
 )
 
-SECTION_IK = html.Div(
-    [
-        html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**")),
-        section_ik_sliders,
-        section_ik_start,
-    ]
-)
+SECTION_IK = html.Div([HEADER, section_row1, section_row2])

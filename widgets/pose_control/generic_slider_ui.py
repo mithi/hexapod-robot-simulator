@@ -8,6 +8,7 @@ from widgets.pose_control.joint_input_maker import (
     make_joint_slider_input,
 )
 
+HEADER = html.Label(dcc.Markdown("**KINEMATICS CONTROL**"))
 JOINT_INPUTS = make_all_joint_inputs(joint_input_function=make_joint_slider_input)
 
 
@@ -29,7 +30,5 @@ def make_leg_sections():
     return html.Div(sections)
 
 
-header = html.Label(dcc.Markdown("**KINEMATICS CONTROL**"))
-SECTION_LEG_SLIDERS = make_leg_sections()
-
-SECTION_POSE_CONTROL = html.Div([header, SECTION_LEG_SLIDERS])
+section_leg_sliders = make_leg_sections()
+SECTION_POSE_CONTROL = html.Div([HEADER, section_leg_sliders])

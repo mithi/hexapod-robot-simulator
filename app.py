@@ -2,9 +2,8 @@ import dash
 import os
 from style_settings import DARK_CSS_PATH, LIGHT_CSS_PATH, DARKMODE
 
-if DARKMODE:
-    external_stylesheets = [DARK_CSS_PATH]
-else:
+external_stylesheets = [DARK_CSS_PATH]
+if not DARKMODE:
     external_stylesheets = [LIGHT_CSS_PATH]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)

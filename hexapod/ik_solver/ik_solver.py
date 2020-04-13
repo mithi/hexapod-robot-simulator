@@ -92,7 +92,7 @@
 # (p0)   (p1)
 #
 #
-from settings import DEBUG_MODE, ALPHA_MAX_ANGLE
+from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
 import numpy as np
 from copy import deepcopy
 from hexapod.ik_solver.helpers import (
@@ -177,7 +177,7 @@ def recompute_hexapod(dimensions, ik_parameters, poses):
     translate_vector = vector_from_to(twisted_p2, old_p2)
     new_hexapod.move_xyz(translate_vector.x, translate_vector.y, 0)
 
-    if DEBUG_MODE:
+    if ASSERTION_ENABLED:
         assert np.isclose(new_p1.z, 0)
         assert np.isclose(new_p2.z, 0)
         assert np.isclose(old_p1.z, 0, atol=0.1)
@@ -347,12 +347,12 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         # Convert points from local leg coordinate frame to world coordinate frame
         for point in points:
             point.update_point_wrt(twist_frame)
-            if DEBUG_MODE:
+            if ASSERTION_ENABLED:
                 assert hexapod.body_rotation_frame is not None
             point.update_point_wrt(hexapod.body_rotation_frame)
             point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
 
-        if DEBUG_MODE:
+        if ASSERTION_ENABLED:
             sanity_leg_lengths_check(hexapod, leg_name, points)
 
         # Update hexapod's points to what we computed

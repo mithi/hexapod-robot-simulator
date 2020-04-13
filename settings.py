@@ -30,24 +30,25 @@ HIP_STANCE_MAX_ANGLE = 45
 # This will make widgets only start updating when you release the mouse button
 UPDATE_MODE = "drag"
 
-DEBUG_MODE = False
+DEBUG_MODE = True
+ASSERTION_ENABLED = False
 # The inverse kinematics solver already updates the points of the hexapod
 # but if you want to test whether the pose is indeed correct
 # ie use the poses returned by the inverse kinematics solver
 # set RECOMPUTE_HEXAPOD to true
 # otherwise for faster graph/plot updates, set RECOMPUTE_HEXAPOD to False
 # Useful for debugging
-RECOMPUTE_HEXAPOD = False
+RECOMPUTE_HEXAPOD = True
 
 PRINT_IK_LOCAL_LEG = False
 PRINT_IK = False
 PRINT_MODEL_ON_UPDATE = False
 PRINT_MODEL_POSE_ON_UPDATE = False
 
-# 1 - Using the generic slider UI
-# 2 - Using the generic input UI
-# Anything else defaults to Using the daq slider UI
-WHICH_POSE_CONTROL_UI = 2
+# 1 - Using the daq slider UI
+# 2 - Using the generic slider UI
+# Anything else defaults to Using the generic input UI
+WHICH_POSE_CONTROL_UI = 0
 
 UI_GRAPH_HEIGHT = "600px"
 UI_GRAPH_WIDTH = "63%"

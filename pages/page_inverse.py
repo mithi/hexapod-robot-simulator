@@ -95,7 +95,9 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
     BASE_PLOTTER.update(figure, hexapod)
     helpers.change_camera_view(figure, relayout_data)
 
-    info = helpers.format_info(dimensions, ik_parameters)
-    text = helpers.update_display_message(info, poses, alert)
+    if poses:
+        text = helpers.make_poses_message(poses)
+    else:
+        text = helpers.make_alert_message(alert)
 
-    return figure, helpers.make_monospace(text)
+    return figure, text
