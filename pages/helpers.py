@@ -5,6 +5,9 @@ from copy import deepcopy
 import json
 
 
+poses = deepcopy(HEXAPOD_POSE)
+
+
 def change_camera_view(figure, relayout_data):
     # Use current camera view to display plot
     if relayout_data and "scene.camera" in relayout_data:
@@ -24,7 +27,6 @@ def load_dimensions(dimensions_json):
 
 
 def make_pose(alpha, beta, gamma):
-    poses = deepcopy(HEXAPOD_POSE)
 
     for k, _ in poses.items():
         poses[k] = {
