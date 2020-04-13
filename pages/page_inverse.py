@@ -27,9 +27,9 @@ ID_MESSAGE_DISPLAY_SECTION = "display-message-inverse"
 SECTION_MESSAGE_DISPLAY = html.Div(id=ID_MESSAGE_DISPLAY_SECTION)
 OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
 
-ID_IK_PARAMETERS_SECTION = "ik-parameters"
+ID_IK_PARAMETERS_JSON = "ik-parameters"
 SECTION_HIDDEN_IK_PARAMETERS = html.Div(
-    id=ID_IK_PARAMETERS_SECTION, style={"display": "none"}
+    id=ID_IK_PARAMETERS_JSON, style={"display": "none"}
 )
 
 SECTION_CONTROLS = [
@@ -62,7 +62,7 @@ OUTPUTS = [
     Output(GRAPH_NAME, "figure"),
     OUTPUT_MESSAGE_DISPLAY,
 ]
-INPUTS = [INPUT_DIMENSIONS_JSON, Input(ID_IK_PARAMETERS_SECTION, "children")]
+INPUTS = [INPUT_DIMENSIONS_JSON, Input(ID_IK_PARAMETERS_JSON, "children")]
 STATES = [State(GRAPH_NAME, "relayoutData"), State(GRAPH_NAME, "figure")]
 
 
@@ -91,7 +91,7 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
 # ......................
 # Update parameters
 # ......................
-OUTPUT = Output(ID_IK_PARAMETERS_SECTION, "children")
+OUTPUT = Output(ID_IK_PARAMETERS_JSON, "children")
 
 
 @app.callback(OUTPUT, IK_INPUTS)
