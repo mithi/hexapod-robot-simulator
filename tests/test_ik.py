@@ -16,10 +16,10 @@ def test_recompute_hexapod():
     # ❗❗❗ This test fails!
     # See discussion in:
     # https://mithi.github.io/robotics-blog/blog/hexapod-simulator/3-prerelease-2/
-   # hexapod1 = VirtualHexapod(given_dimensions)
-    #_, result_poses, msg = inverse_kinematics_update(hexapod1, given_ik_parameters)
-    #hexapod2 = recompute_hexapod(given_dimensions, given_ik_parameters, result_poses)
-    #assert msg is None
+    # hexapod1 = VirtualHexapod(given_dimensions)
+    # _, result_poses, msg = inverse_kinematics_update(hexapod1, given_ik_parameters)
+    # hexapod2 = recompute_hexapod(given_dimensions, given_ik_parameters, result_poses)
+    # assert msg is None
     # assert_hexapod_equal(hexapod1, hexapod2.body.all_points, hexapod2.legs)
     # assert_hexapod_equal(hexapod2, hexapod1.body.all_points, hexapod1.legs)
     assert True
