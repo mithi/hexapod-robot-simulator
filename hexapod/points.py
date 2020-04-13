@@ -84,7 +84,11 @@ def angle_between(a, b):
     theta = np.degrees(np.arccos(cos_theta))
     if np.isnan(theta):
         if DEBUG_MODE:
-            print(f"❗Error: angle_between({a}, {b})")
+            print(f"❗❗❗Error: angle_between({a}, {b}) is NAN")
+            print(f"❗> One of the might be a zero vector or")
+            print(f"❗> The vectors might be pointing at the same direction or")
+            print(f"❗> Something else entirely. 🤔")
+
         return 0.0
 
     return theta

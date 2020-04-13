@@ -100,12 +100,11 @@ from hexapod.ik_solver.helpers import (
     legs_too_short,
     beta_gamma_not_within_range,
     angle_above_limit,
-    sanity_leg_lengths_check,
+    might_sanity_leg_lengths_check,
     might_print_ik,
     might_print_points,
 )
 from hexapod.const import HEXAPOD_POSE
-from hexapod.models import VirtualHexapod
 from hexapod.points import (
     Point,
     length,
@@ -140,55 +139,6 @@ poses = deepcopy(HEXAPOD_POSE)
 # hexapod whose body is detached from its legs, the body having the pose required
 # an ALERT message will also be returned explaining why the pose is impossible
 #
-
-
-def find_twist_to_recompute_hexapod(a, b):
-    twist = angle_between(a, b)
-    z_axis = Point(0, 0, -1)
-    is_ccw = is_counter_clockwise(a, b, z_axis)
-    if is_ccw:
-        twist = -twist
-
-    twist_frame = rotz(twist)
-    return twist, twist_frame
-
-
-def recompute_hexapod(dimensions, ik_parameters, poses):
-    # ❗❗IMPORTANT!This assumes leg with id 3 and id 4 are on the ground
-    # THIS IS NOT ALWAYS THE CASE.
-    # Should check which two legs are both on the ground before and after
-    # instead of using leg 3 and 4
-    old_hexapod = VirtualHexapod(dimensions)
-    old_hexapod.update_stance(ik_parameters["hip_stance"], ik_parameters["leg_stance"])
-    old_p1 = deepcopy(old_hexapod.legs[3].p3)
-    old_p2 = deepcopy(old_hexapod.legs[4].p3)
-    old_vector = vector_from_to(old_p1, old_p2)
-
-    new_hexapod = VirtualHexapod(dimensions)
-    new_hexapod.update(poses)
-    new_p1 = deepcopy(new_hexapod.legs[3].p3)
-    new_p2 = deepcopy(new_hexapod.legs[4].p3)
-    new_vector = vector_from_to(new_p1, new_p2)
-
-    translate_vector = vector_from_to(new_p1, old_p1)
-    _, twist_frame = find_twist_to_recompute_hexapod(new_vector, old_vector)
-    new_hexapod.rotate_and_shift(twist_frame, 0)
-    twisted_p2 = new_hexapod.legs[4].p3
-    translate_vector = vector_from_to(twisted_p2, old_p2)
-    new_hexapod.move_xyz(translate_vector.x, translate_vector.y, 0)
-
-    if ASSERTION_ENABLED:
-        assert np.isclose(new_p1.z, 0)
-        assert np.isclose(new_p2.z, 0)
-        assert np.isclose(old_p1.z, 0, atol=0.1)
-        assert np.isclose(old_p2.z, 0, atol=0.1)
-        assert new_p1.name == old_p1.name
-        assert new_p2.name == old_p2.name
-        assert np.isclose(length(new_vector), length(old_vector), atol=0.1)
-
-    return new_hexapod
-
-
 def inverse_kinematics_update(hexapod, ik_parameters):
 
     tx = ik_parameters["percent_x"] * hexapod.mid
@@ -202,14 +152,9 @@ def inverse_kinematics_update(hexapod, ik_parameters):
 
     hexapod.update_stance(ik_parameters["hip_stance"], ik_parameters["leg_stance"])
     hexapod.detach_body_rotate_and_translate(rotx, roty, rotz, tx, ty, tz)
-    detached_hexapod = deepcopy(hexapod)
 
     if body_contact_shoved_on_ground(hexapod):
-        return (
-            detached_hexapod,
-            None,
-            "Impossible rotation at given height. \n body contact shoved on ground",
-        )
+        raise Exception("Impossible at given height. \n body contact shoved on ground")
 
     x_axis = Point(1, 0, 0)
     legs_up_in_the_air = []
@@ -229,10 +174,8 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         # coxia point / joint is the point connecting the coxia and tibia limbs
         coxia_point = add_vectors(body_contact, coxia_vector)
         if coxia_point.z < foot_tip.z:
-            return (
-                detached_hexapod,
-                None,
-                "Impossible rotation at given height. \n coxia joint shoved on ground",
+            raise Exception(
+                "Impossible at given height. \n coxia joint shoved on ground"
             )
 
         # *******************
@@ -279,33 +222,27 @@ def inverse_kinematics_update(hexapod, ik_parameters):
             gamma = 90 - angle_between(femur_vector, tibia_vector)
 
             if p2.z < p3.z:
-                return (
-                    detached_hexapod,
-                    None,
-                    f"Can't reach target ground point. \n {leg_name} can't reach it because the ground is blocking the path.",
+                raise Exception(
+                    f"Cannot reach target ground point. \n {leg_name} leg cannot reach it because the ground is blocking the path."
                 )
         else:
             # --------------------------------
             # CASE B: It's impossible to reach target ground point
             # --------------------------------
             if d + hexapod.tibia < hexapod.femur:
-                return (
-                    detached_hexapod,
-                    None,
-                    f"Can't reach target ground point. \n {leg_name} leg's Femur length is too long.",
+                raise Exception(
+                    f"Cannot reach target ground point. \n Femur length of {leg_name} leg is too long."
                 )
             if d + hexapod.femur < hexapod.tibia:
-                return (
-                    detached_hexapod,
-                    None,
-                    f"Can't reach target ground point. \n {leg_name} leg's Tibia length is too long.",
+                raise Exception(
+                    f"Cannot reach target ground point. \n Tibia length of {leg_name} leg is too long."
                 )
 
             # Then hexapod.femur + hexapod.tibia < d:
             legs_up_in_the_air.append(leg_name)
-            LEGS_TOO_SHORT, msg = legs_too_short(legs_up_in_the_air)
+            LEGS_TOO_SHORT, alert_msg = legs_too_short(legs_up_in_the_air)
             if LEGS_TOO_SHORT:
-                return detached_hexapod, None, msg
+                raise Exception(alert_msg)
 
             femur_tibia_direction = get_unit_vector(coxia_to_foot_vector2d)
             femur_vector = scalar_multiply(femur_tibia_direction, hexapod.femur)
@@ -323,7 +260,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         # Final p1, p2, p3, beta and gamma computed at this point
         not_within_range, alert_msg = beta_gamma_not_within_range(beta, gamma, leg_name)
         if not_within_range:
-            return detached_hexapod, None, alert_msg
+            raise Exception(alert_msg)
 
         # *******************
         # 2. Compute alpha and twist_frame
@@ -336,7 +273,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         )
 
         if alpha_limit:
-            return detached_hexapod, None, alert_msg
+            raise Exception(alert_msg)
 
         # *******************
         # 3. Update hexapod points and finally update the pose
@@ -352,8 +289,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
             point.update_point_wrt(hexapod.body_rotation_frame)
             point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
 
-        if ASSERTION_ENABLED:
-            sanity_leg_lengths_check(hexapod, leg_name, points)
+        might_sanity_leg_lengths_check(hexapod, leg_name, points)
 
         # Update hexapod's points to what we computed
         update_hexapod_points(hexapod, i, points)
@@ -363,7 +299,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         poses[i]["tibia"] = gamma
 
     might_print_ik(poses, ik_parameters, hexapod)
-    return hexapod, poses, None
+    return hexapod, poses
 
 
 def update_hexapod_points(hexapod, leg_id, points):
