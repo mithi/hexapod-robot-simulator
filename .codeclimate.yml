@@ -4,9 +4,8 @@ exclude_patterns:
 - "hexapod/templates/figure_template.py"
 - "hexapod/ik_solver/ik_solver.py"
 - "hexapod/ik_solver/helpers.py"
-
-- "tests/test_ik_example.py"
-- "tests/test_kinematics_example.py"
+- "tests/ik_cases/*.py"
+- "tests/kinematics_cases/*.py"
 
 checks:
   argument-count:
