@@ -46,50 +46,48 @@ def three_ids_of_ground_contacts(legs):
     trios, other_trios = set_of_two_trios_from_six()
 
     for trio, other_trio in zip(trios, other_trios):
-        # Let p0 to p6 be leg ground contacts
+        # Let p0 to p5 be leg ground contacts
         p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
 
-        # ❗check_stability returns of type class 'numpy.bool_'>
-        # state 'numpy_boolean is True' will return False
-        if check_stability(p0, p1, p2):
-            # The vector normal to plane defined by these points
-            # ❗IMPORTANT: Normal is always pointing up
-            # because of how we specified the order of the trio
-            # (and the legs in general)
-            # starting from middle-right (id:0) to right back (id:5)
-            # always towards one direction (ccw)
-            n = get_unit_normal(p0, p1, p2)
+        if not check_stability(p0, p1, p2):
+            continue
 
-            # p0 is vector from cog (0, 0, 0) to ground contact
-            # dot product of this and normal we get the
-            # hypothetical (negative) height of ground contact to cog
-            #
-            #  cog *  ^ (normal_vector) ----
-            #      \  |                  |
-            #       \ |                 height
-            #        \|                  |
-            #         V p0 (foot_tip) ---V---
-            #
-            # using p0, p1 or p2 should yield the same result
-            h = dot(n, p0)
+        # Get the vector normal to plane defined by these points
+        # ❗IMPORTANT: The Normal is always pointing up
+        # because of how we specified the order of the trio
+        # (and the legs in general)
+        # starting from middle-right (id:0) to right back (id:5)
+        # always towards one direction (ccw)
+        n = get_unit_normal(p0, p1, p2)
 
-            # h should be the most negative(the lowest) since
-            # the plane defined by this trio is on the ground
-            # the other legs ground contact cannot be lower than the ground
-            condition_violated = False
-            p3, p4, p5 = get_corresponding_ground_contacts(other_trio, legs)
-            for p in [p3, p4, p5]:
-                h_ = dot(n, p)
+        # p0 is vector from cog (0, 0, 0) to ground contact
+        # dot product of this and normal we get the
+        # hypothetical (negative) height of ground contact to cog
+        #
+        #  cog *  ^ (normal_vector) ----
+        #      \  |                  |
+        #       \ |                 height
+        #        \|                  |
+        #         V p0 (foot_tip) ---V---
+        #
+        # using p0, p1 or p2 should yield the same result
+        h = dot(n, p0)
 
-                # Wrong leg combination, check another
-                if h_ < h:
-                    condition_violated = True
-                    break
+        # h should be the most negative(the lowest) since
+        # the plane defined by this trio is on the ground
+        # the other legs ground contact cannot be lower than the ground
+        condition_violated = False
+        p3, p4, p5 = get_corresponding_ground_contacts(other_trio, legs)
+        for p in [p3, p4, p5]:
+            h_ = dot(n, p)
 
-            if condition_violated:
-                continue
-            else:
-                return trio  # Found one!
+             # Wrong leg combination, check another
+            if h_ < h:
+                condition_violated = True
+                break
+
+        if not condition_violated:
+            return trio  # Found one!
 
     # Nothing met the condition
     return None
