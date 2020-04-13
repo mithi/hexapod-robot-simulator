@@ -81,7 +81,7 @@ def three_ids_of_ground_contacts(legs):
         for p in [p3, p4, p5]:
             h_ = dot(n, p)
 
-             # Wrong leg combination, check another
+            # Wrong leg combination, check another
             if h_ < h:
                 condition_violated = True
                 break
