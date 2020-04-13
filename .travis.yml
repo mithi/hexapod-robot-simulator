@@ -8,6 +8,4 @@ script:
   - python -m pytest
   # remove `python3 -m compileall .` check only the files we created instead
   - python -m py_compile ./*/*.py ./*.py ./*/*/*.py
-  - flake8 ./*/*.py ./*.py ./*/*/*.py --exclude=./pages/helpers.py,./hexapod/templates/pose_template.py
-  # ignore line too long (string) / do not use bare 'except'
-  - flake8 ./pages/helpers.py --ignore E722,E501
+  - flake8 ./*/*.py ./*.py ./*/*/*.py
