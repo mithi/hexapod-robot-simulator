@@ -44,7 +44,7 @@ Running on http://127.0.0.1:8050/
 ```
 
 - Modify default settings in [./settings.py](./settings.py)
-- Dark Mode default - modify default style settings in [./settings.py](./style settings.py) 
+- Dark Mode default - modify default style settings in [./style_settings.py](./style_settings.py)
 
 ## 🕷️ Notes
 
