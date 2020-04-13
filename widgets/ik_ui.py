@@ -84,7 +84,7 @@ div_ex = make_translate_slider("input-end-percent-x", "percent.x")
 div_ey = make_translate_slider("input-end-percent-y", "percent.y")
 div_ez = make_translate_slider("input-end-percent-z", "percent.z")
 
-ik_style = {"padding": "0 0 2.0em 4.0em"}
+ik_style = {"padding": "1.0em 0 0 4.0em"}
 divs1 = [div_sh, div_ex, div_ey, div_ez]
 divs2 = [div_sl, div_rx, div_ry, div_rz]
 sliders_row1 = [html.Div(div, style=ik_style) for div in divs1]
