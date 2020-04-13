@@ -160,7 +160,7 @@ class Linkage:
         ground_contact = self.p3
         for point in self.all_points:
             if point.z < ground_contact.z:
-              ground_contact = point
+                ground_contact = point
 
         return ground_contact
 
