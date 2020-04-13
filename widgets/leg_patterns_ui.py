@@ -10,15 +10,15 @@ from style_settings import SLIDER_THEME, SLIDER_HANDLE_COLOR, SLIDER_COLOR
 LEG_SLIDERS_IDs = ["slider-alpha", "slider-beta", "slider-gamma"]
 LEG_SLIDERS_INPUTS = [Input(i, "value") for i in LEG_SLIDERS_IDs]
 
-HANDLE_STYLE = {
-    "showCurrentValue": True,
-    "color": SLIDER_HANDLE_COLOR,
-}
-
 
 def make_slider(name, max_angle):
     _, angle = name.split("-")
-    HANDLE_STYLE["label"] = angle
+    handle_style = {
+        "showCurrentValue": True,
+        "color": SLIDER_HANDLE_COLOR,
+        "label": angle,
+    }
+
     daq_slider = dash_daq.Slider(  # pylint: disable=not-callable
         id=name,
         min=-max_angle,
@@ -27,7 +27,7 @@ def make_slider(name, max_angle):
         step=1.5,
         size=300,
         updatemode=UPDATE_MODE,
-        handleLabel=HANDLE_STYLE,
+        handleLabel=handle_style,
         color={"default": SLIDER_COLOR},
         theme=SLIDER_THEME,
     )
