@@ -38,7 +38,7 @@ def make_section_pose_control(joint_inputs, add_joint_names=False, style_to_use=
             make_section_type2(lm, rm),
             make_section_type2(lb, rb),
         ],
-        style=style_to_use
+        style=style_to_use,
     )
 
     return html.Div([HEADER, sliders])

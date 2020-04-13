@@ -1,8 +1,7 @@
 from hexapod.models import VirtualHexapod
-from hexapod.ik_solver.ik_solver import inverse_kinematics_update, recompute_hexapod
-import numpy as np
+from hexapod.ik_solver.ik_solver import inverse_kinematics_update  # , recompute_hexapod
 from tests.ik_cases.case1 import given_dimensions, given_ik_parameters, correct_poses
-from tests.helpers import assert_poses_equal, assert_hexapod_equal
+from tests.helpers import assert_poses_equal  # , assert_hexapod_equal
 
 
 def test_sample_ik():

@@ -42,7 +42,6 @@ def make_monospace(text):
     return dcc.Markdown(f" ```{text}")
 
 
-
 def make_poses_message(poses):
     message = f"""
 +----------------+------------+------------+------------+
@@ -57,6 +56,8 @@ def make_poses_message(poses):
 
 
 def make_alert_message(alert):
-    return make_monospace(f"""
+    return make_monospace(
+        f"""
 ❗❗❗ALERT❗❗❗
-⚠️ {alert} 🔴""")
+⚠️ {alert} 🔴"""
+    )

@@ -98,4 +98,4 @@ section_row2 = html.Div(
     sliders_row2, style={"display": "flex", "flex-direction": "row"},
 )
 
-SECTION_IK = html.Div([HEADER, section_row1, section_row2,])
+SECTION_IK = html.Div([HEADER, section_row1, section_row2])
