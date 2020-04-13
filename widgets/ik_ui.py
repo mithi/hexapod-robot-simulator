@@ -12,6 +12,7 @@ import dash_html_components as html
 from dash.dependencies import Input
 import dash_daq
 
+HEADER = html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**"))
 IK_INPUT_IDs = [
     "input-start-hip-stance",
     "input-start-leg-stance",
@@ -97,10 +98,4 @@ section_row2 = html.Div(
     sliders_row2, style={"display": "flex", "flex-direction": "row"},
 )
 
-SECTION_IK = html.Div(
-    [
-        html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**")),
-        section_row1,
-        section_row2,
-    ]
-)
+SECTION_IK = html.Div([HEADER, section_row1, section_row2,])

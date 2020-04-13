@@ -5,6 +5,7 @@ from dash.dependencies import Input
 from .sectioning import make_section_type3
 from style_settings import NUMBER_INPUT_STYLE
 
+HEADER = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
 INPUT_DIMENSIONS_IDs = [
     "input-length-front",
     "input-length-side",
@@ -13,7 +14,6 @@ INPUT_DIMENSIONS_IDs = [
     "input-length-femur",
     "input-length-tibia",
 ]
-
 DIMENSION_INPUTS = [Input(input_id, "value") for input_id in INPUT_DIMENSIONS_IDs]
 
 
@@ -58,7 +58,6 @@ sections = [
     ),
 ]
 
-header = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
 SECTION_DIMENSION_CONTROL = html.Div(
-    [header, html.Div(sections, style={"display": "flex"}), html.Br()]
+    [HEADER, html.Div(sections, style={"display": "flex"}), html.Br()]
 )
