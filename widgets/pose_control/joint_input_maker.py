@@ -10,7 +10,12 @@ from settings import (
     GAMMA_MAX_ANGLE,
     UPDATE_MODE,
 )
-from style_settings import NUMBER_INPUT_STYLE
+from style_settings import (
+    NUMBER_INPUT_STYLE,
+    SLIDER_THEME,
+    SLIDER_HANDLE_COLOR,
+    SLIDER_COLOR,
+)
 
 max_angles = {
     "coxia": ALPHA_MAX_ANGLE,
@@ -43,16 +48,25 @@ def make_all_joint_inputs(joint_input_function):
 
 def make_joint_daq_slider_input(name, max_angle):
     _, _, _, angle = name.split("-")
+
+    handle_style = {
+        "showCurrentValue": True,
+        "color": SLIDER_HANDLE_COLOR,
+        "label": angle,
+    }
+
     return dash_daq.Slider(  # pylint: disable=not-callable
         id=name,
-        vertical=True,
         min=-max_angle,
         max=max_angle,
         value=1.5,
         step=1.5,
         size=80,
+        vertical=True,
         updatemode=UPDATE_MODE,
-        handleLabel={"showCurrentValue": True, "label": angle},
+        handleLabel=handle_style,
+        color={"default": SLIDER_COLOR},
+        theme=SLIDER_THEME,
     )
 
 

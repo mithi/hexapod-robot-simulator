@@ -45,10 +45,10 @@ PRINT_IK = False
 PRINT_MODEL_ON_UPDATE = False
 PRINT_MODEL_POSE_ON_UPDATE = False
 
-# 1 - Using the generic slider UI
-# 2 - Using the generic input UI
-# Anything else defaults to Using the daq slider UI
-WHICH_POSE_CONTROL_UI = 2
+# 1 - Using the daq slider UI
+# 2 - Using the generic slider UI
+# Anything else defaults to Using the generic input UI
+WHICH_POSE_CONTROL_UI = 0
 
 UI_GRAPH_HEIGHT = "600px"
 UI_GRAPH_WIDTH = "63%"

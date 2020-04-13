@@ -19,11 +19,11 @@ from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, HIDDEN_BODY_DIMENSIONS
 from pages import helpers
 
 if WHICH_POSE_CONTROL_UI == 1:
-    from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
-elif WHICH_POSE_CONTROL_UI == 2:
-    from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
-else:
     from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
+elif WHICH_POSE_CONTROL_UI == 2:
+    from widgets.pose_control.generic_slider_ui import SECTION_POSE_CONTROL
+else:
+    from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 
 # *********************
 # *  LAYOUT           *

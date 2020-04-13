@@ -21,10 +21,8 @@ def make_leg_section(name):
 
     return html.Div(
         [
-            make_section_type3(
-                coxia, femur, tibia, code("coxia"), code("femur"), code("tibia")
-            ),
-            html.Label(dcc.Markdown(f"**`{name.upper()}`**"), style={"padding": "1em"}),
+            make_section_type3(coxia, femur, tibia),
+            html.Label(dcc.Markdown(f"{name.upper()} "), style={"padding": "1em"}),
         ]
     )
 
