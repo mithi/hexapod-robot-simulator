@@ -49,6 +49,10 @@ layout = html.Div(
 # *********************
 # *  CALLBACKS        *
 # *********************
+
+# ......................
+# Update page
+# ......................
 INPUT_POSES_JSON = Input(ID_POSES_DIV, "children")
 OUTPUT = Output("graph-hexapod", "figure")
 INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
@@ -61,17 +65,17 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
         return BASE_FIGURE
 
     dimensions = helpers.load_dimensions(dimensions_json)
-    virtual_hexapod = VirtualHexapod(dimensions)
     poses = json.loads(poses_json)
+    virtual_hexapod = VirtualHexapod(dimensions)
     virtual_hexapod.update(poses)
     BASE_PLOTTER.update(figure, virtual_hexapod)
     helpers.change_camera_view(figure, relayout_data)
     return figure
 
 
-# -------------------
-# Listen if we need to update pose (IE one of the leg's pose is updated)
-# -------------------
+# ......................
+# Update Parameters
+# ......................
 def leg_inputs(leg_name):
     return [
         Input(f"input-{leg_name}-{joint_name}", "value") for joint_name in NAMES_JOINT
@@ -90,7 +94,7 @@ INPUTS_POSES = input_poses()
 
 
 @app.callback(OUTPUT_POSES, INPUTS_POSES)
-def update_hexapod_pose_values(
+def update_hexapod_poses(
     rmc, rmf, rmt,
     rfc, rff, rft,
     lfc, lff, lft,

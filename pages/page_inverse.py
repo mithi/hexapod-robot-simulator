@@ -51,27 +51,10 @@ layout = html.Div(
 # *********************
 # *  CALLBACKS        *
 # *********************
-OUTPUT = Output(ID_IK_PARAMETERS_DIV, "children")
 
-
-@app.callback(OUTPUT, IK_INPUTS)
-def update_ik_parameters(
-    hip_stance, leg_stance, percent_x, percent_y, percent_z, rot_x, rot_y, rot_z
-):
-    return json.dumps(
-        {
-            "hip_stance": hip_stance,
-            "leg_stance": leg_stance,
-            "percent_x": percent_x,
-            "percent_y": percent_y,
-            "percent_z": percent_z,
-            "rot_x": rot_x,
-            "rot_y": rot_y,
-            "rot_z": rot_z,
-        }
-    )
-
-
+# ......................
+# Update page
+# ......................
 OUTPUTS = [
     Output("graph-hexapod-2", "figure"),
     Output(ID_MESSAGE_DISPLAY_DIV, "children"),
@@ -100,3 +83,27 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
     BASE_PLOTTER.update(figure, hexapod)
     helpers.change_camera_view(figure, relayout_data)
     return figure, helpers.make_poses_message(poses)
+
+
+# ......................
+# Update parameters
+# ......................
+OUTPUT = Output(ID_IK_PARAMETERS_DIV, "children")
+
+
+@app.callback(OUTPUT, IK_INPUTS)
+def update_ik_parameters(
+    hip_stance, leg_stance, percent_x, percent_y, percent_z, rot_x, rot_y, rot_z
+):
+    return json.dumps(
+        {
+            "hip_stance": hip_stance,
+            "leg_stance": leg_stance,
+            "percent_x": percent_x,
+            "percent_y": percent_y,
+            "percent_z": percent_z,
+            "rot_x": rot_x,
+            "rot_y": rot_y,
+            "rot_z": rot_z,
+        }
+    )
