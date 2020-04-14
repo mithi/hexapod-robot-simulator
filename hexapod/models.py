@@ -235,18 +235,19 @@ def find_if_might_twist(hexapod, poses):
     # has twisted its hips/coxia
     # i.e. only 2 legs with ground contact points have changed alpha angle
     # i.e. we don't care if the legs which are not on the ground twisted its hips
-    did_change_count = 0
-
-    for leg_point in hexapod.ground_contacts:
-        # find the leg id of the ground contact point
+    def _find_leg_id(leg_point):
         right_or_left, front_mid_or_back, _ = leg_point.name.split("-")
         leg_placement = right_or_left + "-" + front_mid_or_back
         leg_id = Hexagon.VERTEX_NAMES.index(leg_placement)
-        # alpha before new pose
+        return leg_id
+
+    did_change_count = 0
+
+    for leg_point in hexapod.ground_contacts:
+        leg_id = _find_leg_id(leg_point)
         old_hip_angle = hexapod.legs[leg_id].coxia_angle()
-        # new alpha pose
         new_hip_angle = get_hip_angle(leg_id, poses)
-        if not np.isclose(old_hip_angle, new_hip_angle or 0):
+        if not np.isclose(old_hip_angle, new_hip_angle):
             did_change_count += 1
             if did_change_count >= 3:
                 return True
