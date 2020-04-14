@@ -1,9 +1,4 @@
-from settings import (
-    UI_CONTROLS_WIDTH,
-    UI_GRAPH_WIDTH,
-    UI_GRAPH_HEIGHT,
-    RECOMPUTE_HEXAPOD,
-)
+from settings import RECOMPUTE_HEXAPOD
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE
 from hexapod.ik_solver.ik_solver import inverse_kinematics_update
@@ -11,10 +6,13 @@ from hexapod.ik_solver.recompute_hexapod import recompute_hexapod
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from pages import helpers
-from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, SECTION_HIDDEN_BODY_DIMENSIONS
+from pages.shared import (
+    INPUT_DIMENSIONS_JSON,
+    SECTION_HIDDEN_BODY_DIMENSIONS,
+    make_page_layout,
+)
 import json
 from app import app
-import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
@@ -22,11 +20,8 @@ from dash.dependencies import Input, Output, State
 # *  LAYOUT           *
 # *********************
 GRAPH_NAME = "graph-hexapod-inverse"
-
 ID_MESSAGE_DISPLAY_SECTION = "display-message-inverse"
 SECTION_MESSAGE_DISPLAY = html.Div(id=ID_MESSAGE_DISPLAY_SECTION)
-OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
-
 ID_IK_PARAMETERS_JSON = "ik-parameters"
 SECTION_HIDDEN_IK_PARAMETERS = html.Div(
     id=ID_IK_PARAMETERS_JSON, style={"display": "none"}
@@ -36,20 +31,11 @@ SECTION_CONTROLS = [
     SECTION_DIMENSION_CONTROL,
     SECTION_IK,
     SECTION_MESSAGE_DISPLAY,
+    SECTION_HIDDEN_BODY_DIMENSIONS,
     SECTION_HIDDEN_IK_PARAMETERS,
 ]
 
-layout = html.Div(
-    [
-        html.Div(SECTION_CONTROLS, style={"width": UI_CONTROLS_WIDTH}),
-        dcc.Graph(
-            id=GRAPH_NAME, style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
-        ),
-        SECTION_HIDDEN_BODY_DIMENSIONS,
-    ],
-    style={"display": "flex"},
-)
-
+layout = make_page_layout(GRAPH_NAME, SECTION_CONTROLS)
 
 # *********************
 # *  CALLBACKS        *
@@ -58,6 +44,7 @@ layout = html.Div(
 # ......................
 # Update page
 # ......................
+OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
 OUTPUTS = [
     Output(GRAPH_NAME, "figure"),
     OUTPUT_MESSAGE_DISPLAY,

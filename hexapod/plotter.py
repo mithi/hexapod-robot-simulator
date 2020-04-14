@@ -53,8 +53,8 @@ class HexapodPlot:
 
     def _draw_scene(self, fig, hexapod):
         # Change range of view for all axes
-        f, m, s = hexapod.body_dimensions
-        a, b, c = hexapod.linkage_dimensions
+        f, m, s = hexapod.front, hexapod.mid, hexapod.side
+        a, b, c = hexapod.coxia, hexapod.femur, hexapod.tibia
         RANGE = f + m + s + a + b + c
         AXIS_RANGE = [-RANGE, RANGE]
 

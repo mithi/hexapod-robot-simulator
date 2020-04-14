@@ -1,8 +1,29 @@
 from widgets.dimensions_ui import DIMENSION_INPUTS
 import json
 from app import app
+import dash_core_components as dcc
 from dash.dependencies import Output, Input
 import dash_html_components as html
+from settings import (
+    UI_CONTROLS_WIDTH,
+    UI_GRAPH_WIDTH,
+    UI_GRAPH_HEIGHT,
+)
+
+
+def make_page_layout(graph_name, section_controls):
+    layout = html.Div(
+        [
+            html.Div(section_controls, style={"width": UI_CONTROLS_WIDTH}),
+            dcc.Graph(
+                id=graph_name,
+                style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
+            ),
+        ],
+        style={"display": "flex"},
+    )
+    return layout
+
 
 # -------------------
 # CALLBACK TO UPDATE HEXAPOD DIMENSIONS

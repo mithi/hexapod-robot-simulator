@@ -8,6 +8,19 @@ import json
 poses = deepcopy(HEXAPOD_POSE)
 
 
+def make_pose(alpha, beta, gamma):
+
+    for k, _ in poses.items():
+        poses[k] = {
+            "id": k,
+            "name": NAMES_LEG[k],
+            "coxia": alpha,
+            "femur": beta,
+            "tibia": gamma,
+        }
+    return poses
+
+
 def change_camera_view(figure, relayout_data):
     # Use current camera view to display plot
     if relayout_data and "scene.camera" in relayout_data:
@@ -24,19 +37,6 @@ def load_dimensions(dimensions_json):
         print("Error loading dimension json", e)
         dimensions = BASE_DIMENSIONS
     return dimensions
-
-
-def make_pose(alpha, beta, gamma):
-
-    for k, _ in poses.items():
-        poses[k] = {
-            "id": k,
-            "name": NAMES_LEG[k],
-            "coxia": alpha,
-            "femur": beta,
-            "tibia": gamma,
-        }
-    return poses
 
 
 def make_monospace(text):

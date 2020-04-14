@@ -87,48 +87,48 @@ class VirtualHexapod:
     LEG_COUNT = 6
 
     def __init__(self, dimensions=None):
-        self.dimensions = dimensions
-        if dimensions is None:
-            self.new()
-        else:
-            f = dimensions["front"]
-            s = dimensions["side"]
-            m = dimensions["middle"]
-            h = dimensions["coxia"]
-            k = dimensions["femur"]
-            a = dimensions["tibia"]
-            self.new(f, m, s, h, k, a)
-
-    def new(self, f=0, m=0, s=0, a=0, b=0, c=0):
-        self.body_rotation_frame = None
-        self.body = Hexagon(f, m, s)
-        self._store_body_dimensions(f, m, s, a, b, c)
-
-        # Initialize local coordinate frame
-        self.x_axis = Point(1, 0, 0, name="hexapod x axis")
-        self.y_axis = Point(0, 1, 0, name="hexapod y axis")
-        self.z_axis = Point(0, 0, 1, name="hexapod z axis")
-
-        # *************************
-        # Store legs in neutral position
-        # *************************
-        self.legs = []
-        vertices, axes, names = (
-            self.body.vertices,
-            Hexagon.COXIA_AXES,
-            Hexagon.VERTEX_NAMES,
-        )
-        for i, point, axis, name in zip(range(6), vertices, axes, names):
-            linkage = Linkage(
-                a, b, c, coxia_axis=axis, new_origin=point, name=name, id_number=i
-            )
-            self.legs.append(linkage)
-
-        self.ground_contacts = [leg.foot_tip() for leg in self.legs]
-        return self
+        self._store_attributes(dimensions)
+        self._init_legs()
+        self._init_local_frame()
 
     def print(self):
         print_hexapod(self)
+
+    def update(self, poses):
+        self.body_rotation_frame = None
+        # Check the possibility of hexapod twisting about z axis
+        might_twist = find_if_might_twist(self, poses)
+        # Remember old ground contacts
+        old_contacts = deepcopy(self.ground_contacts)
+
+        # Change each leg's pose
+        for _, pose in poses.items():
+            i = pose["id"]
+            self.legs[i].change_pose(pose["coxia"], pose["femur"], pose["tibia"])
+
+        # Find new orientation of the body, height, from ground
+        legs, self.n_axis, height = get_legs_on_ground(self.legs)
+
+        if self.n_axis is None:
+            raise Exception("❗❗❗Pose Unstable. COG not inside support polygon")
+
+        # Update which legs are on the ground, The new 'normal', and height
+        self.ground_contacts = [leg.ground_contact() for leg in legs]
+
+        # tilt and shift the hexapod based on new normal
+        frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
+        self.rotate_and_shift(frame, height)
+        self._update_local_frame(frame)
+
+        # Only twist if we computed earlier that at least three hips twisted
+        if might_twist:
+            twist_frame = find_twist_frame(old_contacts, self.ground_contacts)
+            self.rotate_and_shift(twist_frame, 0)
+
+        if PRINT_MODEL_POSE_ON_UPDATE:
+            print(json.dumps(poses, indent=4))
+        if PRINT_MODEL_ON_UPDATE:
+            self.print()
 
     def detach_body_rotate_and_translate(self, rx, ry, rz, tx, ty, tz):
         # Detaches the body of the hexapod from the legs
@@ -164,51 +164,38 @@ class VirtualHexapod:
 
         self.update(pose)
 
-    def update(self, poses):
+    def _store_attributes(self, dimensions):
         self.body_rotation_frame = None
-        # Check the possibility of hexapod twisting about z axis
-        might_twist = self._find_if_might_twist(poses)
-        # Remember old ground contacts
-        old_contacts = deepcopy(self.ground_contacts)
-
-        # Change each leg's pose
-        for _, pose in poses.items():
-            i = pose["id"]
-            self.legs[i].change_pose(pose["coxia"], pose["femur"], pose["tibia"])
-
-        # Update which legs are on the ground, The new 'normal', and height
-        legs, self.n_axis, height = get_legs_on_ground(self.legs)
-        self.ground_contacts = [leg.ground_contact() for leg in legs]
-
-        if self.n_axis is None:
-            raise Exception("❗❗❗Pose Unstable. COG not inside support polygon")
-
-        # tilt and shift the hexapod based on new normal
-        frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
-        self.rotate_and_shift(frame, height)
-        self._update_local_frame(frame)
-
-        # Only twist if we computed earlier that at least three hips twisted
-        if might_twist:
-            twist_frame = find_twist_frame(old_contacts, self.ground_contacts)
-            self.rotate_and_shift(twist_frame, 0)
-
-        if PRINT_MODEL_POSE_ON_UPDATE:
-            print(json.dumps(poses, indent=4))
-        if PRINT_MODEL_ON_UPDATE:
-            self.print()
-
-    def _store_body_dimensions(self, f=0, m=0, s=0, a=0, b=0, c=0):
-        # coxia length, femur length, tibia length
-        self.linkage_dimensions = [a, b, c]
-        # front length, middle length, side length
-        self.body_dimensions = [f, m, s]
+        self.dimensions = dimensions
+        f = dimensions["front"]
+        s = dimensions["side"]
+        m = dimensions["middle"]
+        a = dimensions["coxia"]
+        b = dimensions["femur"]
+        c = dimensions["tibia"]
         self.coxia = a
         self.femur = b
         self.tibia = c
         self.front = f
         self.mid = m
         self.side = s
+        self.body = Hexagon(f, m, s)
+
+    def _init_legs(self):
+        self.legs = []
+        for i in range(VirtualHexapod.LEG_COUNT):
+            linkage = Linkage(
+                self.coxia,
+                self.femur,
+                self.tibia,
+                coxia_axis=Hexagon.COXIA_AXES[i],
+                new_origin=self.body.vertices[i],
+                name=Hexagon.VERTEX_NAMES[i],
+                id_number=i,
+            )
+            self.legs.append(linkage)
+
+        self.ground_contacts = [leg.foot_tip() for leg in self.legs]
 
     def rotate_and_shift(self, frame, height):
         # Update each point in body
@@ -219,33 +206,10 @@ class VirtualHexapod:
         for leg in self.legs:
             leg.update_leg_wrt(frame, height)
 
-    def _find_if_might_twist(self, poses):
-        # hexapod will only definitely NOT twist
-        # if only two of the legs (currently on the ground)
-        # has twisted its hips/coxia
-        # i.e. only 2 legs with ground contact points have changed alpha angle
-        # i.e. we don't care if the legs which are not on the ground twisted its hips
-        did_change_count = 0
-
-        for leg_point in self.ground_contacts:
-
-            # find the leg id of the ground contact point
-            right_or_left, front_mid_or_back, _ = leg_point.name.split("-")
-            leg_placement = right_or_left + "-" + front_mid_or_back
-            leg_id = self.body.VERTEX_NAMES.index(leg_placement)
-
-            # alpha before new pose
-            old_hip_angle = self.legs[leg_id].coxia_angle()
-
-            # new alpha pose
-            new_hip_angle = get_hip_angle(leg_id, poses)
-
-            if not np.isclose(old_hip_angle, new_hip_angle or 0):
-                did_change_count += 1
-                if did_change_count >= 3:
-                    return True
-
-        return False
+    def _init_local_frame(self):
+        self.x_axis = Point(1, 0, 0, name="hexapod x axis")
+        self.y_axis = Point(0, 1, 0, name="hexapod y axis")
+        self.z_axis = Point(0, 0, 1, name="hexapod z axis")
 
     def _update_local_frame(self, frame):
         # Update the x, y, z axis centered at cog of hexapod
@@ -263,6 +227,32 @@ def get_hip_angle(leg_id, poses):
         except KeyError:
             return 0
     return 0
+
+
+def find_if_might_twist(hexapod, poses):
+    # hexapod will only definitely NOT twist
+    # if only two of the legs (currently on the ground)
+    # has twisted its hips/coxia
+    # i.e. only 2 legs with ground contact points have changed alpha angle
+    # i.e. we don't care if the legs which are not on the ground twisted its hips
+    def _find_leg_id(leg_point):
+        right_or_left, front_mid_or_back, _ = leg_point.name.split("-")
+        leg_placement = right_or_left + "-" + front_mid_or_back
+        leg_id = Hexagon.VERTEX_NAMES.index(leg_placement)
+        return leg_id
+
+    did_change_count = 0
+
+    for leg_point in hexapod.ground_contacts:
+        leg_id = _find_leg_id(leg_point)
+        old_hip_angle = hexapod.legs[leg_id].coxia_angle()
+        new_hip_angle = get_hip_angle(leg_id, poses)
+        if not np.isclose(old_hip_angle, new_hip_angle):
+            did_change_count += 1
+            if did_change_count >= 3:
+                return True
+
+    return False
 
 
 def find_twist_frame(old_ground_contacts, new_ground_contacts):

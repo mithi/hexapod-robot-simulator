@@ -1,17 +1,15 @@
-from settings import (
-    UI_CONTROLS_WIDTH,
-    UI_GRAPH_WIDTH,
-    UI_GRAPH_HEIGHT,
-    WHICH_POSE_CONTROL_UI,
-)
+from settings import WHICH_POSE_CONTROL_UI
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE, NAMES_LEG, NAMES_JOINT
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 from pages import helpers
-from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, SECTION_HIDDEN_BODY_DIMENSIONS
+from pages.shared import (
+    INPUT_DIMENSIONS_JSON,
+    SECTION_HIDDEN_BODY_DIMENSIONS,
+    make_page_layout,
+)
 import json
 from app import app
-import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
@@ -27,11 +25,8 @@ else:
 # *  LAYOUT           *
 # *********************
 GRAPH_NAME = "graph-hexapod-kinematics"
-
 ID_MESSAGE_DISPLAY_SECTION = "display-message-kinematics"
 SECTION_MESSAGE_DISPLAY = html.Div(id=ID_MESSAGE_DISPLAY_SECTION)
-OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
-
 ID_POSES_SECTION = "hexapod-poses-values-kinematics"
 SECTION_HIDDEN_JOINT_POSES = html.Div(id=ID_POSES_SECTION, style={"display": "none"})
 
@@ -39,19 +34,11 @@ SECTION_CONTROLS = [
     SECTION_DIMENSION_CONTROL,
     SECTION_POSE_CONTROL,
     SECTION_MESSAGE_DISPLAY,
-    SECTION_HIDDEN_JOINT_POSES,
     SECTION_HIDDEN_BODY_DIMENSIONS,
+    SECTION_HIDDEN_JOINT_POSES,
 ]
 
-layout = html.Div(
-    [
-        html.Div(SECTION_CONTROLS, style={"width": UI_CONTROLS_WIDTH}),
-        dcc.Graph(
-            id=GRAPH_NAME, style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
-        ),
-    ],
-    style={"display": "flex"},
-)
+layout = make_page_layout(GRAPH_NAME, SECTION_CONTROLS)
 
 # fmt: off
 # *********************
@@ -61,6 +48,7 @@ layout = html.Div(
 # ......................
 # Update page
 # ......................
+OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
 INPUT_POSES_JSON = Input(ID_POSES_SECTION, "children")
 OUTPUTS = [Output(GRAPH_NAME, "figure"), OUTPUT_MESSAGE_DISPLAY]
 INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
