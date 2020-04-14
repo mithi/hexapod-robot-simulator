@@ -192,7 +192,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         p3 = Point(p3x, 0, p3z)
 
         # *******************
-        # Compute p2, beta, gamma and final p3 wrt leg frame
+        # 2. Compute p2, beta, gamma and final p3 wrt leg frame
         # *******************
 
         # These values are needed to compute
@@ -202,10 +202,10 @@ def inverse_kinematics_update(hexapod, ik_parameters):
 
         # If we can form this triangle this means we probably can reach the target ground contact point
         if is_triangle(hexapod.tibia, hexapod.femur, d):
-            # --------------------------------
+            # .................................
             # CASE A: a triangle can be formed with
             # coxia to foot vector, hexapod's femur and tibia
-            # --------------------------------
+            # .................................
             theta = angle_opposite_of_last_side(d, hexapod.femur, hexapod.tibia)
             phi = angle_between(coxia_to_foot_vector2d, x_axis)
 
@@ -226,9 +226,9 @@ def inverse_kinematics_update(hexapod, ik_parameters):
                     f"Cannot reach target ground point. \n {leg_name} leg cannot reach it because the ground is blocking the path."
                 )
         else:
-            # --------------------------------
+            # .................................
             # CASE B: It's impossible to reach target ground point
-            # --------------------------------
+            # .................................
             if d + hexapod.tibia < hexapod.femur:
                 raise Exception(
                     f"Cannot reach target ground point. \n Femur length of {leg_name} leg is too long."
@@ -263,7 +263,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
             raise Exception(alert_msg)
 
         # *******************
-        # 2. Compute alpha and twist_frame
+        # 3. Compute alpha and twist_frame
         # Find frame used to twist the leg frame wrt to hexapod's body contact point's x axis
         # *******************
         alpha, twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
@@ -276,7 +276,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
             raise Exception(alert_msg)
 
         # *******************
-        # 3. Update hexapod points and finally update the pose
+        # 4. Update hexapod points and finally update the pose
         # *******************
         points = [p0, p1, p2, p3]
         might_print_points(points, leg_name)
