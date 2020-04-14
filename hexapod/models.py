@@ -83,7 +83,9 @@ class Hexagon:
 
         self.all_points = self.vertices + [self.cog, self.head]
 
-
+# ..........................................
+# HEXAPOD MODEL
+# ..........................................
 class VirtualHexapod:
     LEG_COUNT = 6
 
@@ -105,7 +107,8 @@ class VirtualHexapod:
             i = pose["id"]
             self.legs[i].change_pose(pose["coxia"], pose["femur"], pose["tibia"])
 
-        # Find new orientation of the body, height, and which legs are on the ground
+        # Find new orientation of the body (new normal)
+        # distance of cog from ground and which legs are on the ground
         legs, self.n_axis, height = get_legs_on_ground(self.legs)
 
         if self.n_axis is None:
@@ -128,6 +131,7 @@ class VirtualHexapod:
             print(json.dumps(poses, indent=4))
         if PRINT_MODEL_ON_UPDATE:
             self.print()
+
 
     def detach_body_rotate_and_translate(self, rx, ry, rz, tx, ty, tz):
         # Detaches the body of the hexapod from the legs
@@ -214,6 +218,9 @@ class VirtualHexapod:
         self.z_axis.update_point_wrt(frame)
 
 
+# ..........................................
+# HELPER FUNCTION
+# ..........................................
 def get_hip_angle(leg_id, poses):
     try:
         return poses[leg_id]["coxia"]
