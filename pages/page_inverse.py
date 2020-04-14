@@ -22,11 +22,8 @@ from dash.dependencies import Input, Output, State
 # *  LAYOUT           *
 # *********************
 GRAPH_NAME = "graph-hexapod-inverse"
-
 ID_MESSAGE_DISPLAY_SECTION = "display-message-inverse"
 SECTION_MESSAGE_DISPLAY = html.Div(id=ID_MESSAGE_DISPLAY_SECTION)
-OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
-
 ID_IK_PARAMETERS_JSON = "ik-parameters"
 SECTION_HIDDEN_IK_PARAMETERS = html.Div(
     id=ID_IK_PARAMETERS_JSON, style={"display": "none"}
@@ -37,6 +34,7 @@ SECTION_CONTROLS = [
     SECTION_IK,
     SECTION_MESSAGE_DISPLAY,
     SECTION_HIDDEN_IK_PARAMETERS,
+    SECTION_HIDDEN_BODY_DIMENSIONS,
 ]
 
 layout = html.Div(
@@ -45,7 +43,6 @@ layout = html.Div(
         dcc.Graph(
             id=GRAPH_NAME, style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
         ),
-        SECTION_HIDDEN_BODY_DIMENSIONS,
     ],
     style={"display": "flex"},
 )
@@ -58,6 +55,7 @@ layout = html.Div(
 # ......................
 # Update page
 # ......................
+OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
 OUTPUTS = [
     Output(GRAPH_NAME, "figure"),
     OUTPUT_MESSAGE_DISPLAY,

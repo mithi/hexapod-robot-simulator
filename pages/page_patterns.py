@@ -15,11 +15,8 @@ from dash.dependencies import Input, Output, State
 # *  LAYOUT           *
 # *********************
 GRAPH_NAME = "graph-hexapod-patterns"
-
 ID_MESSAGE_DISPLAY_SECTION = "display-message-patterns"
 SECTION_MESSAGE_DISPLAY = html.Div(id=ID_MESSAGE_DISPLAY_SECTION)
-OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
-
 ID_POSES_SECTION = "hexapod-poses-values-patterns"
 SECTION_HIDDEN_JOINT_POSES = html.Div(id=ID_POSES_SECTION, style={"display": "none"})
 
@@ -48,6 +45,7 @@ layout = html.Div(
 # ......................
 # Update page
 # ......................
+OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
 INPUT_POSES_JSON = Input(ID_POSES_SECTION, "children")
 OUTPUTS = [Output(GRAPH_NAME, "figure"), OUTPUT_MESSAGE_DISPLAY]
 INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
