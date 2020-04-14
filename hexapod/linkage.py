@@ -82,8 +82,14 @@ class Linkage:
         name=None,
         id_number=None,
     ):
-        self.store_linkage_attributes(a, b, c, coxia_axis, new_origin, name, id_number)
-        self.save_new_pose(alpha, beta, gamma)
+        self._a = a
+        self._b = b
+        self._c = c
+        self._new_origin = new_origin
+        self._coxia_axis = coxia_axis
+        self.id = id_number
+        self.name = name
+        self.change_pose(alpha, beta, gamma)
 
     def coxia_angle(self):
         return self._alpha
@@ -100,18 +106,7 @@ class Linkage:
     def ground_contact(self):
         return self.ground_contact_point
 
-    def store_linkage_attributes(
-        self, a, b, c, coxia_axis, new_origin, name, id_number
-    ):
-        self._a = a
-        self._b = b
-        self._c = c
-        self._new_origin = new_origin
-        self._coxia_axis = coxia_axis
-        self.id = id_number
-        self.name = name
-
-    def save_new_pose(self, alpha, beta, gamma):
+    def change_pose(self, alpha, beta, gamma):
         self._alpha = alpha
         self._beta = beta
         self._gamma = gamma
@@ -143,9 +138,6 @@ class Linkage:
         self.all_points = [self.p0, self.p1, self.p2, self.p3]
         self.ground_contact_point = self.compute_ground_contact()
 
-    def change_pose(self, alpha, beta, gamma):
-        self.save_new_pose(alpha, beta, gamma)
-
     def update_leg_wrt(self, frame, height):
         self.p0.update_point_wrt(frame, height)
         self.p1.update_point_wrt(frame, height)
@@ -158,7 +150,7 @@ class Linkage:
         # Which has the most negative z?
         #  p0, p1, p2, or p3?
         ground_contact = self.p3
-        for point in self.all_points:
+        for point in reversed(self.all_points):
             if point.z < ground_contact.z:
                 ground_contact = point
 
