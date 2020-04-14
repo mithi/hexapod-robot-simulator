@@ -65,24 +65,22 @@ def make_contact_dict(ground_contact_list):
 
 
 def find_two_same_leg_ids(old_contacts, new_contacts):
-    id1 = None
-    id2 = None
-    same_contact_count = 0
+    same_ids = []
     old_contact_dict = make_contact_dict(old_contacts)
     new_contact_dict = make_contact_dict(new_contacts)
+
     if PRINT_IK:
         print("In recomputing hexapod:")
         print("...old contacts:", old_contact_dict)
         print("...new_contacts: ", old_contact_dict)
 
     for leg_id in old_contact_dict.keys():
-        if leg_id in new_contact_dict.keys():
-            same_contact_count += 1
-            if same_contact_count == 1:
-                id1 = leg_id
-            else:
-                id2 = leg_id
-                return id1, id2
+        if leg_id not in new_contact_dict.keys():
+            continue
+
+        same_ids.append(leg_id)
+        if len(same_ids) == 2:
+            return same_ids[0], same_ids[1]
 
     raise Exception(
         f"No same points on ground. \n old: {old_contact_dict} \n new: {new_contact_dict}"
