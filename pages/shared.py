@@ -10,17 +10,20 @@ from settings import (
     UI_GRAPH_HEIGHT,
 )
 
+
 def make_page_layout(graph_name, section_controls):
     layout = html.Div(
         [
             html.Div(section_controls, style={"width": UI_CONTROLS_WIDTH}),
             dcc.Graph(
-                id=graph_name, style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
+                id=graph_name,
+                style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
             ),
         ],
         style={"display": "flex"},
     )
     return layout
+
 
 # -------------------
 # CALLBACK TO UPDATE HEXAPOD DIMENSIONS

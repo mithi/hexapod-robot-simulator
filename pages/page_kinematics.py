@@ -8,7 +8,11 @@ from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE, NAMES_LEG, NAMES_JOINT
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 from pages import helpers
-from pages.shared import INPUT_DIMENSIONS_JSON, SECTION_HIDDEN_BODY_DIMENSIONS, make_page_layout
+from pages.shared import (
+    INPUT_DIMENSIONS_JSON,
+    SECTION_HIDDEN_BODY_DIMENSIONS,
+    make_page_layout,
+)
 import json
 from app import app
 import dash_core_components as dcc
