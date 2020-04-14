@@ -11,6 +11,7 @@ from .points import (
     Point,
     frame_to_align_vector_a_to_b,
     frame_rotxyz,
+    rotz,
 )
 
 
@@ -83,6 +84,9 @@ class Hexagon:
         self.all_points = self.vertices + [self.cog, self.head]
 
 
+# ..........................................
+# HEXAPOD MODEL
+# ..........................................
 class VirtualHexapod:
     LEG_COUNT = 6
 
@@ -96,35 +100,34 @@ class VirtualHexapod:
 
     def update(self, poses):
         self.body_rotation_frame = None
-        # Check the possibility of hexapod twisting about z axis
         might_twist = find_if_might_twist(self, poses)
-        # Remember old ground contacts
         old_contacts = deepcopy(self.ground_contacts)
 
-        # Change each leg's pose
+        # Update leg poses
         for _, pose in poses.items():
             i = pose["id"]
             self.legs[i].change_pose(pose["coxia"], pose["femur"], pose["tibia"])
 
-        # Find new orientation of the body, height, from ground
+        # Find new orientation of the body (new normal)
+        # distance of cog from ground and which legs are on the ground
         legs, self.n_axis, height = get_legs_on_ground(self.legs)
 
         if self.n_axis is None:
             raise Exception("❗❗❗Pose Unstable. COG not inside support polygon")
 
-        # Update which legs are on the ground, The new 'normal', and height
-        self.ground_contacts = [leg.ground_contact() for leg in legs]
-
-        # tilt and shift the hexapod based on new normal
+        # Tilt and shift the hexapod based on new normal
         frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
         self.rotate_and_shift(frame, height)
         self._update_local_frame(frame)
 
-        # Only twist if we computed earlier that at least three hips twisted
+        # Twist around the new normal if you have to
+        self.ground_contacts = [leg.ground_contact() for leg in legs]
+
         if might_twist:
             twist_frame = find_twist_frame(old_contacts, self.ground_contacts)
-            self.rotate_and_shift(twist_frame, 0)
+            self.rotate_and_shift(twist_frame)
 
+        # Finally print result if you have to
         if PRINT_MODEL_POSE_ON_UPDATE:
             print(json.dumps(poses, indent=4))
         if PRINT_MODEL_ON_UPDATE:
@@ -143,7 +146,6 @@ class VirtualHexapod:
         self._update_local_frame(frame)
 
     def move_xyz(self, tx, ty, tz):
-        # Translate hexapod in the x, y, z directions
         for point in self.body.all_points:
             point.move_xyz(tx, ty, tz)
 
@@ -195,14 +197,12 @@ class VirtualHexapod:
             )
             self.legs.append(linkage)
 
-        self.ground_contacts = [leg.foot_tip() for leg in self.legs]
+        self.ground_contacts = [leg.ground_contact() for leg in self.legs]
 
-    def rotate_and_shift(self, frame, height):
-        # Update each point in body
+    def rotate_and_shift(self, frame, height=0):
         for vertex in self.body.all_points:
             vertex.update_point_wrt(frame, height)
 
-        # Update each point in each leg
         for leg in self.legs:
             leg.update_leg_wrt(frame, height)
 
@@ -213,11 +213,14 @@ class VirtualHexapod:
 
     def _update_local_frame(self, frame):
         # Update the x, y, z axis centered at cog of hexapod
-        self.x_axis.update_point_wrt(frame, 0)
-        self.y_axis.update_point_wrt(frame, 0)
-        self.z_axis.update_point_wrt(frame, 0)
+        self.x_axis.update_point_wrt(frame)
+        self.y_axis.update_point_wrt(frame)
+        self.z_axis.update_point_wrt(frame)
 
 
+# ..........................................
+# HELPER FUNCTION
+# ..........................................
 def get_hip_angle(leg_id, poses):
     try:
         return poses[leg_id]["coxia"]
@@ -266,22 +269,9 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
         return contact_dict
 
     def _twist(v1, v2):
-        # Note: theta is in radians
         # https://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
         theta = np.arctan2(v2.y, v2.x) - np.arctan2(v1.y, v1.x)
-
-        # frame to rotate around z
-        cos_theta = np.cos(theta)
-        sin_theta = np.sin(theta)
-
-        return np.array(
-            [
-                [cos_theta, -sin_theta, 0, 0],
-                [sin_theta, cos_theta, 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1],
-            ]
-        )
+        return rotz(np.degrees(theta))
 
     # Make dictionary mapping contact point name and leg_contact_point
     old_contacts = _make_contact_dict(old_ground_contacts)
