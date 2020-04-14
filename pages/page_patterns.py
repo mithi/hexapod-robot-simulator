@@ -1,4 +1,3 @@
-from settings import UI_CONTROLS_WIDTH, UI_GRAPH_WIDTH, UI_GRAPH_HEIGHT
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
@@ -11,7 +10,6 @@ from pages.shared import (
 )
 import json
 from app import app
-import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
