@@ -7,7 +7,7 @@ from settings import (
 )
 import json
 import numpy as np
-from hexapod.points import length, vector_from_to
+from hexapod.points import length, vector_from_to, angle_between
 
 
 def body_contact_shoved_on_ground(hexapod):
@@ -82,6 +82,28 @@ def might_sanity_leg_lengths_check(hexapod, leg_name, points):
     assert np.isclose(
         hexapod.tibia, tibia, atol=1
     ), f"wrong tibia vector length. {leg_name} tibia:{tibia}"
+
+
+def might_sanity_beta_gamma_check(beta, gamma, leg_name, points):
+    if not ASSERTION_ENABLED:
+        return
+
+    coxia = vector_from_to(points[0], points[1])
+    femur = vector_from_to(points[1], points[2])
+    tibia = vector_from_to(points[2], points[3])
+    result_beta = angle_between(coxia, femur)
+
+    same_beta = np.isclose(np.abs(beta), result_beta, atol=1)
+    assert same_beta, f"{leg_name} leg: theory: |{beta}|, reality: {result_beta}"
+
+    femur_tibia_angle = angle_between(femur, tibia)
+    # ❗❗IMPORTANT: Why is sometimes both are zero?
+    should_be_90 = femur_tibia_angle + gamma
+    is_90 = np.isclose(90, should_be_90, atol=1)
+    if not is_90:
+        print(
+            f"{leg_name} leg: {femur_tibia_angle} (femur-tibia angle) + {gamma} (gamma) != 90. "
+        )
 
 
 def might_print_ik(poses, ik_parameters, hexapod):

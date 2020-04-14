@@ -101,6 +101,7 @@ from hexapod.ik_solver.helpers import (
     beta_gamma_not_within_range,
     angle_above_limit,
     might_sanity_leg_lengths_check,
+    might_sanity_beta_gamma_check,
     might_print_ik,
     might_print_points,
 )
@@ -174,9 +175,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         # coxia point / joint is the point connecting the coxia and tibia limbs
         coxia_point = add_vectors(body_contact, coxia_vector)
         if coxia_point.z < foot_tip.z:
-            raise Exception(
-                "Impossible at given height. \n coxia joint shoved on ground"
-            )
+            raise Exception("Impossible at given height. \n coxia joint shoved on ground")
 
         # *******************
         # 1. Compute p0, p1 and (possible) p3 wrt leg frame
@@ -285,11 +284,12 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         for point in points:
             point.update_point_wrt(twist_frame)
             if ASSERTION_ENABLED:
-                assert hexapod.body_rotation_frame is not None
+                assert hexapod.body_rotation_frame is not None, "No rotation frame!"
             point.update_point_wrt(hexapod.body_rotation_frame)
             point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
 
         might_sanity_leg_lengths_check(hexapod, leg_name, points)
+        might_sanity_beta_gamma_check(beta, gamma, leg_name, points)
 
         # Update hexapod's points to what we computed
         update_hexapod_points(hexapod, i, points)
