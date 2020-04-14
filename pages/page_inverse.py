@@ -1,9 +1,4 @@
-from settings import (
-    UI_CONTROLS_WIDTH,
-    UI_GRAPH_WIDTH,
-    UI_GRAPH_HEIGHT,
-    RECOMPUTE_HEXAPOD,
-)
+from settings import RECOMPUTE_HEXAPOD
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE
 from hexapod.ik_solver.ik_solver import inverse_kinematics_update
@@ -11,7 +6,7 @@ from hexapod.ik_solver.recompute_hexapod import recompute_hexapod
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from pages import helpers
-from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, SECTION_HIDDEN_BODY_DIMENSIONS
+from pages.shared import INPUT_DIMENSIONS_JSON, SECTION_HIDDEN_BODY_DIMENSIONS, make_page_layout
 import json
 from app import app
 import dash_core_components as dcc
@@ -33,20 +28,11 @@ SECTION_CONTROLS = [
     SECTION_DIMENSION_CONTROL,
     SECTION_IK,
     SECTION_MESSAGE_DISPLAY,
-    SECTION_HIDDEN_IK_PARAMETERS,
     SECTION_HIDDEN_BODY_DIMENSIONS,
+    SECTION_HIDDEN_IK_PARAMETERS,
 ]
 
-layout = html.Div(
-    [
-        html.Div(SECTION_CONTROLS, style={"width": UI_CONTROLS_WIDTH}),
-        dcc.Graph(
-            id=GRAPH_NAME, style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
-        ),
-    ],
-    style={"display": "flex"},
-)
-
+layout = make_page_layout(GRAPH_NAME, SECTION_CONTROLS)
 
 # *********************
 # *  CALLBACKS        *

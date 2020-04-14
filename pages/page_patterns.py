@@ -4,7 +4,7 @@ from hexapod.const import BASE_PLOTTER, BASE_FIGURE
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 from widgets.leg_patterns_ui import SECTION_LEG_POSE_SLIDERS, LEG_SLIDERS_INPUTS
 from pages import helpers
-from pages.shared_callbacks import INPUT_DIMENSIONS_JSON, SECTION_HIDDEN_BODY_DIMENSIONS
+from pages.shared import INPUT_DIMENSIONS_JSON, SECTION_HIDDEN_BODY_DIMENSIONS, make_page_layout
 import json
 from app import app
 import dash_core_components as dcc
@@ -24,19 +24,11 @@ SECTION_CONTROLS = [
     SECTION_DIMENSION_CONTROL,
     SECTION_LEG_POSE_SLIDERS,
     SECTION_MESSAGE_DISPLAY,
-    SECTION_HIDDEN_JOINT_POSES,
     SECTION_HIDDEN_BODY_DIMENSIONS,
+    SECTION_HIDDEN_JOINT_POSES,
 ]
 
-layout = html.Div(
-    [
-        html.Div(SECTION_CONTROLS, style={"width": UI_CONTROLS_WIDTH}),
-        dcc.Graph(
-            id=GRAPH_NAME, style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
-        ),
-    ],
-    style={"display": "flex"},
-)
+layout = make_page_layout(GRAPH_NAME, SECTION_CONTROLS)
 
 # *********************
 # *  CALLBACKS        *
