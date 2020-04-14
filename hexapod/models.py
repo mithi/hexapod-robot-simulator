@@ -151,10 +151,10 @@ class VirtualHexapod:
 
     def update_stance(self, hip_stance, leg_stance):
         pose = deepcopy(HEXAPOD_POSE)
-        pose[1]["coxia"] = -hip_stance # right_front
-        pose[2]["coxia"] = hip_stance # left_front
-        pose[4]["coxia"] = -hip_stance # left_back
-        pose[5]["coxia"] = hip_stance # right_back
+        pose[1]["coxia"] = -hip_stance  # right_front
+        pose[2]["coxia"] = hip_stance  # left_front
+        pose[4]["coxia"] = -hip_stance  # left_back
+        pose[5]["coxia"] = hip_stance  # right_back
 
         for key in pose.keys():
             pose[key]["femur"] = leg_stance

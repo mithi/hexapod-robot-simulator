@@ -136,14 +136,14 @@ def frame_to_align_vector_a_to_b(a, b):
 def frame_yrotate_xtranslate(theta, x):
     c, s = _return_sin_and_cos(theta)
 
-    return np.array([[c, 0, s, x], [0, 1, 0, 0], [-s, 0, c, 0], [0, 0, 0, 1],])
+    return np.array([[c, 0, s, x], [0, 1, 0, 0], [-s, 0, c, 0], [0, 0, 0, 1]])
 
 
 # rotate about z, translate in x and y
 def frame_zrotate_xytranslate(theta, x, y):
     c, s = _return_sin_and_cos(theta)
 
-    return np.array([[c, -s, 0, x], [s, c, 0, y], [0, 0, 1, 0], [0, 0, 0, 1],])
+    return np.array([[c, -s, 0, x], [s, c, 0, y], [0, 0, 1, 0], [0, 0, 0, 1]])
 
 
 def frame_rotxyz(a, b, c):
