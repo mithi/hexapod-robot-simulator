@@ -40,14 +40,7 @@ def recompute_hexapod(dimensions, ik_parameters, poses):
     translate_vector = vector_from_to(twisted_p2, old_p2)
     new_hexapod.move_xyz(translate_vector.x, translate_vector.y, 0)
 
-    if ASSERTION_ENABLED:
-        assert np.isclose(new_p1.z, 0)
-        assert np.isclose(new_p2.z, 0)
-        assert np.isclose(old_p1.z, 0, atol=1.0)
-        assert np.isclose(old_p2.z, 0, atol=1.0)
-        assert new_p1.name == old_p1.name
-        assert new_p2.name == old_p2.name
-        assert np.isclose(length(new_vector), length(old_vector), atol=1.0)
+    might_sanity_check_points(new_p1, new_p2, old_p1, old_p2, new_vector, old_vector)
 
     return new_hexapod
 
@@ -96,3 +89,19 @@ def find_twist_to_recompute_hexapod(a, b):
 
     twist_frame = rotz(twist)
     return twist, twist_frame
+
+
+def might_sanity_check_points(new_p1, new_p2, old_p1, old_p2, new_vector, old_vector):
+    if not ASSERTION_ENABLED:
+        return
+
+    print("Sanity check on recompute hexapod")
+    assert np.isclose(new_p1.z, 0, atol=1.0), f"Point should be on the ground:\n{new_p1}"
+    assert np.isclose(new_p2.z, 0, atol=1.0), f"Point should be on the ground:\n{new_p2}"
+    assert np.isclose(old_p1.z, 0, atol=1.0), f"Point should be on the ground:\n{old_p1}"
+    assert np.isclose(old_p2.z, 0, atol=1.0), f"Point should be on the ground:\n{old_p2}"
+    assert new_p1.name == old_p1.name, f"Should be the same name:\n{old_p1}\n{new_p1}"
+    assert new_p2.name == old_p2.name, f"Should be the same name:\n{old_p2}\n{new_p2}"
+    assert np.isclose(
+        length(new_vector), length(old_vector), atol=1.0
+    ), f"Should be same length.\nnew_vector:{new_vector}\n old_vector{old_vector}"
