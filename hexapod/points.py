@@ -36,8 +36,11 @@ class Point:
     def move_up(self, z):
         self.z += z
 
-    def __str__(self):
+    def __repr__(self):
         return f"Point(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f}, name='{self.name}')"
+
+    def __str__(self):
+        return repr(self)
 
     def __eq__(self, other):
         equal_x = np.isclose(self.x, other.x, atol=0.01)
@@ -84,10 +87,10 @@ def angle_between(a, b):
     theta = np.degrees(np.arccos(cos_theta))
     if np.isnan(theta):
         if DEBUG_MODE:
-            print(f"❗❗❗Error: angle_between({a}, {b}) is NAN")
-            print(f"❗> One of the might be a zero vector or")
-            print(f"❗> The vectors might be pointing at the same direction or")
-            print(f"❗> Something else entirely. 🤔")
+            print(f"❗❗❗ERROR: angle_between({a}, {b}) is NAN")
+            print(f"... One of the might be a zero vector or")
+            print(f"... the vectors might be pointing at the same direction or")
+            print(f"... something else entirely. 🤔")
 
         return 0.0
 

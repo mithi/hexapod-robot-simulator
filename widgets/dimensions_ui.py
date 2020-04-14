@@ -19,7 +19,7 @@ DIMENSION_INPUTS = [Input(input_id, "value") for input_id in INPUT_DIMENSIONS_ID
 
 def make_positive_number_input(_name, _value):
     return dcc.Input(
-        id=_name, type="number", value=_value, step=5, min=0, style=NUMBER_INPUT_STYLE
+        id=_name, type="number", value=_value, min=0, style=NUMBER_INPUT_STYLE
     )
 
 

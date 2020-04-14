@@ -68,7 +68,10 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
         return figure, helpers.make_alert_message(str(alert))
 
     if RECOMPUTE_HEXAPOD:
-        hexapod = recompute_hexapod(dimensions, ik_parameters, poses)
+        try:
+            hexapod = recompute_hexapod(dimensions, ik_parameters, poses)
+        except Exception as alert:
+            return figure, helpers.make_alert_message(str(alert))
 
     BASE_PLOTTER.update(figure, hexapod)
     helpers.change_camera_view(figure, relayout_data)
