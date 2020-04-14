@@ -83,6 +83,7 @@ class Hexagon:
 
         self.all_points = self.vertices + [self.cog, self.head]
 
+
 # ..........................................
 # HEXAPOD MODEL
 # ..........................................
@@ -131,7 +132,6 @@ class VirtualHexapod:
             print(json.dumps(poses, indent=4))
         if PRINT_MODEL_ON_UPDATE:
             self.print()
-
 
     def detach_body_rotate_and_translate(self, rx, ry, rz, tx, ty, tz):
         # Detaches the body of the hexapod from the legs
