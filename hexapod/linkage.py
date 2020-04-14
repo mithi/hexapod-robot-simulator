@@ -154,6 +154,17 @@ class Linkage:
 
         return ground_contact
 
+    def __repr__(self):
+        leg_string = f"""\nLinkage(a={self._a}, b={self._b}, c={self._c}, alpha={self._alpha}, beta={self._beta},gamma={self._gamma}, new_origin={self._new_origin}, new_axis={self._coxia_axis}, id_number={self.id}, name={self.name})\n"""
+        leg_string += f"LEG NAME: {self.name} \n"
+
+        for point in self.all_points:
+            leg_string += f"{point} \n"
+
+        leg_string += f"ground contact: {self.ground_contact()} \n"
+
+        return leg_string
+
 
 #
 #          /*
