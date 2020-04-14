@@ -134,34 +134,16 @@ def frame_to_align_vector_a_to_b(a, b):
 
 # rotate about y, translate in x
 def frame_yrotate_xtranslate(theta, x):
-    theta = np.radians(theta)
-    cos_theta = np.cos(theta)
-    sin_theta = np.sin(theta)
+    c, s = _return_sin_and_cos(theta)
 
-    return np.array(
-        [
-            [cos_theta, 0, sin_theta, x],
-            [0, 1, 0, 0],
-            [-sin_theta, 0, cos_theta, 0],
-            [0, 0, 0, 1],
-        ]
-    )
+    return np.array([[c, 0, s, x], [0, 1, 0, 0], [-s, 0, c, 0], [0, 0, 0, 1],])
 
 
 # rotate about z, translate in x and y
 def frame_zrotate_xytranslate(theta, x, y):
-    theta = np.radians(theta)
-    cos_theta = np.cos(theta)
-    sin_theta = np.sin(theta)
+    c, s = _return_sin_and_cos(theta)
 
-    return np.array(
-        [
-            [cos_theta, -sin_theta, 0, x],
-            [sin_theta, cos_theta, 0, y],
-            [0, 0, 1, 0],
-            [0, 0, 0, 1],
-        ]
-    )
+    return np.array([[c, -s, 0, x], [s, c, 0, y], [0, 0, 1, 0], [0, 0, 0, 1],])
 
 
 def frame_rotxyz(a, b, c):
@@ -183,8 +165,8 @@ def roty(theta):
     return np.array([[c, 0, s, 0], [0, 1, 0, 0], [-s, 0, c, 0], [0, 0, 0, 1]])
 
 
-def rotz(theta_degrees):
-    c, s = _return_sin_and_cos(theta_degrees)
+def rotz(theta):
+    c, s = _return_sin_and_cos(theta)
     return np.array([[c, -s, 0, 0], [s, c, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
 
 
