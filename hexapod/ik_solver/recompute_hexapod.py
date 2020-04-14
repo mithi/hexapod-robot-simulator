@@ -1,5 +1,5 @@
 from copy import deepcopy
-from hexapod.models import VirtualHexapod
+from hexapod.models import VirtualHexapod, Hexagon
 from hexapod.points import (
     angle_between,
     is_counter_clockwise,
@@ -8,44 +8,85 @@ from hexapod.points import (
     vector_from_to,
     length,
 )
-from settings import ASSERTION_ENABLED
+from settings import ASSERTION_ENABLED, PRINT_IK
 import numpy as np
 
 
 def recompute_hexapod(dimensions, ik_parameters, poses):
-    # ❗❗IMPORTANT!This assumes leg with id 3 and id 4 are on the ground
-    # THIS IS NOT ALWAYS THE CASE.
-    # Should check which two legs are both on the ground before and after
-    # instead of using leg 3 and 4
+
     old_hexapod = VirtualHexapod(dimensions)
     old_hexapod.update_stance(ik_parameters["hip_stance"], ik_parameters["leg_stance"])
-    old_p1 = deepcopy(old_hexapod.legs[3].p3)
-    old_p2 = deepcopy(old_hexapod.legs[4].p3)
-    old_vector = vector_from_to(old_p1, old_p2)
+    old_contacts = deepcopy(old_hexapod.ground_contacts)
 
     new_hexapod = VirtualHexapod(dimensions)
     new_hexapod.update(poses)
-    new_p1 = deepcopy(new_hexapod.legs[3].p3)
-    new_p2 = deepcopy(new_hexapod.legs[4].p3)
+    new_contacts = deepcopy(new_hexapod.ground_contacts)
+
+    id1, id2 = find_two_same_leg_ids(old_contacts, new_contacts)
+
+    old_p1 = deepcopy(old_hexapod.legs[id1].ground_contact())
+    old_p2 = deepcopy(old_hexapod.legs[id2].ground_contact())
+    new_p1 = deepcopy(new_hexapod.legs[id1].ground_contact())
+    new_p2 = deepcopy(new_hexapod.legs[id2].ground_contact())
+
+    old_vector = vector_from_to(old_p1, old_p2)
     new_vector = vector_from_to(new_p1, new_p2)
 
     translate_vector = vector_from_to(new_p1, old_p1)
     _, twist_frame = find_twist_to_recompute_hexapod(new_vector, old_vector)
     new_hexapod.rotate_and_shift(twist_frame, 0)
-    twisted_p2 = new_hexapod.legs[4].p3
+
+    twisted_p2 = new_hexapod.legs[id2].p3
     translate_vector = vector_from_to(twisted_p2, old_p2)
     new_hexapod.move_xyz(translate_vector.x, translate_vector.y, 0)
 
     if ASSERTION_ENABLED:
         assert np.isclose(new_p1.z, 0)
         assert np.isclose(new_p2.z, 0)
-        assert np.isclose(old_p1.z, 0, atol=0.1)
-        assert np.isclose(old_p2.z, 0, atol=0.1)
+        assert np.isclose(old_p1.z, 0, atol=1.0)
+        assert np.isclose(old_p2.z, 0, atol=1.0)
         assert new_p1.name == old_p1.name
         assert new_p2.name == old_p2.name
-        assert np.isclose(length(new_vector), length(old_vector), atol=0.1)
+        assert np.isclose(length(new_vector), length(old_vector), atol=1.0)
 
     return new_hexapod
+
+
+def make_contact_dict(ground_contact_list):
+    # map index in ground_contact_list
+    contact_dict = {}
+    for contact in ground_contact_list:
+        left_or_right, front_mid_back, _ = contact.name.split("-")
+        leg_placement = left_or_right + "-" + front_mid_back
+        leg_id = Hexagon.VERTEX_NAMES.index(leg_placement)
+        contact_dict[leg_id] = leg_placement
+
+    return contact_dict
+
+
+def find_two_same_leg_ids(old_contacts, new_contacts):
+    id1 = None
+    id2 = None
+    same_contact_count = 0
+    old_contact_dict = make_contact_dict(old_contacts)
+    new_contact_dict = make_contact_dict(new_contacts)
+    if PRINT_IK:
+        print("In recomputing hexapod:")
+        print("...old contacts:", old_contact_dict)
+        print("...new_contacts: ", old_contact_dict)
+
+    for leg_id in old_contact_dict.keys():
+        if leg_id in new_contact_dict.keys():
+            same_contact_count += 1
+            if same_contact_count == 1:
+                id1 = leg_id
+            else:
+                id2 = leg_id
+                return id1, id2
+
+    raise Exception(
+        f"No same points on ground. \n old: {old_contact_dict} \n new: {new_contact_dict}"
+    )
 
 
 def find_twist_to_recompute_hexapod(a, b):
