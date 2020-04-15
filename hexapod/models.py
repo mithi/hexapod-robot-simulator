@@ -109,11 +109,8 @@ class VirtualHexapod:
         # distance of cog from ground and which legs are on the ground
         legs, self.n_axis, height = get_legs_on_ground(self.legs)
 
-        maybe_ground_contacts = [leg.ground_contact() for leg in self.legs]
         if self.n_axis is None:
-            raise Exception(
-                f"""❗❗❗Pose Unstable. COG not inside support polygon. maybe ground contacts: {maybe_ground_contacts}"""
-            )
+            raise Exception("❗Pose Unstable. COG not inside support polygon.")
 
         # Tilt and shift the hexapod based on new normal
         frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
