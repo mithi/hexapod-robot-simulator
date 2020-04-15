@@ -81,8 +81,9 @@ def three_ids_of_ground_contacts(legs):
         for p in [p3, p4, p5]:
             h_ = dot(n, p)
 
-            # Wrong leg combination, check another
-            if h_ < h:
+            tol = 1  #❗IMPORTANT! add some tolerance
+            if h_ + tol < h:
+                # Wrong leg combination, check another
                 condition_violated = True
                 break
 
@@ -121,4 +122,7 @@ def set_of_two_trios_from_six():
 # the triangle defined by point a, b, c, then this is stable
 def check_stability(a, b, c):
     p = Point(0, 0, 0)
+    stable = is_point_inside_triangle(p, a, b, c)
+    if not stable:
+        print(a.name, b.name, c.name)
     return is_point_inside_triangle(p, a, b, c)
