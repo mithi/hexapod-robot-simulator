@@ -14,14 +14,20 @@ import numpy as np
 
 def recompute_hexapod(dimensions, ik_parameters, poses):
 
+    # make the hexapod with all angles = 0
+    # update the hexapod so that we know which given points are in contact with the ground
     old_hexapod = VirtualHexapod(dimensions)
     old_hexapod.update_stance(ik_parameters["hip_stance"], ik_parameters["leg_stance"])
     old_contacts = deepcopy(old_hexapod.ground_contacts)
 
+    # make a new hexapod with all angles = 0
+    # and update given the poses/ angles we've computed
     new_hexapod = VirtualHexapod(dimensions)
     new_hexapod.update(poses)
     new_contacts = deepcopy(new_hexapod.ground_contacts)
 
+    # get two points that are on the ground before and after
+    # updating to the given poses
     id1, id2 = find_two_same_leg_ids(old_contacts, new_contacts)
 
     old_p1 = deepcopy(old_hexapod.legs[id1].ground_contact())
@@ -29,6 +35,8 @@ def recompute_hexapod(dimensions, ik_parameters, poses):
     new_p1 = deepcopy(new_hexapod.legs[id1].ground_contact())
     new_p2 = deepcopy(new_hexapod.legs[id2].ground_contact())
 
+    # we must translate and rotate the hexapod with the pose
+    # so that the hexapod is stepping on the old predefined ground contact points
     old_vector = vector_from_to(old_p1, old_p2)
     new_vector = vector_from_to(new_p1, new_p2)
 
@@ -76,7 +84,7 @@ def find_two_same_leg_ids(old_contacts, new_contacts):
             return same_ids[0], same_ids[1]
 
     raise Exception(
-        f"No same points on ground. \n old: {old_contact_dict} \n new: {new_contact_dict}"
+        f"Need at least two same points on ground. \n old: {old_contact_dict} \n new: {new_contact_dict}"
     )
 
 
@@ -104,4 +112,4 @@ def might_sanity_check_points(new_p1, new_p2, old_p1, old_p2, new_vector, old_ve
     assert new_p2.name == old_p2.name, f"Should be the same name:\n{old_p2}\n{new_p2}"
     assert np.isclose(
         length(new_vector), length(old_vector), atol=1.0
-    ), f"Should be same length.\nnew_vector:{new_vector}\n old_vector{old_vector}"
+    ), f"Should be same length.\nnew_vector:{new_vector}\n old_vector:{old_vector}"
