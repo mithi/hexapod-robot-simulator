@@ -122,7 +122,4 @@ def set_of_two_trios_from_six():
 # the triangle defined by point a, b, c, then this is stable
 def check_stability(a, b, c):
     p = Point(0, 0, 0)
-    stable = is_point_inside_triangle(p, a, b, c)
-    if not stable:
-        print(a.name, b.name, c.name)
     return is_point_inside_triangle(p, a, b, c)
