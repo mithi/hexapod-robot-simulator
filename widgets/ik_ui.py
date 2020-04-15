@@ -59,7 +59,7 @@ def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=140):
         min=-max_angle,
         max=max_angle,
         value=1.5,
-        step=1.5,
+        step=0.5,
         vertical=True,
         size=90,
         updatemode=UPDATE_MODE,
@@ -90,6 +90,10 @@ divs2 = [div_sl, div_rx, div_ry, div_rz]
 sliders_row1 = [html.Div(div, style=ik_style) for div in divs1]
 sliders_row2 = [html.Div(div, style=ik_style) for div in divs2]
 
-section_row1 = html.Div(sliders_row1, style={"display": "flex", "flex-direction": "row"})
-section_row2 = html.Div(sliders_row2, style={"display": "flex", "flex-direction": "row"})
+section_row1 = html.Div(
+    sliders_row1, style={"display": "flex", "flex-direction": "row"}
+)
+section_row2 = html.Div(
+    sliders_row2, style={"display": "flex", "flex-direction": "row"}
+)
 SECTION_IK = html.Div([HEADER, section_row1, section_row2])
