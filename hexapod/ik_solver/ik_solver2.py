@@ -180,7 +180,8 @@ class IKSolver:
             raise Exception(alert_msg)
 
     def only_few_legs_cant_reach_target(self):
-        # Only legs can't reach target
+        # Try to reach it by making the legs stretch ie
+        # p1, p2, p3 are all on the same line
         femur_tibia_direction = get_unit_vector(self.coxia_to_foot_vector2d)
         femur_vector = scalar_multiply(femur_tibia_direction, self.hexapod.femur)
         self.p2 = add_vectors(self.p1, femur_vector)
