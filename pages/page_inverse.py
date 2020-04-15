@@ -88,6 +88,7 @@ OUTPUT = Output(ID_IK_PARAMETERS_JSON, "children")
 def update_ik_parameters(
     hip_stance, leg_stance, percent_x, percent_y, percent_z, rot_x, rot_y, rot_z
 ):
+
     return json.dumps(
         {
             "hip_stance": hip_stance,
