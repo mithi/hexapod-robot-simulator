@@ -49,9 +49,13 @@ Running on http://127.0.0.1:8050/
 ## Conventions and Algorithms
 
 - [Definition of the Leg / Linkage](./hexapod/linkage.py)
+- [Definition of the Model / VirtualHexapod](./hexapod/models.py)
 - [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md)
-- [Finding ground contact points, tilt and height of hexapod](./hexapod/ground_contact_solver.py)
+- [Finding ground contact points, tilt, and height of hexapod](./hexapod/ground_contact_solver.py)
 - [Translate and Rotate Hexapod to correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py)
+- Determining if the Hexapod should twist
+  - [`find_if_might_twist`](./hexapod/models.py#L238)
+  - [`find_twist_frame`](./hexapod/models.py#L238)
 
 ## 🕷️ Notes
 
