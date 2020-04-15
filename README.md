@@ -24,9 +24,9 @@
 
 ## 🕷️ Preview
 
-| ![Inverse Kinematics](https://mithi.github.io/robotics-blog/UI-1.gif) |
-|----|
-| ![Kinematics](https://mithi.github.io/robotics-blog/UI-2.gif) |
+| ![Inverse Kinematics](https://mithi.github.io/robotics-blog/UI-1.gif) | ![Kinematics](https://mithi.github.io/robotics-blog/UI-2.gif) |
+|----|----|
+| . | . |
 
 ## 🕷️ Requirements
 
@@ -45,6 +45,13 @@ Running on http://127.0.0.1:8050/
 
 - Modify default settings in [./settings.py](./settings.py)
 - Dark Mode default - modify default style settings in [./style_settings.py](./style_settings.py)
+
+# Conventions and Algorithms
+
+- [Definition of the Leg / Linkage](./hexapod/linkage.py)
+- [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md)
+- [Finding ground contact points, tilt and height of hexapod](./hexapod/ground_contact_solver.py)
+- [Translate and Rotate Hexapod to correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py)
 
 ## 🕷️ Notes
 
