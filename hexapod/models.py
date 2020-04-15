@@ -95,9 +95,6 @@ class VirtualHexapod:
         self._init_legs()
         self._init_local_frame()
 
-    def print(self):
-        print_hexapod(self)
-
     def update(self, poses):
         self.body_rotation_frame = None
         might_twist = find_if_might_twist(self, poses)
@@ -130,11 +127,7 @@ class VirtualHexapod:
             twist_frame = find_twist_frame(old_contacts, self.ground_contacts)
             self.rotate_and_shift(twist_frame)
 
-        # Finally print result if you have to
-        if PRINT_MODEL_POSE_ON_UPDATE:
-            print(json.dumps(poses, indent=4))
-        if PRINT_MODEL_ON_UPDATE:
-            self.print()
+        might_print_hexapod(self, poses)
 
     def detach_body_rotate_and_translate(self, rx, ry, rz, tx, ty, tz):
         # Detaches the body of the hexapod from the legs
@@ -310,23 +303,33 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
     return twist_frame
 
 
-def print_hexapod(hexapod):
-    print("*********************")
-    print("Hexapod Model")
-    print("*********************")
+def might_print_hexapod(hexapod, poses):
+    # Finally print result if you have to
+    if PRINT_MODEL_POSE_ON_UPDATE:
+        print("...Poses")
+        print(json.dumps(poses, indent=4))
+
+    if not PRINT_MODEL_ON_UPDATE:
+        return
+
+    print("█████████████████████████████")
+    print("█ Hexapod Model             █")
+    print("█████████████████████████████")
 
     print("...Vertices")
     for point in hexapod.body.all_points:
         print("  ", point)
 
-    print("...legs")
+    print("...Legs")
 
-    for leg in hexapod.legs:
+    for i, leg in enumerate(hexapod.legs):
+        print("leg #", i)
         for point in leg.all_points:
             print("  ", point)
 
-    print("...dimensions")
+    print("...Dimensions")
     print(json.dumps(hexapod.dimensions, indent=4))
-    print("*********************")
-    print("End Hexapod Model")
-    print("*********************")
+
+    print("█████████████████████████████")
+    print("█ End Hexapod Model         █")
+    print("█████████████████████████████")
