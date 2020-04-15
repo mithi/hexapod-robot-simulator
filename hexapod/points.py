@@ -80,18 +80,24 @@ def project_vector_onto_plane(u, n):
     return vector
 
 
+def might_print_angle_between_error(a, b):
+    if DEBUG_MODE:
+        print(
+            f"❗❗❗ERROR: angle_between({a}, {b}) is NAN\
+        ... One of the might be a zero vector\
+        ... the vectors might be pointing at the same direction or\
+        ... something else entirely. 🤔"
+        )
+
+
 def angle_between(a, b):
     # returns the shortest angle between two vectors
     a_dot_b = dot(a, b)
     cos_theta = a_dot_b / (length(a) * length(b))
     theta = np.degrees(np.arccos(cos_theta))
-    if np.isnan(theta):
-        if DEBUG_MODE:
-            print(f"❗❗❗ERROR: angle_between({a}, {b}) is NAN")
-            print(f"... One of the might be a zero vector or")
-            print(f"... the vectors might be pointing at the same direction or")
-            print(f"... something else entirely. 🤔")
 
+    if np.isnan(theta):
+        might_print_angle_between_error(a, b)
         return 0.0
 
     return theta
