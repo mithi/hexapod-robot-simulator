@@ -7,7 +7,7 @@
 # - The point where the hexapod body connect with each hexapod leg (point p0 aka body contact)
 # - Where the hexapod leg should connect with the ground (p3 aka target ground point)
 #
-# Find / We want to solve for
+# We want to solve for:
 # - All the 18 angles (alpha, beta, gamma)
 # - All the 12 joint points (coxia joint p1) and (femur joint p2)
 
@@ -18,11 +18,14 @@
 In the hexapod frame, the coxia vector is the projected vector (in the plane of the hexapod body) of the vector from the body contact pointing to the target ground point.
 
 ```python
+# body_to_foot_vector = vector from p0 to p3
+# coxia vector = projection of the body_to_foot vector to the hexapod body (hexagon) plane
+#
 #                            * (p3) Target foot tip
-#          *----*----*      /     /
-#         /           \    /    coxia vector
-#        /     cog     \  /    /
-#       *       *       */ (p2) body contact
+#          *----*----*      /
+#         /           \    /
+#        /     cog     \  /
+#       *       *       */ (p0) body contact
 #        \             /
 #         \           /
 #          *----*----*
@@ -59,7 +62,7 @@ as shown in the figure which is the alpha.
 # hexapod y
 #  |
 #  |
-# * - - hexapod z
+# * - - hexapod x
 ```
 
 ## Rough algorithm in the local leg frame
