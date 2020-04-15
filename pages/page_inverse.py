@@ -1,7 +1,7 @@
 from settings import RECOMPUTE_HEXAPOD
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE
-from hexapod.ik_solver.ik_solver import inverse_kinematics_update
+from hexapod.ik_solver.ik_solver2 import inverse_kinematics_update
 from hexapod.ik_solver.recompute_hexapod import recompute_hexapod
 from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
