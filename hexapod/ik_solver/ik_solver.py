@@ -5,9 +5,12 @@ from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
 import numpy as np
 from copy import deepcopy
 from hexapod.ik_solver.helpers import (
+    BODY_ON_GROUND_ALERT_MSG,
+    COXIA_ON_GROUND_ALERT_MSG,
+    cant_reach_alert_msg,
     body_contact_shoved_on_ground,
     legs_too_short,
-    beta_gamma_not_within_range,
+    beta_gamma_not_in_range,
     angle_above_limit,
     might_sanity_leg_lengths_check,
     might_sanity_beta_gamma_check,
@@ -68,7 +71,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
     hexapod.detach_body_rotate_and_translate(rotx, roty, rotz, tx, ty, tz)
 
     if body_contact_shoved_on_ground(hexapod):
-        raise Exception("Impossible at given height. \n body contact shoved on ground")
+        raise Exception(BODY_ON_GROUND_ALERT_MSG)
 
     x_axis = Point(1, 0, 0)
     legs_up_in_the_air = []
@@ -88,7 +91,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         # coxia point / joint is the point connecting the coxia and tibia limbs
         coxia_point = add_vectors(body_contact, coxia_vector)
         if coxia_point.z < foot_tip.z:
-            raise Exception("Impossible at given height. \n coxia joint shoved on ground")
+            raise Exception(COXIA_ON_GROUND_ALERT_MSG)
 
         # *******************
         # 1. Compute p0, p1 and (possible) p3 wrt leg frame
@@ -134,21 +137,15 @@ def inverse_kinematics_update(hexapod, ik_parameters):
             gamma = 90 - angle_between(femur_vector, tibia_vector)
 
             if p2.z < p3.z:
-                raise Exception(
-                    f"Cannot reach target ground point. \n {leg_name} leg cannot reach it because the ground is blocking the path."
-                )
+                raise Exception(cant_reach_alert_msg(leg_name, "blocking"))
         else:
             # .................................
             # CASE B: It's impossible to reach target ground point
             # .................................
             if d + hexapod.tibia < hexapod.femur:
-                raise Exception(
-                    f"Cannot reach target ground point. \n Femur length of {leg_name} leg is too long."
-                )
+                raise Exception(cant_reach_alert_msg(leg_name, "femur"))
             if d + hexapod.femur < hexapod.tibia:
-                raise Exception(
-                    f"Cannot reach target ground point. \n Tibia length of {leg_name} leg is too long."
-                )
+                raise Exception(cant_reach_alert_msg(leg_name, "tibia"))
 
             # Then hexapod.femur + hexapod.tibia < d:
             legs_up_in_the_air.append(leg_name)
@@ -170,7 +167,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
                 beta = -beta
 
         # Final p1, p2, p3, beta and gamma computed at this point
-        not_within_range, alert_msg = beta_gamma_not_within_range(beta, gamma, leg_name)
+        not_within_range, alert_msg = beta_gamma_not_in_range(beta, gamma, leg_name)
         if not_within_range:
             raise Exception(alert_msg)
 
@@ -181,7 +178,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         alpha, twist_frame = find_twist_frame(hexapod, unit_coxia_vector)
         alpha = compute_twist_wrt_to_world(alpha, hexapod.body.COXIA_AXES[i])
         alpha_limit, alert_msg = angle_above_limit(
-            alpha, ALPHA_MAX_ANGLE, leg_name, "coxia angle (alpha)"
+            alpha, ALPHA_MAX_ANGLE, leg_name, "(alpha/coxia)"
         )
 
         if alpha_limit:

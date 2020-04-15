@@ -9,6 +9,21 @@ import json
 import numpy as np
 from hexapod.points import length, vector_from_to, angle_between
 
+COXIA_ON_GROUND_ALERT_MSG = "Impossible at given height.\ncoxia joint shoved on ground"
+BODY_ON_GROUND_ALERT_MSG = "Impossible at given height.\nbody contact shoved on ground"
+
+
+def cant_reach_alert_msg(leg_name, problem):
+    msg = f"Cannot reach target ground point.\n"
+    if problem == "femur":
+        msg += f"Femur length of {leg_name} leg is too long."
+    if problem == "tibia":
+        msg += f"Femur length of {leg_name} leg is too long."
+    else:
+        # blocking
+        msg = f"{leg_name} leg cannot reach it because the ground is blocking the path."
+    return msg
+
 
 def body_contact_shoved_on_ground(hexapod):
     for i in range(hexapod.LEG_COUNT):
@@ -25,44 +40,41 @@ def legs_too_short(legs):
     # if three of her right legs are up or
     # if four legs are up
     if len(legs) >= 4:
-        return True, f"Unstable. Too many legs off the floor. \n {legs}"
+        return True, f"Unstable. Too many legs off the floor.\n{legs}"
 
     leg_positions = [leg.split("-")[0] for leg in legs]
     if leg_positions.count("left") == 3:
-        return True, f"Unstable. All left legs off the ground. \n {legs}"
+        return True, f"Unstable. All left legs off the ground.\n{legs}"
     if leg_positions.count("right") == 3:
-        return True, f"Unstable. All right legs off the ground. \n {legs}"
+        return True, f"Unstable. All right legs off the ground.\n{legs}"
 
     return False, None
 
 
 def angle_above_limit(angle, angle_range, leg_name, angle_name):
     if np.abs(angle) > angle_range:
-        return (
-            True,
-            f"""
-    The {angle_name} (of {leg_name} leg) required \n \
-    to do this pose is above the range of motion. \n \
-    Required: {angle} degrees. Limit: {angle_range} degrees.""",
-        )
+        alert_msg = f"The {angle_name} (of {leg_name} leg) required\n\
+            to do this pose is above the range of motion.\n\
+            Required: {angle} degrees. Limit: {angle_range} degrees."
+        return True, alert_msg
+
+    return False, None
+
+
+def beta_gamma_not_in_range(beta, gamma, leg_name):
+    limit, msg = angle_above_limit(beta, BETA_MAX_ANGLE, leg_name, "(beta/femur)")
+    if limit:
+        return True, msg
+
+    limit, msg = angle_above_limit(gamma, GAMMA_MAX_ANGLE, leg_name, "(gamma/tibia)")
+    if limit:
+        return True, msg
 
     return False, None
 
 
-def beta_gamma_not_within_range(beta, gamma, leg_name):
-    beta_limit, alert_msg = angle_above_limit(
-        beta, BETA_MAX_ANGLE, leg_name, "beta angle (beta)"
-    )
-    if beta_limit:
-        return True, alert_msg
-
-    gamma_limit, alert_msg = angle_above_limit(
-        gamma, GAMMA_MAX_ANGLE, leg_name, "gamma angle (gamma)"
-    )
-    if gamma_limit:
-        return True, alert_msg
-
-    return False, None
+def wrong_length_msg(leg_name, limb_name, limb_value):
+    return f"wrong {limb_name} vector length. {leg_name} coxia:{limb_value}"
 
 
 def might_sanity_leg_lengths_check(hexapod, leg_name, points):
@@ -73,15 +85,14 @@ def might_sanity_leg_lengths_check(hexapod, leg_name, points):
     femur = length(vector_from_to(points[1], points[2]))
     tibia = length(vector_from_to(points[2], points[3]))
 
-    assert np.isclose(
-        hexapod.coxia, coxia, atol=1
-    ), f"wrong coxia vector length. {leg_name} coxia:{coxia}"
-    assert np.isclose(
-        hexapod.femur, femur, atol=1
-    ), f"wrong femur vector length. {leg_name} femur:{femur}"
-    assert np.isclose(
-        hexapod.tibia, tibia, atol=1
-    ), f"wrong tibia vector length. {leg_name} tibia:{tibia}"
+    same_length = np.isclose(hexapod.coxia, coxia, atol=1)
+    assert same_length, wrong_length_msg(leg_name, "coxia", coxia)
+
+    same_length = np.isclose(hexapod.femur, femur, atol=1)
+    assert same_length, wrong_length_msg(leg_name, "femur", femur)
+
+    same_length = np.isclose(hexapod.tibia, tibia, atol=1)
+    assert same_length, wrong_length_msg(leg_name, "tibia", tibia)
 
 
 def might_sanity_beta_gamma_check(beta, gamma, leg_name, points):
@@ -94,16 +105,16 @@ def might_sanity_beta_gamma_check(beta, gamma, leg_name, points):
     result_beta = angle_between(coxia, femur)
 
     same_beta = np.isclose(np.abs(beta), result_beta, atol=1)
-    assert same_beta, f"{leg_name} leg: theory: |{beta}|, reality: {result_beta}"
+    assert same_beta, f"{leg_name} leg: expected: |{beta}|, found: {result_beta}"
 
-    femur_tibia_angle = angle_between(femur, tibia)
     # ❗❗IMPORTANT: Why is sometimes both are zero?
-    should_be_90 = femur_tibia_angle + gamma
-    is_90 = np.isclose(90, should_be_90, atol=1)
+    femur_tibia_angle = angle_between(femur, tibia)
+    is_90 = np.isclose(90, femur_tibia_angle + gamma, atol=1)
+
     if not is_90:
-        print(
-            f"{leg_name} leg: {femur_tibia_angle} (femur-tibia angle) + {gamma} (gamma) != 90. "
-        )
+        alert_msg = f"{leg_name} leg:\
+            {femur_tibia_angle} (femur-tibia angle) + {gamma} (gamma) != 90."
+        print(alert_msg)
 
 
 def might_print_ik(poses, ik_parameters, hexapod):

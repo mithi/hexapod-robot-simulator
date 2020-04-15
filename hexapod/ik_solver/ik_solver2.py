@@ -2,9 +2,12 @@ from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
 import numpy as np
 from copy import deepcopy
 from hexapod.ik_solver.helpers import (
+    BODY_ON_GROUND_ALERT_MSG,
+    COXIA_ON_GROUND_ALERT_MSG,
+    cant_reach_alert_msg,
     body_contact_shoved_on_ground,
     legs_too_short,
-    beta_gamma_not_within_range,
+    beta_gamma_not_in_range,
     angle_above_limit,
     might_sanity_leg_lengths_check,
     might_sanity_beta_gamma_check,
@@ -79,9 +82,7 @@ class IKSolver:
         self.hexapod.detach_body_rotate_and_translate(rotx, roty, rotz, tx, ty, tz)
 
         if body_contact_shoved_on_ground(self.hexapod):
-            raise Exception(
-                "Impossible at given height. \n body contact shoved on ground"
-            )
+            raise Exception(BODY_ON_GROUND_ALERT_MSG)
 
     def store_known_points(self, i):
         self.leg_name = self.hexapod.legs[i].name
@@ -102,7 +103,7 @@ class IKSolver:
         # coxia point / joint is the point connecting the coxia and tibia limbs
         coxia_point = add_vectors(self.body_contact, self.coxia_vector)
         if coxia_point.z < self.foot_tip.z:
-            raise Exception("Impossible at given height. \n coxia joint shoved on ground")
+            raise Exception(COXIA_ON_GROUND_ALERT_MSG)
 
     def compute_local_p0_p1_p3(self):
         self.p0 = Point(0, 0, 0)
@@ -121,20 +122,17 @@ class IKSolver:
         self.coxia_to_foot_vector2d = vector_from_to(self.p1, self.p3)
         self.d = length(self.coxia_to_foot_vector2d)
 
-        # If we can form this triangle this means we probably can reach the target ground contact point
+        # If we can form this triangle
+        # # this means we probably can reach the target ground contact point
         if is_triangle(self.hexapod.tibia, self.hexapod.femur, self.d):
-            # .................................
             # CASE A: a triangle can be formed with
             # coxia to foot vector, hexapod's femur and tibia
-            # .................................
             self.compute_when_triangle_can_form()
         else:
-            # .................................
             # CASE B: It's impossible to reach target ground point
-            # .................................
             self.compute_when_triangle_cannot_form()
 
-        not_within_range, alert_msg = beta_gamma_not_within_range(
+        not_within_range, alert_msg = beta_gamma_not_in_range(
             self.beta, self.gamma, self.leg_name
         )
         if not_within_range:
@@ -159,19 +157,13 @@ class IKSolver:
         self.gamma = 90 - angle_between(femur_vector, tibia_vector)
 
         if self.p2.z < self.p3.z:
-            raise Exception(
-                f"Cannot reach target ground point. \n {self.leg_name} leg cannot reach it because the ground is blocking the path."
-            )
+            raise Exception(cant_reach_alert_msg(self.leg_name, "blocking"))
 
     def might_raise_cant_reach_target(self):
         if self.d + self.hexapod.tibia < self.hexapod.femur:
-            raise Exception(
-                f"Cannot reach target ground point. \n Femur length of {self.leg_name} leg is too long."
-            )
+            raise Exception(cant_reach_alert_msg(self.leg_name, "femur"))
         if self.d + self.hexapod.femur < self.hexapod.tibia:
-            raise Exception(
-                f"Cannot reach target ground point. \n Tibia length of {self.leg_name} leg is too long."
-            )
+            raise Exception(cant_reach_alert_msg(self.leg_name, "tibia"))
 
         # Then hexapod.femur + hexapod.tibia < d:
         self.legs_up_in_the_air.append(self.leg_name)
@@ -180,8 +172,8 @@ class IKSolver:
             raise Exception(alert_msg)
 
     def only_few_legs_cant_reach_target(self):
-        # Try to reach it by making the legs stretch ie
-        # p1, p2, p3 are all on the same line
+        # Try to reach it by making the legs stretch
+        # i.e. p1, p2, p3 are all on the same line
         femur_tibia_direction = get_unit_vector(self.coxia_to_foot_vector2d)
         femur_vector = scalar_multiply(femur_tibia_direction, self.hexapod.femur)
         self.p2 = add_vectors(self.p1, femur_vector)
@@ -199,17 +191,18 @@ class IKSolver:
         self.only_few_legs_cant_reach_target()
 
     def compute_alpha_and_twist_frame(self, i):
-        self.alpha, self.twist_frame = find_twist_frame(
-            self.hexapod, self.unit_coxia_vector
+
+        alpha, twist_frame = find_twist_frame(self.hexapod, self.unit_coxia_vector)
+        alpha = compute_twist_wrt_to_world(alpha, self.hexapod.body.COXIA_AXES[i])
+
+        limit, msg = angle_above_limit(
+            alpha, ALPHA_MAX_ANGLE, self.leg_name, "(alpha/coxia)"
         )
-        self.alpha = compute_twist_wrt_to_world(
-            self.alpha, self.hexapod.body.COXIA_AXES[i]
-        )
-        alpha_limit, alert_msg = angle_above_limit(
-            self.alpha, ALPHA_MAX_ANGLE, self.leg_name, "coxia angle (alpha)"
-        )
-        if alpha_limit:
-            raise Exception(alert_msg)
+        if limit:
+            raise Exception(msg)
+
+        self.alpha = alpha
+        self.twist_frame = twist_frame
 
     def update_to_global_points(self):
         might_print_points(self.points, self.leg_name)
@@ -218,9 +211,13 @@ class IKSolver:
         for point in self.points:
             point.update_point_wrt(self.twist_frame)
             if ASSERTION_ENABLED:
-                assert self.hexapod.body_rotation_frame is not None, "No rotation frame!"
+                assert (
+                    self.hexapod.body_rotation_frame is not None
+                ), "No rotation frame!"
             point.update_point_wrt(self.hexapod.body_rotation_frame)
-            point.move_xyz(self.body_contact.x, self.body_contact.y, self.body_contact.z)
+            point.move_xyz(
+                self.body_contact.x, self.body_contact.y, self.body_contact.z
+            )
 
         might_sanity_leg_lengths_check(self.hexapod, self.leg_name, self.points)
         might_sanity_beta_gamma_check(self.beta, self.gamma, self.leg_name, self.points)
