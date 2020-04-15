@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+black .
 python -m pytest
 python -m py_compile ./*/*.py ./*.py ./*/*/*.py
 flake8 ./*/*.py ./*.py ./*/*/*.py
