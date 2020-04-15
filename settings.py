@@ -3,9 +3,9 @@
 # ***************************
 # The range of each leg joint in degrees
 ALPHA_MAX_ANGLE = 90
-BETA_MAX_ANGLE = 120
-GAMMA_MAX_ANGLE = 120
-BODY_MAX_ANGLE = 60
+BETA_MAX_ANGLE = 180
+GAMMA_MAX_ANGLE = 180
+BODY_MAX_ANGLE = 40
 # LEG STANCE
 # would define the starting leg position used to compute
 # the target ground contact for inverse kinematics poses
