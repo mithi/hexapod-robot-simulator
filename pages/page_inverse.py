@@ -63,7 +63,7 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
     hexapod = VirtualHexapod(dimensions)
 
     try:
-        hexapod, poses = inverse_kinematics_update(hexapod, ik_parameters)
+        poses, hexapod = inverse_kinematics_update(hexapod, ik_parameters)
     except Exception as alert:
         return figure, helpers.make_alert_message(str(alert))
 

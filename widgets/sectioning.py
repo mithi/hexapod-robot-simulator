@@ -28,10 +28,7 @@ def make_section_type4(div1, div2, div3, div4):
 
 def make_section_type2(div1, div2):
     return html.Div(
-        [
-            html.Div(div1, style={"width": "50%"}),
-            html.Div(div2, style={"width": "50%"}),
-        ],
+        [html.Div(div1, style={"width": "50%"}), html.Div(div2, style={"width": "50%"})],
         style={"display": "flex"},
     )
 

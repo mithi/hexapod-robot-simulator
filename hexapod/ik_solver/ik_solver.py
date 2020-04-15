@@ -1,97 +1,6 @@
-#
-#
-# **********************
-# DEFINITIONS
-# **********************
-# p0: Body contact point
-# p1: coxia point / coxia joint (point between coxia limb and femur limb)
-# p2: tibia point / tibia joint (point between femur limb and tibia limb)
-# p3: foot tip / ground contact
-# coxia vector - vector from p0 to p1
-# hexapod.coxia - coxia vector length
-# femur vector - vector from p1 to p2
-# hexapod.femur - femur vector length
-# tibia vector - vector from p2 to p3
-# hexapod.tibia - tibia vector length
-# body_to_foot vector - vector from p0 to p3
-# coxia_to_foot vector - vector from p1 to p3
-# d: coxia_to_foot_length
-# body_to_foot_length
-#
-# rho
-#  -- angle between coxia vector (leg x axis) and body to foot vector
-#  -- angle between point p1, p0, and p3. (p0 at center)
-# theta
-#  --- angle between femur vector and coxia to foot vector
-#  --- angle between point p2, p1, and p3. (p1 at center)
-# phi
-#  --- angle between coxia vector (leg x axis) and coxia to foot vector
-#
-# beta
-#  --- angle between coxia vector (leg x axis) and femur vector
-# gamma
-#  --- angle between tibia vector and perpendicular vector to femur vector
-#  --- positive is counter clockwise
-# alpha
-#  --- angle between leg coordinate frame and axis defined by line from
-#      hexapod's center of gravity to body contact.
-#
-#
-# For CASE 1 and CASE 2:
-#   beta = theta - phi
-#     beta is positive when phi < theta (case 1)
-#     beta is negative when phi > theta (case 2)
-# *****************
-# Case 1 (beta IS POSITIVE)
-# *****************
-#
-#      ^          (p2)
-#      |            *
-#  (leg_z_axis)    / |
-#      |          /  |
-#      |         /   |
-#   (p0)    (p1)/    |
-#     *------- *-----| ----------------> (leg_x_axis)
-#      \       \     |
-#        \      \    |
-#          \     \   |
-#            \    \  |
-#              \   \ |
-#                \   |
-#                  \ * (p3)
-#
-#
-# *****************
-# Case 2 (beta is negative)
-# *****************
-#                           ^
-#                           |
-#                         (leg_z_axis direction)
-# (p0)     (p1)             |
-# *------- *----------------|------> (leg_x_axis direction)
-# \        |   \
-#  \       |    \
-#   \      |     \
-#    \     |      * (p2)
-#     \    |     /
-#      \   |    /
-#       \  |   /
-#        \ |  /
-#         \| /
-#          *
-#
-# *****************
-# Case 3 (p3 is above p1) then beta = phi + theta
-# *****************
-#                * (p2)
-#               / \
-#             /    |
-#           /      * (p3)
-#         /     /
-# *------ *  /
-# (p0)   (p1)
-#
-#
+# Please look at the discussion of the Inverse Kinematics algorithm
+# As detailed in the README of this directory
+
 from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
 import numpy as np
 from copy import deepcopy
@@ -101,6 +10,7 @@ from hexapod.ik_solver.helpers import (
     beta_gamma_not_within_range,
     angle_above_limit,
     might_sanity_leg_lengths_check,
+    might_sanity_beta_gamma_check,
     might_print_ik,
     might_print_points,
 )
@@ -113,12 +23,16 @@ from hexapod.points import (
     vector_from_to,
     get_unit_vector,
     is_triangle,
-    is_counter_clockwise,
     project_vector_onto_plane,
     angle_between,
     angle_opposite_of_last_side,
-    rotz,
 )
+from hexapod.ik_solver.shared import (
+    update_hexapod_points,
+    find_twist_frame,
+    compute_twist_wrt_to_world,
+)
+
 
 # This function computes the joint angles required to
 # rotate and translate the hexapod given the parameters given
@@ -174,9 +88,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         # coxia point / joint is the point connecting the coxia and tibia limbs
         coxia_point = add_vectors(body_contact, coxia_vector)
         if coxia_point.z < foot_tip.z:
-            raise Exception(
-                "Impossible at given height. \n coxia joint shoved on ground"
-            )
+            raise Exception("Impossible at given height. \n coxia joint shoved on ground")
 
         # *******************
         # 1. Compute p0, p1 and (possible) p3 wrt leg frame
@@ -285,11 +197,12 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         for point in points:
             point.update_point_wrt(twist_frame)
             if ASSERTION_ENABLED:
-                assert hexapod.body_rotation_frame is not None
+                assert hexapod.body_rotation_frame is not None, "No rotation frame!"
             point.update_point_wrt(hexapod.body_rotation_frame)
             point.move_xyz(body_contact.x, body_contact.y, body_contact.z)
 
         might_sanity_leg_lengths_check(hexapod, leg_name, points)
+        might_sanity_beta_gamma_check(beta, gamma, leg_name, points)
 
         # Update hexapod's points to what we computed
         update_hexapod_points(hexapod, i, points)
@@ -299,36 +212,4 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         poses[i]["tibia"] = gamma
 
     might_print_ik(poses, ik_parameters, hexapod)
-    return hexapod, poses
-
-
-def update_hexapod_points(hexapod, leg_id, points):
-    points[0].name = hexapod.legs[leg_id].p0.name
-    points[1].name = hexapod.legs[leg_id].p1.name
-    points[2].name = hexapod.legs[leg_id].p2.name
-    points[3].name = hexapod.legs[leg_id].p3.name
-
-    hexapod.legs[leg_id].p0 = points[0]
-    hexapod.legs[leg_id].p1 = points[1]
-    hexapod.legs[leg_id].p2 = points[2]
-    hexapod.legs[leg_id].p3 = points[3]
-
-
-def find_twist_frame(hexapod, unit_coxia_vector):
-    twist = angle_between(unit_coxia_vector, hexapod.x_axis)
-    is_ccw = is_counter_clockwise(unit_coxia_vector, hexapod.x_axis, hexapod.z_axis)
-    if is_ccw:
-        twist = -twist
-
-    twist_frame = rotz(twist)
-    return twist, twist_frame
-
-
-def compute_twist_wrt_to_world(alpha, coxia_axis):
-    alpha = (alpha - coxia_axis) % 360
-    if alpha > 180:
-        alpha = alpha - 360
-    elif alpha < -180:
-        alpha = 360 + alpha
-
-    return alpha
+    return poses, hexapod
