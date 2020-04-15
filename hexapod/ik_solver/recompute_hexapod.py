@@ -84,7 +84,8 @@ def find_two_same_leg_ids(old_contacts, new_contacts):
             return same_ids[0], same_ids[1]
 
     raise Exception(
-        f"Need at least two same points on ground. \n old: {old_contact_dict} \n new: {new_contact_dict}"
+        f"Need at least two same points on ground.\n\
+        old: {old_contact_dict}\n new: {new_contact_dict}"
     )
 
 
@@ -99,15 +100,20 @@ def find_twist_to_recompute_hexapod(a, b):
     return twist, twist_frame
 
 
+def should_be_on_ground_msg(point):
+    return f"Point should be on the ground:\n{point}, z != 0"
+
+
 def might_sanity_check_points(new_p1, new_p2, old_p1, old_p2, new_vector, old_vector):
     if not ASSERTION_ENABLED:
         return
 
-    print("Sanity check on recompute hexapod")
-    assert np.isclose(new_p1.z, 0, atol=1.0), f"Point should be on the ground:\n{new_p1}"
-    assert np.isclose(new_p2.z, 0, atol=1.0), f"Point should be on the ground:\n{new_p2}"
-    assert np.isclose(old_p1.z, 0, atol=1.0), f"Point should be on the ground:\n{old_p1}"
-    assert np.isclose(old_p2.z, 0, atol=1.0), f"Point should be on the ground:\n{old_p2}"
+    print("Sanity check on hexapod.ik_solver.recompute_hexapod")
+    assert np.isclose(new_p1.z, 0, atol=1), should_be_on_ground_msg(new_p1)
+    assert np.isclose(new_p2.z, 0, atol=1), should_be_on_ground_msg(new_p2)
+    assert np.isclose(old_p1.z, 0, atol=1), should_be_on_ground_msg(old_p1)
+    assert np.isclose(old_p2.z, 0, atol=1), should_be_on_ground_msg(old_p2)
+
     assert new_p1.name == old_p1.name, f"Should be the same name:\n{old_p1}\n{new_p1}"
     assert new_p2.name == old_p2.name, f"Should be the same name:\n{old_p2}\n{new_p2}"
     assert np.isclose(
