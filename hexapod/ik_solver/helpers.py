@@ -137,11 +137,6 @@ def might_print_ik(poses, ik_parameters, hexapod):
 
     print(json.dumps(poses, indent=4))
 
-    print(".....................")
-    print("... hexapod: ")
-    print(".....................")
-
-    hexapod.print()
     print("█████████████████████████████")
     print("█ END INVERSE KINEMATICS    █")
     print("█████████████████████████████")

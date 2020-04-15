@@ -36,7 +36,7 @@
 - [x] Numpy 1.18.1
 - [x] See also [./requirements.txt](./requirements.txt)
 
-## 🕷️ Run
+## 🕷Run
 
 ```bash
 $ python index.py
@@ -46,12 +46,16 @@ Running on http://127.0.0.1:8050/
 - Modify default settings in [./settings.py](./settings.py)
 - Dark Mode default - modify default style settings in [./style_settings.py](./style_settings.py)
 
-## Conventions and Algorithms
+## 🕷️Conventions and Algorithms
 
-- [Definition of the Leg / Linkage](./hexapod/linkage.py)
+- [`Linkage`](./hexapod/linkage.py) definition
+- [`VirtualHexapod`](./hexapod/models.py) definition
 - [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md)
-- [Finding ground contact points, tilt and height of hexapod](./hexapod/ground_contact_solver.py)
+- [Finding ground contact points, tilt, and height of hexapod](./hexapod/ground_contact_solver.py)
 - [Translate and Rotate Hexapod to correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py)
+- Determining if the Hexapod should twist:
+  - [`find_if_might_twist`](./hexapod/models.py#L238)
+  - [`find_twist_frame`](./hexapod/models.py#L238)
 
 ## 🕷️ Notes
 

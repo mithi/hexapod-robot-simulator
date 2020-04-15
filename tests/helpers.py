@@ -3,11 +3,12 @@ import numpy as np
 
 def assert_poses_equal(result_poses, correct_poses):
     for k, v in result_poses.items():
+        msg = f"{correct_poses[k]} != {v}"
         assert correct_poses[k]["name"] == v["name"]
         assert correct_poses[k]["id"] == v["id"]
-        assert np.isclose(correct_poses[k]["coxia"], v["coxia"])
-        assert np.isclose(correct_poses[k]["femur"], v["femur"])
-        assert np.isclose(correct_poses[k]["tibia"], v["tibia"])
+        assert np.isclose(correct_poses[k]["coxia"], v["coxia"]), msg
+        assert np.isclose(correct_poses[k]["femur"], v["femur"]), msg
+        assert np.isclose(correct_poses[k]["tibia"], v["tibia"]), msg
 
 
 def assert_hexapod_equal(hexapod, correct_body_points, correct_leg_points):
