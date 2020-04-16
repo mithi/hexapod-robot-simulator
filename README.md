@@ -71,7 +71,7 @@ Running on http://127.0.0.1:8050/
 - [ ] ❗[Bugs](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 - [ ] ❗[All](https://github.com/mithi/hexapod-robot-simulator/issues)
 
-## Screenshots
+## 🕷️ Screenshots
 
 
 | ![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-screenshot.png)|
