@@ -5,9 +5,9 @@
 - A bare minimum browser-based hexapod robot simulator built from first principles 🕷️
 - If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi). 💕
 
-|![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Leg pattern movements](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Customizing Hexapod Dimensions](https://mithi.github.io/robotics-blog/robot-only-x3.gif)|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
+|  |  |  |  |
 |---------|---------|---------|---------|
-| . | . | . | . |
+|![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-1.gif" width="550"/>|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-2.gif" width="500"/>|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
 
 | STATUS | FEATURE   | DESCRIPTION  |
 |---|-----------|--------------|
@@ -24,9 +24,9 @@
 
 ## 🕷️ Preview
 
-| ![Inverse Kinematics](https://mithi.github.io/robotics-blog/UI-1.gif) | ![Kinematics](https://mithi.github.io/robotics-blog/UI-2.gif) |
+|![IK](https://mithi.github.io/robotics-blog/v2-ik-ui.gif)|![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-ui.gif)|
 |----|----|
-| . | . |
+| ![IK](https://mithi.github.io/robotics-blog/UI-1.gif) | ![Kinematics](https://mithi.github.io/robotics-blog/UI-2.gif) |
 
 ## 🕷️ Requirements
 
@@ -70,3 +70,10 @@ Running on http://127.0.0.1:8050/
 - [ ] ❗[Help Wanted](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 - [ ] ❗[Bugs](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 - [ ] ❗[All](https://github.com/mithi/hexapod-robot-simulator/issues)
+
+## 🕷️ Screenshots
+
+
+| ![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-screenshot.png)|
+|---|
+| ![IK](https://mithi.github.io/robotics-blog/v2-ik-screenshot.png)|

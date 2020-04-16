@@ -49,6 +49,7 @@ WHICH_POSE_CONTROL_UI = 0
 
 # Less granular to prevent overloading the server
 SLIDER_ANGLE_RESOLUTION = 1.5
+INPUT_DIMENSIONS_RESOLUTION = 1
 
 UI_GRAPH_HEIGHT = "600px"
 UI_GRAPH_WIDTH = "63%"
