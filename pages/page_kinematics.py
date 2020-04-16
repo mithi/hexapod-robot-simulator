@@ -62,14 +62,14 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
 
     dimensions = helpers.load_dimensions(dimensions_json)
     poses = json.loads(poses_json)
-    virtual_hexapod = VirtualHexapod(dimensions)
+    hexapod = VirtualHexapod(dimensions)
 
     try:
-        virtual_hexapod.update(poses)
+        hexapod.update(poses)
     except Exception as alert:
-        return figure, helpers.make_alert_message(str(alert))
+        return figure, helpers.make_alert_message(alert)
 
-    BASE_PLOTTER.update(figure, virtual_hexapod)
+    BASE_PLOTTER.update(figure, hexapod)
     helpers.change_camera_view(figure, relayout_data)
     return figure, ""
 
