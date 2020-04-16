@@ -5,9 +5,8 @@
 - A bare minimum browser-based hexapod robot simulator built from first principles 🕷️
 - If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi). 💕
 
-|![Demo 1](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Dark Demo 1](https://mithi.github.io/robotics-blog/v2-hexapod-1.gif)|![Dark Demo 2](https://mithi.github.io/robotics-blog/v2-hexapod-2.gif)|![Demo 2](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|
-|---------|---------|---------|---------|
-| . | . | . | . |
+|![Dark Demo 1](https://mithi.github.io/robotics-blog/v2-hexapod-1.gif)|![Light Demo](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Dark Demo 2](https://mithi.github.io/robotics-blog/v2-hexapod-2.gif)|
+|---------|---------|---------|
 
 | STATUS | FEATURE   | DESCRIPTION  |
 |---|-----------|--------------|
