@@ -41,12 +41,14 @@ RECOMPUTE_HEXAPOD = True
 PRINT_IK_LOCAL_LEG = False
 PRINT_IK = False
 PRINT_MODEL_ON_UPDATE = False
-PRINT_MODEL_POSE_ON_UPDATE = False
 
 # 1 - Using the daq slider UI
 # 2 - Using the generic slider UI
 # Anything else defaults to Using the generic input UI
 WHICH_POSE_CONTROL_UI = 0
+
+# Less granular to prevent overloading the server
+SLIDER_ANGLE_RESOLUTION = 1.5
 
 UI_GRAPH_HEIGHT = "600px"
 UI_GRAPH_WIDTH = "63%"

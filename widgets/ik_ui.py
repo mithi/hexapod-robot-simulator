@@ -1,10 +1,16 @@
 # This module holds the widgets for the inverse kinematics page
-from style_settings import SLIDER_THEME, SLIDER_HANDLE_COLOR, SLIDER_COLOR
+from style_settings import (
+    SLIDER_THEME,
+    SLIDER_HANDLE_COLOR,
+    SLIDER_COLOR,
+    IK_SLIDER_SIZE,
+)
 from settings import (
     UPDATE_MODE,
     BODY_MAX_ANGLE,
     HIP_STANCE_MAX_ANGLE,
     LEG_STANCE_MAX_ANGLE,
+    SLIDER_ANGLE_RESOLUTION,
 )
 
 import dash_core_components as dcc
@@ -40,7 +46,7 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
         value=0.05,
         step=0.05,
         vertical=True,
-        size=90,
+        size=IK_SLIDER_SIZE,
         updatemode=UPDATE_MODE,
         handleLabel=handle_style,
         color={"default": SLIDER_COLOR},
@@ -48,7 +54,7 @@ def make_translate_slider(name, slider_label, type="translate_slider"):
     )
 
 
-def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=140):
+def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE):
     handle_style = {
         "showCurrentValue": True,
         "color": SLIDER_HANDLE_COLOR,
@@ -59,9 +65,9 @@ def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=140):
         min=-max_angle,
         max=max_angle,
         value=1.5,
-        step=0.5,
+        step=SLIDER_ANGLE_RESOLUTION,
         vertical=True,
-        size=90,
+        size=IK_SLIDER_SIZE,
         updatemode=UPDATE_MODE,
         handleLabel=handle_style,
         color={"default": SLIDER_COLOR},
@@ -70,10 +76,10 @@ def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE, size=140):
 
 
 div_sh = make_rotate_slider(
-    "input-start-hip-stance", "start \n hip.stance", HIP_STANCE_MAX_ANGLE
+    "input-start-hip-stance", "start\nhip.stance", HIP_STANCE_MAX_ANGLE
 )
 div_sl = make_rotate_slider(
-    "input-start-leg-stance", "start \n leg.stance", LEG_STANCE_MAX_ANGLE
+    "input-start-leg-stance", "start\nleg.stance", LEG_STANCE_MAX_ANGLE
 )
 
 div_rx = make_rotate_slider("input-end-rot-x", "rot.x")

@@ -3,7 +3,13 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
 import dash_daq
-from settings import ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE, UPDATE_MODE
+from settings import (
+    ALPHA_MAX_ANGLE,
+    BETA_MAX_ANGLE,
+    GAMMA_MAX_ANGLE,
+    UPDATE_MODE,
+    SLIDER_ANGLE_RESOLUTION,
+)
 from style_settings import SLIDER_THEME, SLIDER_HANDLE_COLOR, SLIDER_COLOR
 
 HEADER = html.Label(dcc.Markdown("**LEG POSE CONTROL**"))
@@ -25,7 +31,7 @@ def make_slider(name, max_angle):
         min=-max_angle,
         max=max_angle,
         value=1.5,
-        step=1.5,
+        step=SLIDER_ANGLE_RESOLUTION,
         size=300,
         updatemode=UPDATE_MODE,
         handleLabel=handle_style,
