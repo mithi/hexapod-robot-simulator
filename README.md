@@ -9,7 +9,11 @@
 |---------|---------|---------|---------|
 |![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Leg pattern movements](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Customizing Hexapod Dimensions](https://mithi.github.io/robotics-blog/robot-only-x3.gif)|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
 
-|![Dark Demo 1](https://mithi.github.io/robotics-blog/v2-hexapod-1.gif)|![Dark Demo 2](https://mithi.github.io/robotics-blog/v2-hexapod-2.gif)|
+
+
+
+
+|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-1.gif" height="400" width="400"/>|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-2.gif" height="400" width="400"/>|
 |---------|---------|
 | . | . |
 
