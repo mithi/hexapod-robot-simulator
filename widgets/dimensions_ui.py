@@ -4,6 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input
 from .sectioning import make_section_type3
 from style_settings import NUMBER_INPUT_STYLE
+from settings import INPUT_DIMENSIONS_RESOLUTION
 
 HEADER = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
 INPUT_DIMENSIONS_IDs = [
@@ -19,7 +20,12 @@ DIMENSION_INPUTS = [Input(input_id, "value") for input_id in INPUT_DIMENSIONS_ID
 
 def make_positive_number_input(_name, _value):
     return dcc.Input(
-        id=_name, type="number", value=_value, min=0, style=NUMBER_INPUT_STYLE
+        id=_name,
+        type="number",
+        value=_value,
+        min=0,
+        step=INPUT_DIMENSIONS_RESOLUTION,
+        style=NUMBER_INPUT_STYLE,
     )
 
 
@@ -31,10 +37,6 @@ femur_input = make_positive_number_input("input-length-femur", 100)
 tibia_input = make_positive_number_input("input-length-tibia", 100)
 
 
-# -----------
-# PARTIAL SECTIONS
-# -----------
-# section for hexapod measurement adjustments
 def _code(name):
     return dcc.Markdown(f"`{name}`")
 
