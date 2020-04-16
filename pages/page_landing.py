@@ -5,12 +5,10 @@ img = html.Img(
     style={"width": "100%", "height": "auto"},
 )
 
-img_row = html.Div(
+layout = html.Div(
     [
         html.Div(img, style={"width": "20%", "height": "auto"}),
         html.Div(html.Br(), style={"width": "auto", "height": "auto"}),
     ],
     style={"display": "flex", "flex-direction": "row"},
 )
-
-layout = html.Div([img_row])
