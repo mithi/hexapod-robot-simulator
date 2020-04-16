@@ -43,19 +43,20 @@ $ python index.py
 Running on http://127.0.0.1:8050/
 ```
 
-- Modify default settings in [./settings.py](./settings.py)
-- Dark Mode default - modify default style settings in [./style_settings.py](./style_settings.py)
+- Modify default settings with [./settings.py](./settings.py)
+- Dark Mode is the default - modify style settings with [./style_settings.py](./style_settings.py)
 
 ## 🕷️Conventions and Algorithms
 
-- [`Linkage`](./hexapod/linkage.py) definition
-- [`VirtualHexapod`](./hexapod/models.py) definition
+- Definitions
+  - [`Linkage`](./hexapod/linkage.py)
+  - [`VirtualHexapod`](./hexapod/models.py#L238)
 - [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md)
-- [Finding ground contact points, tilt, and height of hexapod](./hexapod/ground_contact_solver.py)
-- [Translate and Rotate Hexapod to correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py)
-- Determining if the Hexapod should twist:
-  - [`find_if_might_twist`](./hexapod/models.py#L238)
-  - [`find_twist_frame`](./hexapod/models.py#L238)
+- [Finding ground contact points, tilt, and height of hexapod](./hexapod/ground_contact_solver.py#L45)
+- [Transforming hexapod to step on correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
+- Determining if the Hexapod should twist
+  - [`find_if_might_twist`](./hexapod/models.py#L228)
+  - [`find_twist_frame`](./hexapod/models.py#L254)
 
 ## 🕷️ Notes
 
