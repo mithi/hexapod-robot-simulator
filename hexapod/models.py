@@ -3,7 +3,8 @@
 import numpy as np
 from copy import deepcopy
 import json
-from settings import PRINT_MODEL_ON_UPDATE, PRINT_MODEL_POSE_ON_UPDATE
+from pprint import pprint
+from settings import PRINT_MODEL_ON_UPDATE
 from .linkage import Linkage
 from .ground_contact_solver import get_legs_on_ground
 from .templates.pose_template import HEXAPOD_POSE
@@ -301,32 +302,35 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
 
 
 def might_print_hexapod(hexapod, poses):
-    # Finally print result if you have to
-    if PRINT_MODEL_POSE_ON_UPDATE:
-        print("...Poses")
-        print(json.dumps(poses, indent=4))
-
     if not PRINT_MODEL_ON_UPDATE:
         return
 
     print("█████████████████████████████")
-    print("█ Hexapod Model             █")
+    print("█ start: Hexapod Model      █")
     print("█████████████████████████████")
 
-    print("...Vertices")
-    for point in hexapod.body.all_points:
-        print("  ", point)
-
-    print("...Legs")
-
-    for i, leg in enumerate(hexapod.legs):
-        print("leg #", i)
-        for point in leg.all_points:
-            print("  ", point)
-
+    print("............")
     print("...Dimensions")
+    print("............")
     print(json.dumps(hexapod.dimensions, indent=4))
 
+    print("............")
+    print("...Vertices")
+    print("............")
+    pprint(hexapod.body.all_points)
+
+    print("............")
+    print("...Legs")
+    print("............")
+    for i, leg in enumerate(hexapod.legs):
+        print(f"\nleg{i}_points = ")
+        pprint(leg.all_points)
+
+    print("............")
+    print("...Poses")
+    print("............")
+    print(json.dumps(poses, indent=4))
+
     print("█████████████████████████████")
-    print("█ End Hexapod Model         █")
+    print("█ end: Hexapod Model        █")
     print("█████████████████████████████")
