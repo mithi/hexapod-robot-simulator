@@ -54,7 +54,7 @@ def legs_too_short(legs):
 def angle_above_limit(angle, angle_range, leg_name, angle_name):
     if np.abs(angle) > angle_range:
         alert_msg = f"The {angle_name} (of {leg_name} leg) required\n\
-            to do this pose is above the range of motion.\n\
+            to do this pose is beyond the range of motion.\n\
             Required: {angle} degrees. Limit: {angle_range} degrees."
         return True, alert_msg
 
@@ -126,15 +126,18 @@ def might_print_ik(poses, ik_parameters, hexapod):
     print("█████████████████████████████")
 
     print(".....................")
-    print("... ik_parameters: ")
+    print("... hexapod dimensions: ")
     print(".....................")
+    print(json.dumps(hexapod.dimensions, indent=4))
 
+    print(".....................")
+    print("... ik parameters: ")
+    print(".....................")
     print(json.dumps(ik_parameters, indent=4))
 
     print(".....................")
     print("... poses: ")
     print(".....................")
-
     print(json.dumps(poses, indent=4))
 
     print("█████████████████████████████")
