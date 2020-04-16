@@ -73,7 +73,6 @@ Running on http://127.0.0.1:8050/
 
 ## 🕷️ Screenshots
 
-
 | ![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-screenshot.png)|
 |---|
 | ![IK](https://mithi.github.io/robotics-blog/v2-ik-screenshot.png)|
