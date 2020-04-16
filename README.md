@@ -5,8 +5,13 @@
 - A bare minimum browser-based hexapod robot simulator built from first principles 🕷️
 - If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi). 💕
 
-|![Dark Demo 1](https://mithi.github.io/robotics-blog/v2-hexapod-1.gif)|![Light Demo](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Dark Demo 2](https://mithi.github.io/robotics-blog/v2-hexapod-2.gif)|
-|---------|---------|---------|
+| . | . | . | . |
+|---------|---------|---------|---------|
+|![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|![Leg pattern movements](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|![Customizing Hexapod Dimensions](https://mithi.github.io/robotics-blog/robot-only-x3.gif)|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
+
+|![Dark Demo 1](https://mithi.github.io/robotics-blog/v2-hexapod-1.gif)|![Dark Demo 2](https://mithi.github.io/robotics-blog/v2-hexapod-2.gif)|
+|---------|---------|
+| . | . |
 
 | STATUS | FEATURE   | DESCRIPTION  |
 |---|-----------|--------------|
