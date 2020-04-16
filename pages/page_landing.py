@@ -1,7 +1,7 @@
 import dash_html_components as html
 
 img = html.Img(
-    src="https://mithi.github.io/robotics-blog/robot-only-x1.gif",
+    src="https://mithi.github.io/robotics-blog/v2-hexapod-1.gif",
     style={"width": "100%", "height": "auto"},
 )
 
