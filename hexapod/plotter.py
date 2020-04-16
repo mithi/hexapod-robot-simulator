@@ -11,7 +11,7 @@ class HexapodPlot:
         pass
 
     def _draw_hexapod(self, fig, hexapod):
-        # body
+        # Body
         points = hexapod.body.vertices + [hexapod.body.vertices[0]]
 
         # Body Surface Mesh
@@ -43,7 +43,7 @@ class HexapodPlot:
 
         # Hexapod Support Polygon
         # Draw a mesh for body contact on ground
-        dz = -1  # mesh must be slightly below ground
+        dz = -1  # Mesh must be slightly below ground
         ground_contacts = hexapod.ground_contacts
         fig["data"][10]["x"] = [point.x for point in ground_contacts]
         fig["data"][10]["y"] = [point.y for point in ground_contacts]

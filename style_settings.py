@@ -40,6 +40,7 @@ if DARKMODE:
 # ***************************************
 # DAQ SLIDER INPUT WIDGET
 # ***************************************
+IK_SLIDER_SIZE = 100
 
 SLIDER_THEME = {
     "dark": DARKMODE,

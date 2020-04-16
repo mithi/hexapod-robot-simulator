@@ -65,13 +65,13 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
     try:
         poses, hexapod = inverse_kinematics_update(hexapod, ik_parameters)
     except Exception as alert:
-        return figure, helpers.make_alert_message(str(alert))
+        return figure, helpers.make_alert_message(alert)
 
     if RECOMPUTE_HEXAPOD:
         try:
             hexapod = recompute_hexapod(dimensions, ik_parameters, poses)
         except Exception as alert:
-            return figure, helpers.make_alert_message(str(alert))
+            return figure, helpers.make_alert_message(alert)
 
     BASE_PLOTTER.update(figure, hexapod)
     helpers.change_camera_view(figure, relayout_data)
