@@ -22,7 +22,6 @@ def make_pose(alpha, beta, gamma):
 
 
 def change_camera_view(figure, relayout_data):
-    # Use current camera view to display plot
     if relayout_data and "scene.camera" in relayout_data:
         camera = relayout_data["scene.camera"]
         BASE_PLOTTER.change_camera_view(figure, camera)
@@ -48,22 +47,18 @@ def make_poses_message(poses):
 +----------------+------------+------------+------------+
 | leg name       | coxia      | femur      | tibia      |
 +----------------+------------+------------+------------+"""
+
     for pose in poses.values():
         name = pose["name"]
         coxia = pose["coxia"]
         femur = pose["femur"]
         tibia = pose["tibia"]
-        message += (
-            f"\n| {name:14} | {coxia:<+10.2f} | {femur:<+10.2f} | {tibia:<+10.2f} |"
-        )
+        row = f"\n| {name:14} | {coxia:<+10.2f} | {femur:<+10.2f} | {tibia:<+10.2f} |"
+        message += row
 
-    message += "\n+----------------+------------+------------+------------+"
-    return make_monospace(message)
+    last_row = "\n+----------------+------------+------------+------------+"
+    return make_monospace(message + last_row)
 
 
 def make_alert_message(alert):
-    return make_monospace(
-        f"""
-❗❗❗ALERT❗❗❗
-⚠️ {alert} 🔴"""
-    )
+    return make_monospace(f"❗❗❗ALERT❗❗❗\n⚠️ {alert} 🔴")
