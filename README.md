@@ -7,7 +7,7 @@
 
 |  |  |  |  |
 |---------|---------|---------|---------|
-|![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-1.gif" width="550"/>|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-2.gif" width="500"/>|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
+|![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-1.gif" width="550"/>|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-2.gif" width="500"/>|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x2.gif)|
 
 | STATUS | FEATURE   | DESCRIPTION  |
 |---|-----------|--------------|
@@ -72,7 +72,6 @@ Running on http://127.0.0.1:8050/
 - [ ] ❗[All](https://github.com/mithi/hexapod-robot-simulator/issues)
 
 ## 🕷️ Screenshots
-
 
 | ![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-screenshot.png)|
 |---|
