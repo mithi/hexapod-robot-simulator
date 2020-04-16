@@ -7,7 +7,7 @@
 
 | . | . | . | . |
 |---------|---------|---------|---------|
-|![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-1.gif" height="125" width="150"/>|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-2.gif" height="140" width="150"/>|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
+|![Twisting turning and tilting](https://mithi.github.io/robotics-blog/robot-only-x1.gif)|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-1.gif" height="220" width="300"/>|<img src="https://mithi.github.io/robotics-blog/v2-hexapod-2.gif" height="245" width="300"/>|![Adjusting camera view](https://mithi.github.io/robotics-blog/robot-only-x4.gif)|
 
 | STATUS | FEATURE   | DESCRIPTION  |
 |---|-----------|--------------|
