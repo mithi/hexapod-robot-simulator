@@ -12,9 +12,6 @@ from .points import Point, dot, get_unit_normal, is_point_inside_triangle
 
 
 def get_legs_on_ground(legs):
-    def within_thresh(a, b, tol=2):
-        return np.abs(a - b) < tol
-
     trio = three_ids_of_ground_contacts(legs)
 
     # This pose is unstable, The hexapod has no balance
@@ -25,17 +22,18 @@ def get_legs_on_ground(legs):
     n = get_unit_normal(p0, p1, p2)
 
     # Note: using p0, p1 or p2 should yield the same result
-    cog_from_ground = -dot(n, p0)
+    # height from cog to ground
+    height = -dot(n, p0)
 
     legs_on_ground = []
 
     # Get all contacts of the same height
     for leg in legs:
-        ground_contact = -dot(n, leg.ground_contact())
-        if within_thresh(ground_contact, cog_from_ground):
+        _height = -dot(n, leg.ground_contact())
+        if np.isclose(height, _height, atol=1):
             legs_on_ground.append(leg)
 
-    return legs_on_ground, n, cog_from_ground
+    return legs_on_ground, n, height
 
 
 # This function takes the legs of the hexapod
