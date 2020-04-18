@@ -1,4 +1,8 @@
-# This module holds the widgets for the inverse kinematics page
+# Widgets used to set the inverse kinematics parameters
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input
+import dash_daq
 from style_settings import (
     SLIDER_THEME,
     SLIDER_HANDLE_COLOR,
@@ -12,11 +16,6 @@ from settings import (
     LEG_STANCE_MAX_ANGLE,
     SLIDER_ANGLE_RESOLUTION,
 )
-
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input
-import dash_daq
 
 HEADER = html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**"))
 IK_INPUT_IDs = [
@@ -96,10 +95,7 @@ divs2 = [div_sl, div_rx, div_ry, div_rz]
 sliders_row1 = [html.Div(div, style=ik_style) for div in divs1]
 sliders_row2 = [html.Div(div, style=ik_style) for div in divs2]
 
-section_row1 = html.Div(
-    sliders_row1, style={"display": "flex", "flex-direction": "row"}
-)
-section_row2 = html.Div(
-    sliders_row2, style={"display": "flex", "flex-direction": "row"}
-)
+section_style = {"display": "flex", "flex-direction": "row"}
+section_row1 = html.Div(sliders_row1, style=section_style)
+section_row2 = html.Div(sliders_row2, style=section_style)
 SECTION_IK = html.Div([HEADER, section_row1, section_row2])
