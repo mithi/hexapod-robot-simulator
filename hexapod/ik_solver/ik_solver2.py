@@ -1,3 +1,6 @@
+# Please look at the discussion of the Inverse Kinematics algorithm
+# As detailed in the README of this directory
+
 from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
 import numpy as np
 from copy import deepcopy
@@ -14,7 +17,6 @@ from hexapod.ik_solver.helpers import (
     might_print_ik,
     might_print_points,
 )
-from hexapod.const import HEXAPOD_POSE
 from hexapod.points import (
     Point,
     length,
@@ -32,6 +34,21 @@ from hexapod.ik_solver.shared import (
     find_twist_frame,
     compute_twist_wrt_to_world,
 )
+from hexapod.const import HEXAPOD_POSE
+
+# This function computes the joint angles required to
+# rotate and translate the hexapod given the parameters given
+# - rot_x, rot_y, rot_z are how the hexapod should be rotated
+# - percent_x, percent_y, percent_z are the shifts of the
+# center of gravity of the hexapod
+#
+# Where the hexapod contacts the ground at its initial state
+# will also be the final points of contact by the hexapod and the ground
+# unless the leg can't reach it.
+#
+# ❗❗❗IMPORTANT: The hexapod will be MODIFIED and returned along with
+# a dictionary of POSES containing the 18 computed angles
+# if the pose is impossible, the function will raise an error
 
 
 def inverse_kinematics_update(hexapod, ik_parameters):
@@ -39,6 +56,31 @@ def inverse_kinematics_update(hexapod, ik_parameters):
 
 
 class IKSolver:
+    __slots__ = [
+        "hexapod",
+        "params",
+        "poses",
+        "leg_x_axis",
+        "p0",
+        "p1",
+        "p2",
+        "p3",
+        "points",
+        "body_to_foot_vector",
+        "coxia_vector",
+        "unit_coxia_vector",
+        "coxia_to_foot_vector2d",
+        "d",
+        "alpha",
+        "beta",
+        "gamma",
+        "leg_name",
+        "legs_up_in_the_air",
+        "body_contact",
+        "foot_tip",
+        "twist_frame",
+    ]
+
     def __init__(self, hexapod, ik_parameters):
         self.hexapod = hexapod
         self.params = ik_parameters
