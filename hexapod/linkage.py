@@ -5,7 +5,7 @@
 # note that at neutral position:
 #  link b and link c are perpendicular to each other
 #  link a and link b form a straight line
-#  link a coincide with x axis
+#  link a and the leg x axis are aligned
 #
 # alpha - the angle linkage a makes with x_axis about z axis
 # beta - the angle that linkage a makes with linkage b
@@ -68,6 +68,24 @@ from .points import (
 
 class Linkage:
     POINT_NAMES = ["coxia", "femur", "tibia"]
+    __slots__ = [
+        "a",
+        "b",
+        "c",
+        "alpha",
+        "beta",
+        "gamma",
+        "coxia_axis",
+        "new_origin",
+        "name",
+        "id",
+        "all_points",
+        "ground_contact_point",
+        "p0",
+        "p1",
+        "p2",
+        "p3",
+    ]
 
     def __init__(
         self,
@@ -82,17 +100,17 @@ class Linkage:
         name=None,
         id_number=None,
     ):
-        self._a = a
-        self._b = b
-        self._c = c
-        self._new_origin = new_origin
-        self._coxia_axis = coxia_axis
+        self.a = a
+        self.b = b
+        self.c = c
+        self.new_origin = new_origin
+        self.coxia_axis = coxia_axis
         self.id = id_number
         self.name = name
         self.change_pose(alpha, beta, gamma)
 
     def coxia_angle(self):
-        return self._alpha
+        return self.alpha
 
     def coxia_point(self):
         return self.p1
@@ -107,19 +125,19 @@ class Linkage:
         return self.ground_contact_point
 
     def change_pose(self, alpha, beta, gamma):
-        self._alpha = alpha
-        self._beta = beta
-        self._gamma = gamma
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
 
         # frame_ab is the pose of frame_b wrt frame_a
-        frame_01 = frame_yrotate_xtranslate(theta=-self._beta, x=self._a)
-        frame_12 = frame_yrotate_xtranslate(theta=90 - self._gamma, x=self._b)
-        frame_23 = frame_yrotate_xtranslate(theta=0, x=self._c)
+        frame_01 = frame_yrotate_xtranslate(theta=-self.beta, x=self.a)
+        frame_12 = frame_yrotate_xtranslate(theta=90 - self.gamma, x=self.b)
+        frame_23 = frame_yrotate_xtranslate(theta=0, x=self.c)
 
         frame_02 = np.matmul(frame_01, frame_12)
         frame_03 = np.matmul(frame_02, frame_23)
         new_frame = frame_zrotate_xytranslate(
-            self._coxia_axis + self._alpha, self._new_origin.x, self._new_origin.y
+            self.coxia_axis + self.alpha, self.new_origin.x, self.new_origin.y
         )
 
         # find points wrt to body contact point
@@ -129,7 +147,7 @@ class Linkage:
         p3 = p0.get_point_wrt(frame_03)
 
         # find points wrt to center of gravity
-        self.p0 = deepcopy(self._new_origin)
+        self.p0 = deepcopy(self.new_origin)
         self.p0.name += "-body-contact"
         self.p1 = p1.get_point_wrt(new_frame, name=self.name + "-coxia")
         self.p2 = p2.get_point_wrt(new_frame, name=self.name + "-femur")
@@ -139,14 +157,11 @@ class Linkage:
         self.ground_contact_point = self.compute_ground_contact()
 
     def update_leg_wrt(self, frame, height):
-        self.p0.update_point_wrt(frame, height)
-        self.p1.update_point_wrt(frame, height)
-        self.p2.update_point_wrt(frame, height)
-        self.p3.update_point_wrt(frame, height)
+        for point in self.all_points:
+            point.update_point_wrt(frame, height)
 
     def compute_ground_contact(self):
         # ❗IMPORTANT: Verify if this assumption is correct
-        # Which has the most negative z? p0, p1, p2, or p3?
         ground_contact = self.p3
         for point in reversed(self.all_points):
             if point.z < ground_contact.z:
@@ -155,16 +170,31 @@ class Linkage:
         return ground_contact
 
     def __repr__(self):
-        leg_string = f"""\nLinkage(a={self._a}, b={self._b}, c={self._c}, alpha={self._alpha}, beta={self._beta},gamma={self._gamma}, new_origin={self._new_origin}, new_axis={self._coxia_axis}, id_number={self.id}, name={self.name})\n"""
-        leg_string += f"LEG NAME: {self.name} \n"
+        leg_string = make_linkage_repr(self)
+        leg_string += f"Points of {self.name} leg:\n"
 
         for point in self.all_points:
-            leg_string += f"{point} \n"
+            leg_string += f"  {point}\n"
 
-        leg_string += f"ground contact: {self.ground_contact()} \n"
-
+        leg_string += f"  ground contact: {self.ground_contact()}\n"
         return leg_string
 
+
+def make_linkage_repr(leg):
+    return f"""Linkage(
+  a={leg.a},
+  b={leg.b},
+  c={leg.c},
+  alpha={leg.alpha},
+  beta={leg.beta},
+  gamma={leg.gamma},
+  new_axis={leg.coxia_axis},
+  id_number={leg.id},
+  name='{leg.name}',
+  new_origin={leg.new_origin},
+)
+
+"""
 
 #
 #          /*
