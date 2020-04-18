@@ -65,6 +65,7 @@ class Hexagon:
         "right-back",
     ]
     COXIA_AXES = [0, 45, 135, 180, 225, 315]
+    __slots__ = ["f", "m", "s", "cog", "head", "vertices", "all_points"]
 
     def __init__(self, f, m, s):
         self.f = f
@@ -90,6 +91,23 @@ class Hexagon:
 # ..........................................
 class VirtualHexapod:
     LEG_COUNT = 6
+    __slots__ = [
+        "body",
+        "legs",
+        "dimensions",
+        "coxia",
+        "femur",
+        "tibia",
+        "front",
+        "side",
+        "mid",
+        "body_rotation_frame",
+        "ground_contacts",
+        "n_axis",
+        "x_axis",
+        "y_axis",
+        "z_axis",
+    ]
 
     def __init__(self, dimensions=None):
         self._store_attributes(dimensions)
