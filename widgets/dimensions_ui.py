@@ -1,10 +1,10 @@
-# Widgets used to control the dimensions of the hexapod
+# Widgets used to set the dimensions of the hexapod
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
 from .sectioning import make_section_type3
-from style_settings import NUMBER_INPUT_STYLE
 from settings import INPUT_DIMENSIONS_RESOLUTION
+from style_settings import NUMBER_INPUT_STYLE
 
 HEADER = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
 INPUT_DIMENSIONS_IDs = [

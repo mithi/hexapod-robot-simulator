@@ -1,10 +1,11 @@
 from hexapod.points import Point
 
-description = "K Random Pose #1"
+description = "Kinematics Random Pose #1"
 
 # ********************************
 # Dimensions
 # ********************************
+
 given_dimensions = {
     "front": 75,
     "side": 100,
@@ -14,10 +15,10 @@ given_dimensions = {
     "tibia": 200,
 }
 
-
 # ********************************
 # Poses
 # ********************************
+
 given_poses = {
     0: {"coxia": -40, "femur": 19, "tibia": 6, "name": "right-middle", "id": 0},
     1: {"coxia": 33, "femur": 85, "tibia": -60, "name": "right-front", "id": 1},
@@ -31,6 +32,7 @@ given_poses = {
 # ********************************
 # Correct Body Points
 # ********************************
+
 correct_body_points = [
     Point(x=+97.74, y=+69.20, z=+123.97, name="right-middle"),
     Point(x=-3.68, y=+111.78, z=+103.96, name="right-front"),
@@ -41,7 +43,6 @@ correct_body_points = [
     Point(x=+0.00, y=+0.00, z=+159.78, name="center of gravity"),
     Point(x=-62.33, y=+70.26, z=+125.45, name="head"),
 ]
-
 
 # ********************************
 # Leg Points
@@ -88,7 +89,6 @@ leg5_points = [
     Point(x=+292.24, y=-43.54, z=+220.36, name="right-back-femur"),
     Point(x=+353.93, y=-139.96, z=+56.35, name="right-back-tibia"),
 ]
-
 
 correct_leg_points = [
     leg0_points,

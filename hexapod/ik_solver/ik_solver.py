@@ -17,7 +17,6 @@ from hexapod.ik_solver.helpers import (
     might_print_ik,
     might_print_points,
 )
-from hexapod.const import HEXAPOD_POSE
 from hexapod.points import (
     Point,
     length,
@@ -35,24 +34,12 @@ from hexapod.ik_solver.shared import (
     find_twist_frame,
     compute_twist_wrt_to_world,
 )
+from hexapod.const import HEXAPOD_POSE
 
 
-# This function computes the joint angles required to
-# rotate and translate the hexapod given the parameters given
-# - rot_x, rot_y, rot_z are how the hexapod should be rotated
-# - percent_x, percent_y, percent_z are the percent shift of the
-# center of gravity of the hexapod.
-#
-# Where the hexapod contacts the ground at its initial state
-# will also be the final points of contact by the hexapod and the ground
-# unless the leg can't reach it.
-#
-# ❗❗❗IMPORTANT: The hexapod will be MODIFIED and returned along with
-# a dictionary of POSES containing the 18 computed angles
-# if the pose is impossible, the the function will output a
-# hexapod whose body is detached from its legs, the body having the pose required
-# an ALERT message will also be returned explaining why the pose is impossible
-#
+# Please checkout the definition of the
+# inverse_kinematics_update function
+# as described in hexapod.ik_solver.ik_solver2
 poses = deepcopy(HEXAPOD_POSE)
 
 

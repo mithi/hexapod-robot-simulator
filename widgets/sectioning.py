@@ -1,5 +1,4 @@
-# HELPERS USED TO MAKE PARTIAL SECTIONS
-
+# Used to make html divisions
 import dash_html_components as html
 
 

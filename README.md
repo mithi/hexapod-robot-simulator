@@ -13,12 +13,12 @@
 |---|-----------|--------------|
 | 🎉 | Forward Kinematics | Given angles of each joint, what does the robot look like?|
 | 🎉 | Inverse Kinematics | What are the angles of each joint to make the robot look the way I want? Is it even possible? Why or why not? |
-| 🎉 | Uniform Movements | If all of the legs behaved the same way, what will the robot look like? |
+| 🎉 | Uniform Movements |  If all of the legs behaved the same way, how will the hexapod robot as a whole behave? |
 | 🎉 | Customizability | Set the dimensions and shape of the robot's body and legs. (6 parameters) |
 | 🎉 | Usability | Control the camera view, pan, tilt, zoom, whatever. |
-| 🎉 | Simplicity | Minimal dependencies. Depends solely on Numpy for calculations. Uses only Plotly-dash for plotting, Dash can be safely replaced if a better 3d plotting library is available. |
+| 🎉 | Simplicity | Minimal dependencies. Depends solely on Numpy for calculations. Uses only Plotly Dash for plotting, Dash can be safely replaced if a better 3d plotting library is available. |
 | ❗ | Stability Check (WIP) | If we pose the robot in a particular way, will it fall over? |
-| ❗ | Fast | Okay, it's not as fast as I wanted, but on a local server, it's okay |
+| ❗ | Fast | Okay, it's not as fast as I wanted, but when run locally, it's okay |
 | ❗ | Bug-free | Fine, right now there's still room for improvement |
 | ❗ | Well-tested | Yeah, I need to compile test cases first |
 
@@ -44,35 +44,40 @@ Running on http://127.0.0.1:8050/
 ```
 
 - Modify default settings with [./settings.py](./settings.py)
-- Dark Mode is the default - modify style settings with [./style_settings.py](./style_settings.py)
+- Dark Mode is the default - modify page styles with [./style_settings.py](./style_settings.py)
 
-## 🕷️Conventions and Algorithms
-
-- Definitions
-  - [`Linkage`](./hexapod/linkage.py)
-  - [`VirtualHexapod`](./hexapod/models.py#L238)
-- [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md)
-- [Finding ground contact points, tilt, and height of hexapod](./hexapod/ground_contact_solver.py#L45)
-- [Transforming hexapod to step on correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
-- Determining if the Hexapod should twist
-  - [`find_if_might_twist`](./hexapod/models.py#L228)
-  - [`find_twist_frame`](./hexapod/models.py#L254)
-
-## 🕷️ Notes
-
-- ❗Now live on https://hexapod-robot-simulator.herokuapp.com ! **BUT** I highly suggest that you run it on your own local server. When this application is run locally, it's pretty speedy! On the other hand, the link above is barely usable. Might convert this to to be a fully client-side javascript app later, maybe?
-
-- ❗This implementation uses matrices, **NOT** quaternions. I'm aware that quaternions is far superior in every single way. In the (un)forseeable future, maybe?
-
-## ⚠️ Known issues
+## ⚠️ Known Issues
 
 - [ ] ❗[Priorities](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3APRIORITY)
 - [ ] ❗[Help Wanted](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 - [ ] ❗[Bugs](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 - [ ] ❗[All](https://github.com/mithi/hexapod-robot-simulator/issues)
 
+## 🕷️Conventions and Algorithms
+
+- Definitions
+  - [`Linkage`](./hexapod/linkage.py)
+  - [`VirtualHexapod`](./hexapod/models.py#L238)
+- The [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md) used for this project
+- [How to find the ground contact points, tilt, and height of hexapod](./hexapod/ground_contact_solver.py#L45)
+- [How to make the hexapod step on correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
+- How to determine if the Hexapod should twist
+  - [`find_if_might_twist`](./hexapod/models.py#L228)
+  - [`find_twist_frame`](./hexapod/models.py#L254)
+
 ## 🕷️ Screenshots
 
 | ![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-screenshot.png)|
 |---|
 | ![IK](https://mithi.github.io/robotics-blog/v2-ik-screenshot.png)|
+
+
+## 🕷️ Notes
+
+- ❗Now live on https://hexapod-robot-simulator.herokuapp.com ! **BUT** (and a big one) I highly suggest that you run it locally. When run locally, it's pretty speedy! On the other hand, the link above is barely usable. Might convert this to to be a fully client-side Javascript app later, maybe?
+
+- ❗This implementation uses matrices, **NOT** quaternions. I'm aware that quaternions is far superior in every single way. In the (un)forseeable future, maybe?
+
+- ❗Frankly, [My IK algorithm](https://github.com/mithi/hexapod-robot-simulator/blob/master/hexapod/ik_solver/README.md) isn't all that great, it's just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It might not be the best, but it's the most intuitive that I can think of. If you want something closer to the the state-of-the-art, maybe try [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
+
+- I believe that the idea that it's best to be kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)

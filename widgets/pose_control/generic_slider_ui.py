@@ -2,7 +2,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 from hexapod.const import NAMES_LEG
 from widgets.sectioning import make_section_type4
-
 from widgets.pose_control.joint_input_maker import (
     make_all_joint_inputs,
     make_joint_slider_input,

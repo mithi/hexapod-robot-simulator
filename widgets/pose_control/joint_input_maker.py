@@ -1,6 +1,4 @@
-# This module is used to build the widgets for changing the joint angles
-# see also: widgets.pose_control directory
-
+# Used to build the widgets for changing the joint angles
 import dash_core_components as dcc
 import dash_daq
 from hexapod.const import NAMES_JOINT, NAMES_LEG
