@@ -46,7 +46,7 @@ Running on http://127.0.0.1:8050/
 - Modify default settings with [./settings.py](./settings.py)
 - Dark Mode is the default - modify page styles with [./style_settings.py](./style_settings.py)
 
-## ⚠️ Known issues
+## ⚠️ Known Issues
 
 - [ ] ❗[Priorities](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3APRIORITY)
 - [ ] ❗[Help Wanted](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
