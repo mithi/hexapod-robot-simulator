@@ -3,6 +3,7 @@ DARKMODE = True
 DARK_CSS_PATH = "https://codepen.io/mithi-the-encoder/pen/BaoBOKa.css"
 LIGHT_CSS_PATH = "https://codepen.io/mithi-the-encoder/pen/eYpObwK.css"
 
+
 # ***************************************
 # GLOBAL PAGE STYLE
 # ***************************************
@@ -15,8 +16,10 @@ GLOBAL_PAGE_STYLE = {
     "color": DARK_FONT_COLOR,
     "padding": "0em",
 }
+
 if not DARKMODE:
     GLOBAL_PAGE_STYLE = {"background": "#ffffff", "color": "#2c3e50", "padding": "0em"}
+
 
 # ***************************************
 # NUMBER FIELD INPUT WIDGET
@@ -40,6 +43,7 @@ if DARKMODE:
 # ***************************************
 # DAQ SLIDER INPUT WIDGET
 # ***************************************
+
 IK_SLIDER_SIZE = 100
 
 SLIDER_THEME = {
