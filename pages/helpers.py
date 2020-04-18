@@ -6,6 +6,11 @@ import json
 
 
 poses = deepcopy(HEXAPOD_POSE)
+poses_mgs_header = f"""
++----------------+------------+------------+------------+
+| leg name       | coxia      | femur      | tibia      |
++----------------+------------+------------+------------+"""
+poses_msg_last_row = "\n+----------------+------------+------------+------------+"
 
 
 def make_pose(alpha, beta, gamma):
@@ -43,10 +48,7 @@ def make_monospace(text):
 
 
 def make_poses_message(poses):
-    message = f"""
-+----------------+------------+------------+------------+
-| leg name       | coxia      | femur      | tibia      |
-+----------------+------------+------------+------------+"""
+    message = poses_mgs_header
 
     for pose in poses.values():
         name = pose["name"]
@@ -56,8 +58,7 @@ def make_poses_message(poses):
         row = f"\n| {name:14} | {coxia:<+10.2f} | {femur:<+10.2f} | {tibia:<+10.2f} |"
         message += row
 
-    last_row = "\n+----------------+------------+------------+------------+"
-    return make_monospace(message + last_row)
+    return make_monospace(message + poses_msg_last_row)
 
 
 def make_alert_message(alert):
