@@ -33,10 +33,10 @@ correct_body_points = [
     Point(x=-29.00, y=+96.75, z=+65.62, name="head"),
 ]
 
-
 # ********************************
 # Correct Leg Points
 # ********************************
+
 leg0_points = [
     Point(x=+116.86, y=+35.03, z=+65.62, name="right-middle-body-contact"),
     Point(x=+198.11, y=+18.03, z=+65.62, name="right-middle-coxia"),

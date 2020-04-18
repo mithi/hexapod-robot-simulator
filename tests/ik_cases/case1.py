@@ -3,6 +3,7 @@ description = "IK Random Pose #1"
 # ********************************
 # Dimensions
 # ********************************
+
 given_dimensions = {
     "front": 70,
     "side": 115,
@@ -15,6 +16,7 @@ given_dimensions = {
 # ********************************
 # IK Parameters
 # ********************************
+
 given_ik_parameters = {
     "hip_stance": 7,
     "leg_stance": 32,
@@ -29,6 +31,7 @@ given_ik_parameters = {
 # ********************************
 # Poses
 # ********************************
+
 correct_poses = {
     0: {
         "name": "right-middle",
