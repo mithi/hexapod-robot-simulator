@@ -66,7 +66,7 @@ Running on http://127.0.0.1:8050/
 
 - ❗Frankly, [My IK algorithm](https://github.com/mithi/hexapod-robot-simulator/blob/master/hexapod/ik_solver/README.md) isn't all that great, it's just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It might not be the best, but it's the most intuitive that I can think of. If you want something closer to the the state-of-the-art, maybe try [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
 
-- I believe that believing that we should be kind to each other shouldn't be controversial. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
+- I believe that the idea that it's best to be kind to one another shouldn't be controversial. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
 
 ## ⚠️ Known issues
 
