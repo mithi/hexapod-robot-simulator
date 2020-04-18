@@ -31,7 +31,7 @@ HIP_STANCE_MAX_ANGLE = 45
 # Makes widgets only start updating when you release the mouse button
 UPDATE_MODE = "drag"
 
-DEBUG_MODE = True
+DEBUG_MODE = False
 ASSERTION_ENABLED = False
 
 # The inverse kinematics solver already updates the points of the hexapod
