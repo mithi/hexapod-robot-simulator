@@ -10,6 +10,11 @@ from settings import (
     UI_GRAPH_HEIGHT,
 )
 
+# ......................
+# Make uniform layout
+# Graph on the right, controls on the left
+# ......................
+
 
 def make_page_layout(graph_name, section_controls):
     layout = html.Div(
@@ -25,9 +30,10 @@ def make_page_layout(graph_name, section_controls):
     return layout
 
 
-# -------------------
-# CALLBACK TO UPDATE HEXAPOD DIMENSIONS
-# -------------------
+# ......................
+# Update hexapod dimensions
+# ......................
+
 ID_DIMENSIONS_SECTION = "hexapod-dimensions-values"
 SECTION_HIDDEN_BODY_DIMENSIONS = html.Div(
     id=ID_DIMENSIONS_SECTION, style={"display": "none"}
