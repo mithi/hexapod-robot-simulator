@@ -3,10 +3,14 @@
 # and finding properties and relationships of vectors
 # computing reference frames
 from settings import DEBUG_MODE
+from math import sqrt, radians, sin, cos, degrees, acos, isnan
+
 import numpy as np
 
 
 class Point:
+    __slots__ = ("x", "y", "z", "name")
+
     def __init__(self, x, y, z, name=None):
         self.x = x
         self.y = y
@@ -36,6 +40,10 @@ class Point:
     def move_up(self, z):
         self.z += z
 
+    @property
+    def vec(self):
+        return self.x, self.y, self.z
+
     def __repr__(self):
         return f"Point(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f}, name='{self.name}')"
 
@@ -43,11 +51,11 @@ class Point:
         return repr(self)
 
     def __eq__(self, other):
-        equal_x = np.isclose(self.x, other.x, atol=0.01)
-        equal_y = np.isclose(self.y, other.y, atol=0.01)
-        equal_z = np.isclose(self.z, other.z, atol=0.01)
+        if not isinstance(other, Point):
+            return False
+        equal_val = np.allclose(self.vec, other.vec, atol=0.01)
         equal_name = self.name == other.name
-        return equal_x and equal_y and equal_z and equal_name
+        return equal_val and equal_name
 
 
 # *********************************************
@@ -74,10 +82,9 @@ def is_triangle(a, b, c):
 # https://www.maplesoft.com/support/help/Maple/view.aspx?path=MathApps%2FProjectionOfVectorOntoPlane
 # u is the vector, n is the plane normal
 def project_vector_onto_plane(u, n):
-    s = dot(u, n) / (length(n) ** 2)
+    s = dot(u, n) / dot(n, n)
     temporary_vector = scalar_multiply(n, s)
-    vector = subtract_vectors(u, temporary_vector)
-    return vector
+    return subtract_vectors(u, temporary_vector)
 
 
 def might_print_angle_between_error(a, b):
@@ -92,11 +99,10 @@ def might_print_angle_between_error(a, b):
 
 def angle_between(a, b):
     # returns the shortest angle between two vectors
-    a_dot_b = dot(a, b)
-    cos_theta = a_dot_b / (length(a) * length(b))
-    theta = np.degrees(np.arccos(cos_theta))
+    cos_theta = dot(a, b) / sqrt(dot(a, a) * dot(b, b))
+    theta = degrees(acos(cos_theta))
 
-    if np.isnan(theta):
+    if isnan(theta):
         might_print_angle_between_error(a, b)
         return 0.0
 
@@ -104,8 +110,8 @@ def angle_between(a, b):
 
 
 def angle_opposite_of_last_side(a, b, c):
-    ratio = (a ** 2 + b ** 2 - c ** 2) / (2 * a * b)
-    return np.degrees(np.arccos(ratio))
+    ratio = (a * a + b * b - c * c) / (2 * a * b)
+    return degrees(acos(ratio))
 
 
 # Check if angle from vector a to b about normal n is positive
@@ -116,7 +122,6 @@ def is_counter_clockwise(a, b, n):
 
 # https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
 def frame_to_align_vector_a_to_b(a, b):
-
     v = cross(a, b)
     s = length(v)
 
@@ -129,7 +134,7 @@ def frame_to_align_vector_a_to_b(a, b):
 
     # skew symmetric cross product
     vx = skew(v)
-    d = (1 - c) / s / s
+    d = (1 - c) / (s * s)
     r = i + vx + np.matmul(vx, vx) * d
 
     # r00 r01 r02 0
@@ -180,9 +185,9 @@ def rotz(theta):
 
 
 def _return_sin_and_cos(theta):
-    d = np.radians(theta)
-    c = np.cos(d)
-    s = np.sin(d)
+    d = radians(theta)
+    c = cos(d)
+    s = sin(d)
     return c, s
 
 
@@ -192,7 +197,7 @@ def vector_from_to(a, b):
 
 
 def scale(v, d):
-    return Point(v.x / d, +v.y / d, v.z / d)
+    return Point(v.x / d, v.y / d, v.z / d)
 
 
 def dot(a, b):
@@ -207,7 +212,7 @@ def cross(a, b):
 
 
 def length(v):
-    return np.sqrt(v.x ** 2 + v.y ** 2 + v.z ** 2)
+    return sqrt(dot(v, v))
 
 
 def add_vectors(a, b):
