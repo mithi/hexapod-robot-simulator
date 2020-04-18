@@ -3,15 +3,9 @@ from hexapod.points import is_counter_clockwise, angle_between, rotz
 
 def update_hexapod_points(hexapod, leg_id, points):
     leg = hexapod.legs[leg_id]
-    points[0].name = leg.p0.name
-    points[1].name = leg.p1.name
-    points[2].name = leg.p2.name
-    points[3].name = leg.p3.name
-
-    leg.p0 = points[0]
-    leg.p1 = points[1]
-    leg.p2 = points[2]
-    leg.p3 = points[3]
+    for leg_point, new_point in zip(leg.all_points, points):
+        new_point.name = leg_point.name
+        leg_point = new_point
 
 
 def find_twist_frame(hexapod, unit_coxia_vector):
