@@ -17,7 +17,6 @@ from hexapod.ik_solver.helpers import (
     might_print_ik,
     might_print_points,
 )
-from hexapod.const import HEXAPOD_POSE
 from hexapod.points import (
     Point,
     length,
@@ -35,6 +34,7 @@ from hexapod.ik_solver.shared import (
     find_twist_frame,
     compute_twist_wrt_to_world,
 )
+from hexapod.const import HEXAPOD_POSE
 
 
 # Please checkout the definition of the
