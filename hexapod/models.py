@@ -74,7 +74,7 @@ class Hexagon:
         self.m = m
         self.s = s
 
-        self.cog = Point(0, 0, 0, name="center of gravity")
+        self.cog = Point(0, 0, 0, name="center-of-gravity")
         self.head = Point(0, s, 0, name="head")
         self.vertices = [
             Point(m, 0, 0, name=Hexagon.VERTEX_NAMES[0]),
@@ -236,20 +236,22 @@ class VirtualHexapod:
 # HELPER FUNCTION
 # ..........................................
 def get_hip_angle(leg_id, poses):
-    try:
+
+    if leg_id in poses:
         return poses[leg_id]["coxia"]
-    except KeyError:
-        try:
-            return poses[str(leg_id)]["coxia"]
-        except KeyError:
-            return 0
+
+    if str(leg_id) in poses:
+        return poses[str(leg_id)]["coxia"]
+
+    # ❗Error will silently pass, is this ok?
+    return 0.0
 
 
 def find_if_might_twist(hexapod, poses):
     # hexapod will only definitely NOT twist
     # if only two of the legs (currently on the ground)
     # has twisted its hips/coxia
-    # i.e. only 2 legs with ground contact points have changed alpha angle
+    # i.e. only 2 legs with ground contact points have changed their alpha angles
     # i.e. we don't care if the legs which are not on the ground twisted its hips
     def _find_leg_id(leg_point):
         right_or_left, front_mid_or_back, _ = leg_point.name.split("-")
