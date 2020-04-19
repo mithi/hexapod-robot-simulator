@@ -1,5 +1,5 @@
-# The module contains the model of a hexapod
-# Use it to manipulate the pose of the hexapod
+# This module contains the model of a hexapod
+# It's used to manipulate the pose of the hexapod
 import numpy as np
 from copy import deepcopy
 import json
@@ -89,7 +89,7 @@ class Hexagon:
 
 
 # ..........................................
-# HEXAPOD MODEL
+# The hexapod model
 # ..........................................
 class VirtualHexapod:
     LEG_COUNT = 6
@@ -148,7 +148,7 @@ class VirtualHexapod:
         might_print_hexapod(self, poses)
 
     def detach_body_rotate_and_translate(self, rx, ry, rz, tx, ty, tz):
-        # Detaches the body of the hexapod from the legs
+        # Detach the body of the hexapod from the legs
         # then rotate and translate body as if a separate entity
         frame = frame_rotxyz(rx, ry, rz)
         self.body_rotation_frame = frame
@@ -183,19 +183,13 @@ class VirtualHexapod:
     def _store_attributes(self, dimensions):
         self.body_rotation_frame = None
         self.dimensions = dimensions
-        f = dimensions["front"]
-        s = dimensions["side"]
-        m = dimensions["middle"]
-        a = dimensions["coxia"]
-        b = dimensions["femur"]
-        c = dimensions["tibia"]
-        self.coxia = a
-        self.femur = b
-        self.tibia = c
-        self.front = f
-        self.mid = m
-        self.side = s
-        self.body = Hexagon(f, m, s)
+        self.coxia = dimensions["coxia"]
+        self.femur = dimensions["femur"]
+        self.tibia = dimensions["tibia"]
+        self.front = dimensions["front"]
+        self.mid = dimensions["middle"]
+        self.side = dimensions["side"]
+        self.body = Hexagon(self.front, self.mid, self.side)
 
     def _init_legs(self):
         self.legs = []
@@ -233,7 +227,7 @@ class VirtualHexapod:
 
 
 # ..........................................
-# HELPER FUNCTION
+# Helper functions
 # ..........................................
 def get_hip_angle(leg_id, poses):
     if leg_id in poses:
@@ -246,8 +240,8 @@ def get_hip_angle(leg_id, poses):
 
 
 def find_if_might_twist(hexapod, poses):
-    # hexapod will only definitely NOT twist
-    # if only two of the legs (currently on the ground)
+    # The hexapod will only definitely NOT twist
+    # if only two of the legs that's currently on the ground
     # has twisted its hips/coxia
     # i.e. only 2 legs with ground contact points have changed their alpha angles
     # i.e. we don't care if the legs which are not on the ground twisted its hips
@@ -293,8 +287,8 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
             break
 
     # We don't know how to rotate if we don't
-    # know at least one point that's contacting the ground
-    # before and after the movement
+    # know at least one point that's on the ground
+    # before and after the movement,
     # so we assume that the hexapod didn't move
     if same_point_name is None:
         return np.eye(4)
