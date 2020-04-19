@@ -159,7 +159,6 @@ class Linkage:
 
     def compute_ground_contact(self):
         # ❗IMPORTANT: Verify if this assumption is correct
-        # Which has the most negative z? p0, p1, p2, or p3?
         ground_contact = self.p3
         for point in reversed(self.all_points):
             if point.z < ground_contact.z:
