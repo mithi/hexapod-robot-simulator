@@ -11,7 +11,7 @@
 
 | STATUS | FEATURE   | DESCRIPTION  |
 |---|-----------|--------------|
-| 🎉 | Forward Kinematics | Given angles of each joint, what does the robot look like?|
+| 🎉 | Forward Kinematics | Given the angles of each joint, what does the robot look like?|
 | 🎉 | Inverse Kinematics | What are the angles of each joint to make the robot look the way I want? Is it even possible? Why or why not? |
 | 🎉 | Uniform Movements |  If all of the legs behaved the same way, how will the hexapod robot as a whole behave? |
 | 🎉 | Customizability | Set the dimensions and shape of the robot's body and legs. (6 parameters) |
@@ -59,9 +59,9 @@ Running on http://127.0.0.1:8050/
   - [`Linkage`](./hexapod/linkage.py)
   - [`VirtualHexapod`](./hexapod/models.py#L238)
 - The [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md) used for this project
-- [How to find the ground contact points, tilt, and height of hexapod](./hexapod/ground_contact_solver.py#L45)
-- [How to make the hexapod step on correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
-- How to determine if the Hexapod should twist
+- [How to find the ground contact points, tilt, and height of the hexapod](./hexapod/ground_contact_solver.py#L45)
+- [How to make the hexapod step on the correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
+- How to determine if the hexapod should twist and by how much
   - [`find_if_might_twist`](./hexapod/models.py#L228)
   - [`find_twist_frame`](./hexapod/models.py#L254)
 
@@ -81,7 +81,7 @@ Running on http://127.0.0.1:8050/
 
 - I believe that the idea that it's best to be kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
 
-## 🤗Contributors
+## 🤗 Contributors
 
 - [@mithi](https://github.com/mithi/)
 - [@philippeitis](https://github.com/philippeitis/)
