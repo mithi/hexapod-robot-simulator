@@ -5,10 +5,10 @@ from hexapod.points import Point
 from hexapod.ik_solver import ik_solver, ik_solver2
 from hexapod.ik_solver.shared import update_hexapod_points
 
-from tests.ik_cases import case1, case2
+from tests.ik_cases import case1, case2, case3
 from tests.helpers import assert_poses_equal, assert_two_hexapods_equal
 
-CASES = [case1, case2]
+CASES = [case1, case2, case3]
 
 
 def assert_ik_solver(ik_function, case):
@@ -46,18 +46,10 @@ def test_shared_set_points():
         Point(1, 2, 3, "a"),
         Point(1, 2, 3, "b"),
         Point(1, 2, 3, "c"),
-        Point(1, 2, 3, "d")
+        Point(1, 2, 3, "d"),
     ]
 
     vh = VirtualHexapod(BASE_DIMENSIONS)
     update_hexapod_points(vh, 1, points)
-    for legpoint, point in zip(vh.legs[1].all_points, points):
-        assert legpoint == point
-
-
-def test_set_leg_point():
-    vh = VirtualHexapod(BASE_DIMENSIONS)
-    point = Point(1, 2, 3, "b")
-    vh.legs[0].p0 = Point(1, 2, 3, "b")
-    assert vh.legs[0].p0 == point
-    assert vh.legs[0].all_points[0] == point
+    for leg_point, point in zip(vh.legs[1].all_points, points):
+        assert leg_point is point

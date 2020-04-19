@@ -36,7 +36,7 @@ class HexapodPlot:
         n = [i for i in range(4, 10)]
 
         for n, leg in zip(n, hexapod.legs):
-            points = [leg.p0, leg.p1, leg.p2, leg.p3]
+            points = leg.all_points
             fig["data"][n]["x"] = [point.x for point in points]
             fig["data"][n]["y"] = [point.y for point in points]
             fig["data"][n]["z"] = [point.z for point in points]

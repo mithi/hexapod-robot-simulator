@@ -11,7 +11,7 @@
 
 | STATUS | FEATURE   | DESCRIPTION  |
 |---|-----------|--------------|
-| 🎉 | Forward Kinematics | Given angles of each joint, what does the robot look like?|
+| 🎉 | Forward Kinematics | Given the angles of each joint, what does the robot look like?|
 | 🎉 | Inverse Kinematics | What are the angles of each joint to make the robot look the way I want? Is it even possible? Why or why not? |
 | 🎉 | Uniform Movements |  If all of the legs behaved the same way, how will the hexapod robot as a whole behave? |
 | 🎉 | Customizability | Set the dimensions and shape of the robot's body and legs. (6 parameters) |
@@ -57,20 +57,19 @@ Running on http://127.0.0.1:8050/
 
 - Definitions
   - [`Linkage`](./hexapod/linkage.py)
-  - [`VirtualHexapod`](./hexapod/models.py#L238)
+  - [`VirtualHexapod`](./hexapod/models.py#L94)
 - The [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md) used for this project
-- [How to find the ground contact points, tilt, and height of hexapod](./hexapod/ground_contact_solver.py#L45)
-- [How to make the hexapod step on correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
-- How to determine if the Hexapod should twist
-  - [`find_if_might_twist`](./hexapod/models.py#L228)
-  - [`find_twist_frame`](./hexapod/models.py#L254)
+- [How to find the ground contact points, tilt, and height of the hexapod](./hexapod/ground_contact_solver.py#L43)
+- [How to make the hexapod step on the correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
+- How to determine if the hexapod should twist and by how much
+  - [`find_if_might_twist`](./hexapod/models.py#L242)
+  - [`find_twist_frame`](./hexapod/models.py#L267)
 
 ## 🕷️ Screenshots
 
 | ![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-screenshot.png)|
 |---|
 | ![IK](https://mithi.github.io/robotics-blog/v2-ik-screenshot.png)|
-
 
 ## 🕷️ Notes
 
@@ -81,3 +80,8 @@ Running on http://127.0.0.1:8050/
 - ❗Frankly, [My IK algorithm](https://github.com/mithi/hexapod-robot-simulator/blob/master/hexapod/ik_solver/README.md) isn't all that great, it's just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It might not be the best, but it's the most intuitive that I can think of. If you want something closer to the the state-of-the-art, maybe try [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
 
 - I believe that the idea that it's best to be kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
+
+## 🤗 Contributors
+
+- [@mithi](https://github.com/mithi/)
+- [@philippeitis](https://github.com/philippeitis/)

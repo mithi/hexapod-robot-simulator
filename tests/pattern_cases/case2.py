@@ -29,7 +29,7 @@ correct_body_points = [
     Point(x=-116.86, y=-35.03, z=+65.62, name="left-middle"),
     Point(x=-33.27, y=-115.41, z=+65.62, name="left-back"),
     Point(x=+91.26, y=-78.09, z=+65.62, name="right-back"),
-    Point(x=+0.00, y=+0.00, z=+65.62, name="center of gravity"),
+    Point(x=+0.00, y=+0.00, z=+65.62, name="center-of-gravity"),
     Point(x=-29.00, y=+96.75, z=+65.62, name="head"),
 ]
 

@@ -1,3 +1,5 @@
+# Used for checking edge cases
+# and also for printing final results
 from settings import (
     PRINT_IK_LOCAL_LEG,
     ASSERTION_ENABLED,
@@ -21,7 +23,7 @@ def cant_reach_alert_msg(leg_name, problem):
         msg += f"Femur length of {leg_name} leg is too long."
     else:
         # blocking
-        msg = f"{leg_name} leg cannot reach it because the ground is blocking the path."
+        msg = f"The {leg_name} leg cannot reach it because the ground is blocking the path."
     return msg
 
 
@@ -74,7 +76,7 @@ def beta_gamma_not_in_range(beta, gamma, leg_name):
 
 
 def wrong_length_msg(leg_name, limb_name, limb_value):
-    return f"wrong {limb_name} vector length. {leg_name} coxia:{limb_value}"
+    return f"Wrong {limb_name} vector length. {leg_name} coxia:{limb_value}"
 
 
 def might_sanity_leg_lengths_check(hexapod, leg_name, points):
@@ -107,7 +109,7 @@ def might_sanity_beta_gamma_check(beta, gamma, leg_name, points):
     same_beta = np.isclose(np.abs(beta), result_beta, atol=1)
     assert same_beta, f"{leg_name} leg: expected: |{beta}|, found: {result_beta}"
 
-    # ❗❗IMPORTANT: Why is sometimes both are zero?
+    # ❗IMPORTANT: Sometimes both are zero. Is this wrong?
     femur_tibia_angle = angle_between(femur, tibia)
     is_90 = np.isclose(90, femur_tibia_angle + gamma, atol=1)
 
@@ -149,10 +151,7 @@ def might_print_points(points, leg_name):
     if not PRINT_IK_LOCAL_LEG:
         return
 
-    print()
     print(leg_name, "leg")
-    print(f"...p0: {points[0]}")
-    print(f"...p1: {points[1]}")
-    print(f"...p2: {points[2]}")
-    print(f"...p3: {points[3]}")
+    for i, point in enumerate(points):
+        print(f"...p{i}: {point}")
     print()
