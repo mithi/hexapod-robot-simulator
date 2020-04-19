@@ -57,13 +57,13 @@ Running on http://127.0.0.1:8050/
 
 - Definitions
   - [`Linkage`](./hexapod/linkage.py)
-  - [`VirtualHexapod`](./hexapod/models.py#L238)
+  - [`VirtualHexapod`](./hexapod/models.py#L94)
 - The [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md) used for this project
-- [How to find the ground contact points, tilt, and height of the hexapod](./hexapod/ground_contact_solver.py#L45)
+- [How to find the ground contact points, tilt, and height of the hexapod](./hexapod/ground_contact_solver.py#L43)
 - [How to make the hexapod step on the correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
 - How to determine if the hexapod should twist and by how much
-  - [`find_if_might_twist`](./hexapod/models.py#L228)
-  - [`find_twist_frame`](./hexapod/models.py#L254)
+  - [`find_if_might_twist`](./hexapod/models.py#L242)
+  - [`find_twist_frame`](./hexapod/models.py#L267)
 
 ## 🕷️ Screenshots
 
