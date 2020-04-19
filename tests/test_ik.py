@@ -42,10 +42,12 @@ def test_points_ik2():
 
 
 def test_shared_set_points():
-    points = [Point(1, 2, 3, "a"),
-    Point(1, 2, 3, "b"),
-    Point(1, 2, 3, "c"),
-    Point(1, 2, 3, "d")]
+    points = [
+        Point(1, 2, 3, "a"),
+        Point(1, 2, 3, "b"),
+        Point(1, 2, 3, "c"),
+        Point(1, 2, 3, "d")
+    ]
 
     vh = VirtualHexapod(BASE_DIMENSIONS)
     update_hexapod_points(vh, 1, points)
