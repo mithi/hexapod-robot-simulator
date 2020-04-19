@@ -5,15 +5,17 @@ from copy import deepcopy
 import json
 from pprint import pprint
 from settings import PRINT_MODEL_ON_UPDATE
-from .linkage import Linkage
-from .ground_contact_solver import get_legs_on_ground
-from .templates.pose_template import HEXAPOD_POSE
-from .points import (
+from hexapod.linkage import Linkage
+from hexapod.ground_contact_solver import get_legs_on_ground
+from hexapod.templates.pose_template import HEXAPOD_POSE
+from hexapod.points import (
     Point,
     frame_to_align_vector_a_to_b,
     frame_rotxyz,
     rotz,
 )
+
+from math import atan2, degrees, isclose
 
 
 # Dimensions f, s, and m
@@ -56,16 +58,16 @@ from .points import (
 #         x4         x5
 #
 class Hexagon:
-    VERTEX_NAMES = [
+    VERTEX_NAMES = (
         "right-middle",
         "right-front",
         "left-front",
         "left-middle",
         "left-back",
         "right-back",
-    ]
-    COXIA_AXES = [0, 45, 135, 180, 225, 315]
-    __slots__ = ["f", "m", "s", "cog", "head", "vertices", "all_points"]
+    )
+    COXIA_AXES = (0, 45, 135, 180, 225, 315)
+    __slots__ = ("f", "m", "s", "cog", "head", "vertices", "all_points")
 
     def __init__(self, f, m, s):
         self.f = f
@@ -91,7 +93,7 @@ class Hexagon:
 # ..........................................
 class VirtualHexapod:
     LEG_COUNT = 6
-    __slots__ = [
+    __slots__ = (
         "body",
         "legs",
         "dimensions",
@@ -107,9 +109,9 @@ class VirtualHexapod:
         "x_axis",
         "y_axis",
         "z_axis",
-    ]
+    )
 
-    def __init__(self, dimensions=None):
+    def __init__(self, dimensions):
         self._store_attributes(dimensions)
         self._init_legs()
         self._init_local_frame()
@@ -120,7 +122,7 @@ class VirtualHexapod:
         old_contacts = deepcopy(self.ground_contacts)
 
         # Update leg poses
-        for _, pose in poses.items():
+        for pose in poses.values():
             i = pose["id"]
             self.legs[i].change_pose(pose["coxia"], pose["femur"], pose["tibia"])
 
@@ -172,9 +174,9 @@ class VirtualHexapod:
         pose[4]["coxia"] = -hip_stance  # left_back
         pose[5]["coxia"] = hip_stance  # right_back
 
-        for key in pose.keys():
-            pose[key]["femur"] = leg_stance
-            pose[key]["tibia"] = -leg_stance
+        for leg in pose.values():
+            leg["femur"] = leg_stance
+            leg["tibia"] = -leg_stance
 
         self.update(pose)
 
@@ -241,7 +243,6 @@ def get_hip_angle(leg_id, poses):
             return poses[str(leg_id)]["coxia"]
         except KeyError:
             return 0
-    return 0
 
 
 def find_if_might_twist(hexapod, poses):
@@ -253,8 +254,7 @@ def find_if_might_twist(hexapod, poses):
     def _find_leg_id(leg_point):
         right_or_left, front_mid_or_back, _ = leg_point.name.split("-")
         leg_placement = right_or_left + "-" + front_mid_or_back
-        leg_id = Hexagon.VERTEX_NAMES.index(leg_placement)
-        return leg_id
+        return Hexagon.VERTEX_NAMES.index(leg_placement)
 
     did_change_count = 0
 
@@ -262,7 +262,7 @@ def find_if_might_twist(hexapod, poses):
         leg_id = _find_leg_id(leg_point)
         old_hip_angle = hexapod.legs[leg_id].coxia_angle()
         new_hip_angle = get_hip_angle(leg_id, poses)
-        if not np.isclose(old_hip_angle, new_hip_angle):
+        if not isclose(old_hip_angle, new_hip_angle):
             did_change_count += 1
             if did_change_count >= 3:
                 return True
@@ -274,16 +274,12 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
     # This is the frame used to twist the model about the z axis
 
     def _make_contact_dict(contact_list):
-        contact_dict = {}
-        for leg_point in contact_list:
-            name = leg_point.name
-            contact_dict[name] = leg_point
-        return contact_dict
+        return {leg_point.name: leg_point for leg_point in contact_list}
 
     def _twist(v1, v2):
         # https://www.euclideanspace.com/maths/algebra/vectors/angleBetween/
-        theta = np.arctan2(v2.y, v2.x) - np.arctan2(v1.y, v1.x)
-        return rotz(np.degrees(theta))
+        theta = atan2(v2.y, v2.x) - atan2(v1.y, v1.x)
+        return rotz(degrees(theta))
 
     # Make dictionary mapping contact point name and leg_contact_point
     old_contacts = _make_contact_dict(old_ground_contacts)
@@ -291,8 +287,8 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
 
     # Find at least one point that's the same
     same_point_name = None
-    for key in old_contacts.keys():
-        if key in new_contacts.keys():
+    for key in old_contacts:
+        if key in new_contacts:
             same_point_name = key
             break
 
@@ -317,38 +313,3 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
     # They should be at the same point after movement
     # I can't think of a case that contradicts this as of this moment
     return twist_frame
-
-
-def might_print_hexapod(hexapod, poses):
-    if not PRINT_MODEL_ON_UPDATE:
-        return
-
-    print("█████████████████████████████")
-    print("█ start: Hexapod Model      █")
-    print("█████████████████████████████")
-
-    print("............")
-    print("...Dimensions")
-    print("............")
-    print(json.dumps(hexapod.dimensions, indent=4))
-
-    print("............")
-    print("...Vertices")
-    print("............")
-    pprint(hexapod.body.all_points)
-
-    print("............")
-    print("...Legs")
-    print("............")
-    for i, leg in enumerate(hexapod.legs):
-        print(f"\nleg{i}_points = ")
-        pprint(leg.all_points)
-
-    print("............")
-    print("...Poses")
-    print("............")
-    print(json.dumps(poses, indent=4))
-
-    print("█████████████████████████████")
-    print("█ end: Hexapod Model        █")
-    print("█████████████████████████████")
