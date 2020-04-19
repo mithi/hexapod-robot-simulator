@@ -315,36 +315,36 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
     return twist_frame
 
 
-def might_print_hexapod(hexapod, poses):	
-    if not PRINT_MODEL_ON_UPDATE:	
-        return	
+def might_print_hexapod(hexapod, poses):
+    if not PRINT_MODEL_ON_UPDATE:
+        return
 
-    print("█████████████████████████████")	
-    print("█ start: Hexapod Model      █")	
-    print("█████████████████████████████")	
+    print("█████████████████████████████")
+    print("█ start: Hexapod Model      █")
+    print("█████████████████████████████")
 
-    print("............")	
-    print("...Dimensions")	
-    print("............")	
-    print(json.dumps(hexapod.dimensions, indent=4))	
+    print("............")
+    print("...Dimensions")
+    print("............")
+    print(json.dumps(hexapod.dimensions, indent=4))
 
-    print("............")	
-    print("...Vertices")	
-    print("............")	
-    pprint(hexapod.body.all_points)	
+    print("............")
+    print("...Vertices")
+    print("............")
+    pprint(hexapod.body.all_points)
 
-    print("............")	
-    print("...Legs")	
-    print("............")	
-    for i, leg in enumerate(hexapod.legs):	
-        print(f"\nleg{i}_points = ")	
-        pprint(leg.all_points)	
+    print("............")
+    print("...Legs")
+    print("............")
+    for i, leg in enumerate(hexapod.legs):
+        print(f"\nleg{i}_points = ")
+        pprint(leg.all_points)
 
-    print("............")	
-    print("...Poses")	
-    print("............")	
-    print(json.dumps(poses, indent=4))	
+    print("............")
+    print("...Poses")
+    print("............")
+    print(json.dumps(poses, indent=4))
 
-    print("█████████████████████████████")	
-    print("█ end: Hexapod Model        █")	
-    print("█████████████████████████████")	
+    print("█████████████████████████████")
+    print("█ end: Hexapod Model        █")
+    print("█████████████████████████████")
