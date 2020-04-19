@@ -59,7 +59,7 @@
 
 import numpy as np
 from copy import deepcopy
-from .points import (
+from hexapod.points import (
     Point,
     frame_yrotate_xtranslate,
     frame_zrotate_xytranslate,
@@ -68,7 +68,8 @@ from .points import (
 
 class Linkage:
     POINT_NAMES = ["coxia", "femur", "tibia"]
-    __slots__ = [
+
+    __slots__ = (
         "a",
         "b",
         "c",
@@ -81,11 +82,7 @@ class Linkage:
         "id",
         "all_points",
         "ground_contact_point",
-        "p0",
-        "p1",
-        "p2",
-        "p3",
-    ]
+    )
 
     def __init__(
         self,
@@ -147,13 +144,13 @@ class Linkage:
         p3 = p0.get_point_wrt(frame_03)
 
         # find points wrt to center of gravity
-        self.p0 = deepcopy(self.new_origin)
-        self.p0.name += "-body-contact"
-        self.p1 = p1.get_point_wrt(new_frame, name=self.name + "-coxia")
-        self.p2 = p2.get_point_wrt(new_frame, name=self.name + "-femur")
-        self.p3 = p3.get_point_wrt(new_frame, name=self.name + "-tibia")
+        p0 = deepcopy(self.new_origin)
+        p0.name += "-body-contact"
+        p1 = p1.get_point_wrt(new_frame, name=self.name + "-coxia")
+        p2 = p2.get_point_wrt(new_frame, name=self.name + "-femur")
+        p3 = p3.get_point_wrt(new_frame, name=self.name + "-tibia")
 
-        self.all_points = [self.p0, self.p1, self.p2, self.p3]
+        self.all_points = [p0, p1, p2, p3]
         self.ground_contact_point = self.compute_ground_contact()
 
     def update_leg_wrt(self, frame, height):
@@ -169,8 +166,8 @@ class Linkage:
 
         return ground_contact
 
-    def __repr__(self):
-        leg_string = make_linkage_repr(self)
+    def __str__(self):
+        leg_string = f"{self!r}\n"
         leg_string += f"Points of {self.name} leg:\n"
 
         for point in self.all_points:
@@ -179,24 +176,34 @@ class Linkage:
         leg_string += f"  ground contact: {self.ground_contact()}\n"
         return leg_string
 
+    def __repr__(self):
+        return f"""Linkage(
+  a={self.a},
+  b={self.b},
+  c={self.c},
+  alpha={self.alpha},
+  beta={self.beta},
+  gamma={self.gamma},
+  new_axis={self.coxia_axis},
+  id_number={self.id},
+  name='{self.name}',
+  new_origin={self.new_origin},
+)"""
 
-def make_linkage_repr(leg):
-    return f"""Linkage(
-  a={leg.a},
-  b={leg.b},
-  c={leg.c},
-  alpha={leg.alpha},
-  beta={leg.beta},
-  gamma={leg.gamma},
-  new_axis={leg.coxia_axis},
-  id_number={leg.id},
-  name='{leg.name}',
-  new_origin={leg.new_origin},
-)
+    def __getattr__(self, item):
+        """Return self.item (if p0, p1, p2, or p3, returns item from all_points.)"""
+        attr_map = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
+        if item in attr_map:
+            return self.all_points[attr_map[item]]
+        return super().__getattribute__(item)
 
-"""
-
-
+    def __setattr__(self, key, value):
+        """Set self.key (if p0, p1, p2, or p3, sets key in all_points."""
+        attr_map = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
+        if key in attr_map:
+            self.all_points[attr_map[key]] = value
+        else:
+            super().__setattr__(key, value)
 #
 #          /*
 #         //\\
