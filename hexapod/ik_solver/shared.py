@@ -1,3 +1,4 @@
+# Functions used for solving inverse kinematics
 from hexapod.points import is_counter_clockwise, angle_between, rotz
 
 
