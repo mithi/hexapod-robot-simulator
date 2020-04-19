@@ -236,11 +236,9 @@ class VirtualHexapod:
 # HELPER FUNCTION
 # ..........................................
 def get_hip_angle(leg_id, poses):
-
     if leg_id in poses:
         return poses[leg_id]["coxia"]
-
-    if str(leg_id) in poses:
+    elif str(leg_id) in poses:
         return poses[str(leg_id)]["coxia"]
 
     # ❗Error will silently pass, is this ok?
