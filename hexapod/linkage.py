@@ -109,14 +109,17 @@ class Linkage:
     def coxia_angle(self):
         return self.alpha
 
+    def body_contact(self):
+        return self.all_points[0]
+
     def coxia_point(self):
-        return self.p1
+        return self.all_points[1]
 
     def femur_point(self):
-        return self.p2
+        return self.all_points[2]
 
     def foot_tip(self):
-        return self.p3
+        return self.all_points[3]
 
     def ground_contact(self):
         return self.ground_contact_point
@@ -159,7 +162,7 @@ class Linkage:
 
     def compute_ground_contact(self):
         # ❗IMPORTANT: Verify if this assumption is correct
-        ground_contact = self.p3
+        ground_contact = self.all_points[3]
         for point in reversed(self.all_points):
             if point.z < ground_contact.z:
                 ground_contact = point
@@ -190,20 +193,7 @@ class Linkage:
   new_origin={self.new_origin},
 )"""
 
-    def __getattr__(self, item):
-        """Return self.item (if p0, p1, p2, or p3, returns item from all_points.)"""
-        attr_map = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
-        if item in attr_map:
-            return self.all_points[attr_map[item]]
-        return super().__getattribute__(item)
 
-    def __setattr__(self, key, value):
-        """Set self.key (if p0, p1, p2, or p3, sets key in all_points."""
-        attr_map = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
-        if key in attr_map:
-            self.all_points[attr_map[key]] = value
-        else:
-            super().__setattr__(key, value)
 #
 #          /*
 #         //\\
