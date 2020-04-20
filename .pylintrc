@@ -7,7 +7,7 @@ extension-pkg-whitelist=
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
-ignore=CVS, ik_solver.py, page_kinematics.py
+#ignore=CVS, ik_solver.py, page_kinematics.py
 
 # Add files or directories matching the regex patterns to the blacklist. The
 # regex matches against base names, not paths.
@@ -60,20 +60,7 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=duplicate-code,
-        broad-except,
-        line-too-long,
-        too-few-public-methods,
-        attribute-defined-outside-init,
-        too-many-locals,
-        too-many-instance-attributes,
-        too-many-arguments,
-        bad-continuation,
-        invalid-name,
-        missing-class-docstring,
-        missing-module-docstring,
-        missing-function-docstring,
-        print-statement,
+disable=print-statement,
         parameter-unpacking,
         unpacking-in-except,
         old-raise-syntax,
