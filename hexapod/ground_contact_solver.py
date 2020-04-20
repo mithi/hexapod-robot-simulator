@@ -117,8 +117,7 @@ def set_of_two_trios_from_six():
 
 
 def check_stability(a, b, c):
-    """
-    Check if the points a, b, c form a stable triangle.
+    """Check if the points a, b, c form a stable triangle.
 
     If the center of gravity p (0, 0) on xy plane
     is inside projection (in the xy plane) of
