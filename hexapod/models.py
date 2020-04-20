@@ -1,9 +1,10 @@
 # This module contains the model of a hexapod
 # It's used to manipulate the pose of the hexapod
-import numpy as np
 from copy import deepcopy
-import json
 from pprint import pprint
+from math import atan2, degrees, isclose
+import json
+import numpy as np
 from settings import PRINT_MODEL_ON_UPDATE
 from hexapod.linkage import Linkage
 from hexapod.ground_contact_solver import compute_orientation_properties
@@ -14,8 +15,6 @@ from hexapod.points import (
     frame_rotxyz,
     rotz,
 )
-
-from math import atan2, degrees, isclose
 
 
 # Dimensions f, s, and m
@@ -231,7 +230,8 @@ class VirtualHexapod:
 def get_hip_angle(leg_id, poses):
     if leg_id in poses:
         return poses[leg_id]["coxia"]
-    elif str(leg_id) in poses:
+
+    if str(leg_id) in poses:
         return poses[str(leg_id)]["coxia"]
 
     # ❗Error will silently pass, is this ok?

@@ -33,10 +33,7 @@ class HexapodPlotter:
         fig["data"][3]["y"] = [hexapod.body.head.y]
         fig["data"][3]["z"] = [hexapod.body.head.z]
 
-        # Legs
-        n = [i for i in range(4, 10)]
-
-        for n, leg in zip(n, hexapod.legs):
+        for n, leg in zip(range(4, 10), hexapod.legs):
             points = leg.all_points
             fig["data"][n]["x"] = [point.x for point in points]
             fig["data"][n]["y"] = [point.y for point in points]

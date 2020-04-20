@@ -1,3 +1,7 @@
+import json
+import dash_html_components as html
+from dash.dependencies import Input, Output, State
+from app import app
 from settings import RECOMPUTE_HEXAPOD
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER, BASE_FIGURE
@@ -11,10 +15,6 @@ from pages.shared import (
     SECTION_HIDDEN_BODY_DIMENSIONS,
     make_page_layout,
 )
-import json
-from app import app
-import dash_html_components as html
-from dash.dependencies import Input, Output, State
 
 # *********************
 # *  LAYOUT           *
