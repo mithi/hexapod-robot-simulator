@@ -10,7 +10,8 @@ class HexapodPlot:
     def __init__(self):
         pass
 
-    def _draw_hexapod(self, fig, hexapod):
+    @staticmethod
+    def _draw_hexapod(fig, hexapod):
         # Body
         points = hexapod.body.vertices + [hexapod.body.vertices[0]]
 
@@ -49,9 +50,8 @@ class HexapodPlot:
         fig["data"][10]["y"] = [point.y for point in ground_contacts]
         fig["data"][10]["z"] = [(point.z + dz) for point in ground_contacts]
 
-        return fig
-
-    def _draw_scene(self, fig, hexapod):
+    @staticmethod
+    def _draw_scene(fig, hexapod):
         # Change range of view for all axes
         f, m, s = hexapod.front, hexapod.mid, hexapod.side
         a, b, c = hexapod.coxia, hexapod.femur, hexapod.tibia
@@ -96,16 +96,14 @@ class HexapodPlot:
         fig["data"][16]["y"] = [0, 0]
         fig["data"][16]["z"] = [0, axis_scale]
 
-        return fig
+    @staticmethod
+    def update(fig, hexapod):
+        HexapodPlot._draw_hexapod(fig, hexapod)
+        HexapodPlot._draw_scene(fig, hexapod)
 
-    def update(self, fig, hexapod):
-        fig = self._draw_hexapod(fig, hexapod)
-        fig = self._draw_scene(fig, hexapod)
-        return fig
-
-    def change_camera_view(self, fig, camera):
+    @staticmethod
+    def change_camera_view(fig, camera):
         # camera = { 'up': {'x': 0, 'y': 0, 'z': 0},
         #        'center': {'x': 0, 'y': 0, 'z': 0},
         #           'eye': {'x': 0, 'y': 0, 'z': 0)}}
         fig["layout"]["scene"]["camera"] = camera
-        return fig
