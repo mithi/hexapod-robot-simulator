@@ -1,9 +1,11 @@
-# This module is responsible for the following:
-# 1. determining which legs of the hexapod is on the ground
-# 2. Computing the normal vector of the triangle defined by at least three legs on the ground
-# the normal vector wrt to the old normal vector that is defined by the legs on the ground in
-# the hexapod's neutral position
-# 3. Determining the height of the center of gravity wrt to the ground
+"""
+This module is responsible for the following:
+1. determining which legs of the hexapod is on the ground
+2. Computing the normal vector of the triangle defined by at least three legs on the ground
+the normal vector wrt to the old normal vector that is defined by the legs on the ground in
+the hexapod's neutral position
+3. Determining the height of the center of gravity wrt to the ground
+"""
 
 from itertools import combinations
 from hexapod.points import Point, dot, get_unit_normal, is_point_inside_triangle
@@ -36,7 +38,9 @@ def get_legs_on_ground(legs):
 
 
 def three_ids_of_ground_contacts(legs, tol=1):
-    """Return three legs forming a stable position from legs, or None if no three legs satisfy this requirement.
+    """
+    Return three legs forming a stable position from legs,
+    or None if no three legs satisfy this requirement.
 
     This function takes the legs of the hexapod
     and finds three legs on the ground that form a stable position
@@ -92,15 +96,17 @@ def three_ids_of_ground_contacts(legs, tol=1):
 
 
 def get_corresponding_ground_contacts(ids, legs):
-    """Given three leg ids and the list of legs
-    get the points contacting the ground of those three legs
+    """
+    Given three leg ids and the list of legs get the points
+    contacting the ground of those three legs.
     """
     i, j, k = ids
     return legs[i].ground_contact(), legs[j].ground_contact(), legs[k].ground_contact()
 
 
 def set_of_two_trios_from_six():
-    """Get all combinations of a three-item-group given six items
+    """
+    Get all combinations of a three-item-group given six items.
 
     20 combinations total
     (2, 3, 5) is a trio from set [0, 1, 2, 3, 4, 5]
@@ -111,7 +117,8 @@ def set_of_two_trios_from_six():
 
 
 def check_stability(a, b, c):
-    """Check if the points a, b, c form a stable triangle.
+    """
+    Check if the points a, b, c form a stable triangle.
 
     If the center of gravity p (0, 0) on xy plane
     is inside projection (in the xy plane) of
