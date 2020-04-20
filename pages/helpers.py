@@ -38,7 +38,7 @@ def load_dimensions(dimensions_json):
     try:
         dimensions = json.loads(dimensions_json)
     except Exception as e:
-        print("Error loading dimension json", e)
+        print(f"Error loading dimension_json. {e} | {dimensions_json}")
         dimensions = BASE_DIMENSIONS
     return dimensions
 
