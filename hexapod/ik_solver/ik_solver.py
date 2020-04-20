@@ -1,9 +1,9 @@
 # Please look at the discussion of the Inverse Kinematics algorithm
 # As detailed in the README of this directory
 
-from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
-import numpy as np
 from copy import deepcopy
+import numpy as np
+from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
 from hexapod.ik_solver.helpers import (
     BODY_ON_GROUND_ALERT_MSG,
     COXIA_ON_GROUND_ALERT_MSG,
@@ -102,7 +102,8 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         coxia_to_foot_vector2d = vector_from_to(p1, p3)
         d = length(coxia_to_foot_vector2d)
 
-        # If we can form this triangle this means we probably can reach the target ground contact point
+        # If we can form this triangle this means
+        # we can probably can reach the target ground contact point
         if is_triangle(hexapod.tibia, hexapod.femur, d):
             # .................................
             # CASE A: a triangle can be formed with

@@ -7,7 +7,7 @@ the hexapod's neutral position
 3. Determining the height of the center of gravity (cog) wrt to the ground.
 ie this height is distance between the cog and the plane defined by ground contacts.
 """
-
+from math import isclose
 from itertools import combinations
 from hexapod.points import (
     Point,
@@ -15,7 +15,6 @@ from hexapod.points import (
     get_normal_given_three_points,
     is_point_inside_triangle,
 )
-from math import isclose
 
 
 def compute_orientation_properties(legs, tol=1):

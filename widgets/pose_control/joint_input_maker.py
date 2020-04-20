@@ -23,7 +23,10 @@ max_angles = {
 
 
 # input id format:
-# 'input' + '-' + ['left', 'right'] + '-' + ['front', 'middle', 'back'] + '-' ['coxia', 'femur', 'tibia']
+# 'input' + '-' +  leg_x + '-' +  leg_y + '-' leg_joint
+# leg_x = ['left', 'right']
+# leg_y = ['front', 'middle', 'back']
+# leg_joint = ['coxia', 'femur', 'tibia']
 # input dictionary structure
 # JOINT_INPUTS['left-front']['coxia'] =  INPUT_COMPONENT
 # JOINT_INPUTS['right-middle']['femur'] = INPUT_COMPONENT

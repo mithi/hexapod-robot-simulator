@@ -1,4 +1,5 @@
 from copy import deepcopy
+import numpy as np
 from hexapod.models import VirtualHexapod, Hexagon
 from hexapod.points import (
     angle_between,
@@ -9,7 +10,6 @@ from hexapod.points import (
     length,
 )
 from settings import ASSERTION_ENABLED, PRINT_IK
-import numpy as np
 
 
 def recompute_hexapod(dimensions, ik_parameters, poses):
@@ -75,8 +75,8 @@ def find_two_same_leg_ids(old_contacts, new_contacts):
         print("...old contacts:", old_contact_dict)
         print("...new_contacts: ", old_contact_dict)
 
-    for leg_id in old_contact_dict.keys():
-        if leg_id not in new_contact_dict.keys():
+    for leg_id in old_contact_dict:
+        if leg_id not in new_contact_dict:
             continue
 
         same_ids.append(leg_id)

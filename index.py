@@ -1,10 +1,8 @@
-from settings import DEBUG_MODE
-from style_settings import GLOBAL_PAGE_STYLE
-
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-
+from settings import DEBUG_MODE
+from style_settings import GLOBAL_PAGE_STYLE
 from app import app
 from pages import page_inverse, page_kinematics, page_patterns, page_landing
 
