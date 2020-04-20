@@ -31,7 +31,7 @@ IK_INPUT_IDs = [
 IK_INPUTS = [Input(input_id, "value") for input_id in IK_INPUT_IDs]
 
 
-def make_translate_slider(name, slider_label, type="translate_slider"):
+def make_translate_slider(name, slider_label):
     handle_style = {
         "showCurrentValue": True,
         "color": SLIDER_HANDLE_COLOR,

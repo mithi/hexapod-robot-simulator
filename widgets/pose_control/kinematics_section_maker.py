@@ -25,7 +25,7 @@ def make_leg_section(name, joint_inputs, add_joint_names=False):
     return html.Div([header, section])
 
 
-def make_section_pose_control(joint_inputs, add_joint_names=False, style_to_use={}):
+def make_section_pose_control(joint_inputs, add_joint_names=False, style_to_use=None):
     lf = make_leg_section("left-front", joint_inputs, add_joint_names)
     rf = make_leg_section("right-front", joint_inputs, add_joint_names)
     lm = make_leg_section("left-middle", joint_inputs, add_joint_names)
@@ -38,7 +38,7 @@ def make_section_pose_control(joint_inputs, add_joint_names=False, style_to_use=
             make_section_type2(lm, rm),
             make_section_type2(lb, rb),
         ],
-        style=style_to_use,
+        style=style_to_use or {},
     )
 
     return html.Div([HEADER, sliders])
