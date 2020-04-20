@@ -1,9 +1,8 @@
 # Please look at the discussion of the Inverse Kinematics algorithm
 # As detailed in the README of this directory
-
-from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
-import numpy as np
 from copy import deepcopy
+import numpy as np
+from settings import ASSERTION_ENABLED, ALPHA_MAX_ANGLE
 from hexapod.ik_solver.helpers import (
     BODY_ON_GROUND_ALERT_MSG,
     COXIA_ON_GROUND_ALERT_MSG,

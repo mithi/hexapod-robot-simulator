@@ -9,3 +9,4 @@ script:
   # remove `python3 -m compileall .` check only the files we created instead
   - python -m py_compile ./*/*.py ./*.py ./*/*/*.py
   - flake8 ./*/*.py ./*.py ./*/*/*.py
+  - pylint ./*.py */*.py */*/*.py --reports=y

@@ -1,11 +1,10 @@
+from copy import deepcopy
+import json
 import dash_core_components as dcc
 from hexapod.const import BASE_PLOTTER
 from hexapod.const import HEXAPOD_POSE, NAMES_LEG, BASE_DIMENSIONS
-from copy import deepcopy
-import json
 
-
-poses = deepcopy(HEXAPOD_POSE)
+new_poses = deepcopy(HEXAPOD_POSE)
 poses_mgs_header = f"""
 +----------------+------------+------------+------------+
 | leg name       | coxia      | femur      | tibia      |
@@ -13,7 +12,7 @@ poses_mgs_header = f"""
 poses_msg_last_row = "\n+----------------+------------+------------+------------+"
 
 
-def make_pose(alpha, beta, gamma):
+def make_pose(alpha, beta, gamma, poses=new_poses):
 
     for k, _ in poses.items():
         poses[k] = {
@@ -23,7 +22,7 @@ def make_pose(alpha, beta, gamma):
             "femur": beta,
             "tibia": gamma,
         }
-    return poses
+    return new_poses
 
 
 def change_camera_view(figure, relayout_data):

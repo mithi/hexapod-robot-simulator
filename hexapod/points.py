@@ -2,10 +2,10 @@
 # and functions for manipulating vectors
 # and finding properties and relationships of vectors
 # computing reference frames
-from settings import DEBUG_MODE
 from math import sqrt, radians, sin, cos, degrees, acos, isnan
-
 import numpy as np
+
+from settings import DEBUG_MODE
 
 
 class Point:
@@ -238,8 +238,8 @@ def get_normal_given_three_points(a, b, c):
     Get the unit normal vector to the
     plane defined by the points a, b, c.
     """
-    ab = subtract_vectors(b, a)
-    ac = subtract_vectors(c, a)
+    ab = vector_from_to(a, b)
+    ac = vector_from_to(a, c)
     v = cross(ab, ac)
     v = scale(v, length(v))
     return v

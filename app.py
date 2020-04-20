@@ -1,5 +1,5 @@
-import dash
 import os
+import dash
 from style_settings import DARK_CSS_PATH, LIGHT_CSS_PATH, DARKMODE
 
 external_stylesheets = [DARK_CSS_PATH]

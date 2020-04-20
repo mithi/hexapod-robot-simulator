@@ -1,14 +1,14 @@
-from widgets.dimensions_ui import DIMENSION_INPUTS
 import json
-from app import app
 import dash_core_components as dcc
 from dash.dependencies import Output, Input
 import dash_html_components as html
+from app import app
 from settings import (
     UI_CONTROLS_WIDTH,
     UI_GRAPH_WIDTH,
     UI_GRAPH_HEIGHT,
 )
+from widgets.dimensions_ui import DIMENSION_INPUTS
 
 # ......................
 # Make uniform layout

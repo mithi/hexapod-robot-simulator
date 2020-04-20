@@ -1,5 +1,7 @@
 # Used for checking edge cases
 # and also for printing final results
+import json
+import numpy as np
 from settings import (
     PRINT_IK_LOCAL_LEG,
     ASSERTION_ENABLED,
@@ -7,8 +9,6 @@ from settings import (
     BETA_MAX_ANGLE,
     GAMMA_MAX_ANGLE,
 )
-import json
-import numpy as np
 from hexapod.points import length, vector_from_to, angle_between
 
 COXIA_ON_GROUND_ALERT_MSG = "Impossible at given height.\ncoxia joint shoved on ground"

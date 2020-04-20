@@ -2,9 +2,9 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
-from .sectioning import make_section_type3
 from settings import INPUT_DIMENSIONS_RESOLUTION
 from style_settings import NUMBER_INPUT_STYLE
+from widgets.sectioning import make_section_type3
 
 HEADER = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
 INPUT_DIMENSIONS_IDs = [
