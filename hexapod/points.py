@@ -231,7 +231,11 @@ def get_unit_vector(v):
     return scale(v, length(v))
 
 
-def get_unit_normal(a, b, c):
+def get_normal_given_three_points(a, b, c):
+    """
+     Get the unit normal vector to the
+     plane defined by the points a, b, c
+    """
     ab = subtract_vectors(b, a)
     ac = subtract_vectors(c, a)
     v = cross(ab, ac)

@@ -6,7 +6,7 @@ import json
 from pprint import pprint
 from settings import PRINT_MODEL_ON_UPDATE
 from hexapod.linkage import Linkage
-from hexapod.ground_contact_solver import get_legs_on_ground
+from hexapod.ground_contact_solver import compute_orientation_properties
 from hexapod.templates.pose_template import HEXAPOD_POSE
 from hexapod.points import (
     Point,
@@ -105,7 +105,6 @@ class VirtualHexapod:
         "mid",
         "body_rotation_frame",
         "ground_contacts",
-        "n_axis",
         "x_axis",
         "y_axis",
         "z_axis",
@@ -128,13 +127,13 @@ class VirtualHexapod:
 
         # Find new orientation of the body (new normal)
         # distance of cog from ground and which legs are on the ground
-        legs, self.n_axis, height = get_legs_on_ground(self.legs)
+        legs, n_axis, height = compute_orientation_properties(self.legs)
 
-        if self.n_axis is None:
+        if n_axis is None:
             raise Exception("❗Pose Unstable. COG not inside support polygon.")
 
         # Tilt and shift the hexapod based on new normal
-        frame = frame_to_align_vector_a_to_b(self.n_axis, Point(0, 0, 1))
+        frame = frame_to_align_vector_a_to_b(n_axis, Point(0, 0, 1))
         self.rotate_and_shift(frame, height)
         self._update_local_frame(frame)
 
