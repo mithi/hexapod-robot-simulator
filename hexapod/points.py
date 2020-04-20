@@ -233,8 +233,8 @@ def get_unit_vector(v):
 
 def get_normal_given_three_points(a, b, c):
     """
-     Get the unit normal vector to the
-     plane defined by the points a, b, c
+    Get the unit normal vector to the
+    plane defined by the points a, b, c
     """
     ab = subtract_vectors(b, a)
     ac = subtract_vectors(c, a)
