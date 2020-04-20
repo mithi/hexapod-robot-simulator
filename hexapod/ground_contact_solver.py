@@ -1,14 +1,13 @@
-#
 # This module is responsible for the following:
 # 1. determining which legs of the hexapod is on the ground
 # 2. Computing the normal vector of the triangle defined by at least three legs on the ground
 # the normal vector wrt to the old normal vector that is defined by the legs on the ground in
 # the hexapod's neutral position
 # 3. Determining the height of the center of gravity wrt to the ground
-#
-import numpy as np
+
 from itertools import combinations
-from .points import Point, dot, get_unit_normal, is_point_inside_triangle
+from hexapod.points import Point, dot, get_unit_normal, is_point_inside_triangle
+from math import isclose
 
 
 def get_legs_on_ground(legs):
@@ -30,23 +29,27 @@ def get_legs_on_ground(legs):
     # Get all contacts of the same height
     for leg in legs:
         _height = -dot(n, leg.ground_contact())
-        if np.isclose(height, _height, atol=1):
+        if isclose(height, _height, abs_tol=1):
             legs_on_ground.append(leg)
 
     return legs_on_ground, n, height
 
 
-# This function takes the legs of the hexapod
-# and finds three legs on the ground that form a stable position
-# returns the leg ids of those three legs
-# return None if no stable position found
-def three_ids_of_ground_contacts(legs):
-    trios, other_trios = set_of_two_trios_from_six()
+def three_ids_of_ground_contacts(legs, tol=1):
+    """Return three legs forming a stable position from legs, or None if no three legs satisfy this requirement.
 
-    for trio, other_trio in zip(trios, other_trios):
+    This function takes the legs of the hexapod
+    and finds three legs on the ground that form a stable position
+    returns the leg ids of those three legs
+    return None if no stable position found
+    """
+    trios = set_of_two_trios_from_six()
+    ground_contacts = [leg.ground_contact() for leg in legs]
+    for trio, other_trio in zip(trios, reversed(trios)):
+        p0 = ground_contacts[trio[0]]
+        p1 = ground_contacts[trio[1]]
+        p2 = ground_contacts[trio[2]]
         # Let p0 to p5 be leg ground contacts
-        p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
-
         if not check_stability(p0, p1, p2):
             continue
 
@@ -75,12 +78,8 @@ def three_ids_of_ground_contacts(legs):
         # the plane defined by this trio is on the ground
         # the other legs ground contact cannot be lower than the ground
         condition_violated = False
-        p3, p4, p5 = get_corresponding_ground_contacts(other_trio, legs)
-        for p in [p3, p4, p5]:
-            h_ = dot(n, p)
-
-            tol = 1  # ❗IMPORTANT! add some tolerance
-            if h_ + tol < h:
+        for p in other_trio:
+            if dot(n, ground_contacts[p]) + tol < h:
                 # Wrong leg combination, check another
                 condition_violated = True
                 break
@@ -92,32 +91,30 @@ def three_ids_of_ground_contacts(legs):
     return None
 
 
-# Given the three leg ids and the list of legs
-# get the points contacting the ground of those three legs
 def get_corresponding_ground_contacts(ids, legs):
+    """Given three leg ids and the list of legs
+    get the points contacting the ground of those three legs
+    """
     i, j, k = ids
     return legs[i].ground_contact(), legs[j].ground_contact(), legs[k].ground_contact()
 
 
-# Get all combinations of a three-item-group given six items
-# 20 combinations total
-# (2, 3, 5) is a trio from set [0, 1, 2, 3, 4, 5]
-# the corresponding other_trio of (2, 3, 5) is (0, 1, 4)
-# order is not important ie (2, 3, 5) is the same as (5, 3, 2)
 def set_of_two_trios_from_six():
-    trios = [trio for trio in combinations(range(6), 3)]
-    other_trios = []
+    """Get all combinations of a three-item-group given six items
 
-    for trio in trios:
-        other_trio = [i for i in filter(lambda x: x not in trio, range(6))]
-        other_trios.append(other_trio)
+    20 combinations total
+    (2, 3, 5) is a trio from set [0, 1, 2, 3, 4, 5]
+    the corresponding other_trio of (2, 3, 5) is (0, 1, 4)
+    order is not important ie (2, 3, 5) is the same as (5, 3, 2)
+    """
+    return list(combinations(range(6), 3))
 
-    return trios, other_trios
 
-
-# If the center of gravity p (0, 0) on xy plane
-# is inside projection (in the xy plane) of
-# the triangle defined by point a, b, c, then this is stable
 def check_stability(a, b, c):
-    p = Point(0, 0, 0)
-    return is_point_inside_triangle(p, a, b, c)
+    """Check if the points a, b, c form a stable triangle.
+
+    If the center of gravity p (0, 0) on xy plane
+    is inside projection (in the xy plane) of
+    the triangle defined by point a, b, c, then this is stable
+    """
+    return is_point_inside_triangle(Point(0, 0, 0), a, b, c)
