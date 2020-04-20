@@ -85,20 +85,20 @@ def three_ids_of_ground_contacts(legs, tol=1):
         #
         #  cog *  ^ (normal_vector) ----
         #      \  |                  |
-        #       \ |                 height
+        #       \ |               -height
         #        \|                  |
-        #         V p0 (foot_tip) ---V---
+        #         V p0 (foot_tip) ------
         #
         # using p0, p1 or p2 should yield the same result
-        height = dot(n, p0)
+        height = -dot(n, p0)
 
-        # h should be the most negative(the lowest) since
+        # height should be the most largest since
         # the plane defined by this trio is on the ground
         # the other legs ground contact cannot be lower than the ground
         condition_violated = False
         for i in other_trio:
-            _height = dot(n, ground_contacts[i]) + tol
-            if _height < height:
+            _height = -dot(n, ground_contacts[i])
+            if _height > height + tol:
                 # Wrong leg combination, check another
                 condition_violated = True
                 break
