@@ -161,6 +161,7 @@ class Linkage:
 
     def compute_ground_contact(self):
         # ❗IMPORTANT: Verify if this assumption is correct
+        # ❗VERIFIED: This assumption is indeed wrong
         ground_contact = self.all_points[3]
         for point in reversed(self.all_points):
             if point.z < ground_contact.z:

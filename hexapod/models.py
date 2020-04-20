@@ -7,7 +7,9 @@ import json
 import numpy as np
 from settings import PRINT_MODEL_ON_UPDATE
 from hexapod.linkage import Linkage
-from hexapod.ground_contact_solver import compute_orientation_properties
+from hexapod.ground_contact_solver.ground_contact_solver import (
+    compute_orientation_properties,
+)
 from hexapod.templates.pose_template import HEXAPOD_POSE
 from hexapod.points import (
     Point,
