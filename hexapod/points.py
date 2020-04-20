@@ -18,9 +18,11 @@ class Point:
         self.name = name
 
     def get_point_wrt(self, reference_frame, name=None):
-        # given frame_ab which is the pose of frame_b wrt frame_a
-        # given a point as defined wrt to frame_b
-        # return point defined wrt to frame a
+        """
+        Given frame_ab which is the pose of frame_b wrt frame_a
+        and that this point is defined wrt to frame_b
+        Return point defined wrt to frame a
+        """
         p = np.array([self.x, self.y, self.z, 1])
         p = np.matmul(reference_frame, p)
         return Point(p[0], p[1], p[2], name)
