@@ -6,7 +6,7 @@
 # ********************
 
 
-class HexapodPlot:
+class HexapodPlotter:
     def __init__(self):
         pass
 
@@ -98,8 +98,8 @@ class HexapodPlot:
 
     @staticmethod
     def update(fig, hexapod):
-        HexapodPlot._draw_hexapod(fig, hexapod)
-        HexapodPlot._draw_scene(fig, hexapod)
+        HexapodPlotter._draw_hexapod(fig, hexapod)
+        HexapodPlotter._draw_scene(fig, hexapod)
 
     @staticmethod
     def change_camera_view(fig, camera):
