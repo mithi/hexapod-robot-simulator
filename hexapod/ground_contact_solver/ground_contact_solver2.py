@@ -46,7 +46,7 @@ def all_joint_id_combinations():
     return joints_combination_list
 
 
-other_points_map = {1: [2, 3], 2: [3, 1], 3: [1, 2]}
+OTHER_POINTS_MAP = {1: [2, 3], 2: [3, 1], 3: [1, 2]}
 
 
 def compute_orientation_properties(legs):
@@ -68,30 +68,30 @@ def compute_orientation_properties(legs):
             n = get_normal_given_three_points(p0, p1, p2)
             height = -dot(n, p0)
 
-            if same_leg_joints_break_condition(three_legs, joint_trio, height, n):
+            if same_leg_joints_break_condition(three_legs, joint_trio, n, height):
                 continue
 
-            if other_leg_joints_break_condition(other_three_legs, height, n):
+            if other_leg_joints_break_condition(other_three_legs, n, height):
                 continue
 
-            legs_on_ground = find_legs_on_ground(legs, height, n)
+            legs_on_ground = find_legs_on_ground(legs, n, height)
             return legs_on_ground, n, height
 
     return [], None, None
 
 
-def other_leg_joints_break_condition(other_three_legs, height, n):
+def other_leg_joints_break_condition(other_three_legs, n, height):
     for leg in other_three_legs:
-        for i_ in range(1, 4):
-            height_to_test = -dot(n, leg.get_point(i_))
+        for i in range(1, 4):
+            height_to_test = -dot(n, leg.get_point(i))
             if height_to_test > height + TOL:
                 return True
     return False
 
 
-def same_leg_joints_break_condition(three_legs, three_point_ids, height, n):
+def same_leg_joints_break_condition(three_legs, three_point_ids, n, height):
     for leg, point_id in zip(three_legs, three_point_ids):
-        for other_point_id in other_points_map[point_id]:
+        for other_point_id in OTHER_POINTS_MAP[point_id]:
             other_point = leg.get_point(other_point_id)
             height_to_test = -dot(n, other_point)
             if height_to_test > height + TOL:
@@ -99,7 +99,7 @@ def same_leg_joints_break_condition(three_legs, three_point_ids, height, n):
     return False
 
 
-def find_legs_on_ground(legs, height, n):
+def find_legs_on_ground(legs, n, height):
     legs_on_ground = []
     for leg in legs:
         for point in reversed(leg.all_points[1:]):
