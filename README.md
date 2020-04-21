@@ -24,9 +24,9 @@
 
 ## 🕷️ Preview
 
-|![IK](https://mithi.github.io/robotics-blog/v2-ik-ui.gif)|![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-ui.gif)|
+|![image](https://mithi.github.io/robotics-blog/v2-ik-ui.gif)|![image](https://mithi.github.io/robotics-blog/v2-kinematics-ui.gif)|
 |----|----|
-| ![IK](https://mithi.github.io/robotics-blog/UI-1.gif) | ![Kinematics](https://mithi.github.io/robotics-blog/UI-2.gif) |
+| ![image](https://mithi.github.io/robotics-blog/UI-1.gif) | ![image](https://mithi.github.io/robotics-blog/robot-only-x3.gif) |
 
 ## 🕷️ Requirements
 
@@ -57,13 +57,14 @@ Running on http://127.0.0.1:8050/
 
 - Definitions
   - [`Linkage`](./hexapod/linkage.py)
-  - [`VirtualHexapod`](./hexapod/models.py#L94)
+  - [`VirtualHexapod`](./hexapod/models.py)
 - The [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md) used for this project
-- [How to find the ground contact points, tilt, and height of the hexapod](./hexapod/ground_contact_solver.py#L43)
+- [How to find tilt, and height of the hexapod](./hexapod/ground_contact_solver/ground_contact_solver.py) given we know which of the three points of each leg could contact the ground
+- How to determine if we don't know which points of which legs are could be contact with the ground [(wip)]((./hexapod/ground_contact_solver/ground_contact_solver2.py))
 - [How to make the hexapod step on the correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
 - How to determine if the hexapod should twist and by how much
-  - [`find_if_might_twist`](./hexapod/models.py#L242)
-  - [`find_twist_frame`](./hexapod/models.py#L267)
+  - `find_if_might_twist
+  - `find_twist_frame`
 
 ## 🕷️ Screenshots
 
@@ -77,7 +78,7 @@ Running on http://127.0.0.1:8050/
 
 - ❗This implementation uses matrices, **NOT** quaternions. I'm aware that quaternions is far superior in every single way. In the (un)forseeable future, maybe?
 
-- ❗Frankly, [My IK algorithm](https://github.com/mithi/hexapod-robot-simulator/blob/master/hexapod/ik_solver/README.md) isn't all that great, it's just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It might not be the best, but it's the most intuitive that I can think of. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
+- ❗Honestly, [My IK algorithm](https://github.com/mithi/hexapod-robot-simulator/blob/master/hexapod/ik_solver/README.md) is just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It's just the most intuitive that I can think of. I'm open to hearing other ways to approach this. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
 
 - I believe that the idea that it's best to be kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
 
@@ -85,3 +86,4 @@ Running on http://127.0.0.1:8050/
 
 - [@mithi](https://github.com/mithi/)
 - [@philippeitis](https://github.com/philippeitis/)
+- [@mikong](https://github.com/mikong)
