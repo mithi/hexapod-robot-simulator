@@ -81,7 +81,7 @@ Running on http://127.0.0.1:8050/
 
 - Honestly, [My IK algorithm](./hexapod/ik_solver/README.md) is just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It's just the most intuitive that I can think of. I'm open to hearing other ways to approach this. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
 
-- I would also love to here new ideas on how to improve the [algorithms currently used]((./hexapod/ground_contact_solver/)) to find the orientation of the hexapod given we know the orientation of the legs with respect to the body.
+- I would also love to here new ideas on how to improve the [algorithms currently used](./hexapod/ground_contact_solver/) to find the orientation of the hexapod given we know the orientation of the legs with respect to the body.
 
 - I believe that the idea that it's best if we are kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
 
