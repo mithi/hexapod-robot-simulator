@@ -60,8 +60,8 @@ Running on http://127.0.0.1:8050/
   - [`VirtualHexapod`](./hexapod/models.py)
 - The [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md) used for this project
 - How to find the orientation of the hexapod and its distance from the ground given we know all the orientations of the six legs with respect to the robot's body.
-  -[Algorithm (#1)](./hexapod/ground_contact_solver/ground_contact_solver.py) given we know which of the three points of each leg could contact the ground
-  -[Algorithm (#2)](./hexapod/ground_contact_solver/ground_contact_solver2.py) given we don't know which of points of which legs could be in contact with the ground
+  - [Algorithm (#1)](./hexapod/ground_contact_solver/ground_contact_solver.py) given we know which of the three points of each leg could contact the ground
+  - [Algorithm (#2)](./hexapod/ground_contact_solver/ground_contact_solver2.py) given we don't know which of points of which legs could be in contact with the ground
 - [How to make the hexapod step on the correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py)
 - How to determine if the hexapod should twist and by how much
   - [`find_if_might_twist`](./hexapod/models.py#L248)
