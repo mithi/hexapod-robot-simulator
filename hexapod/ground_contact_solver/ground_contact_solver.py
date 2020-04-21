@@ -97,17 +97,18 @@ def find_ground_plane_properties(legs, tol=1):
         # height should be the most largest since
         # the plane defined by this trio is on the ground
         # the other legs ground contact cannot be lower than the ground
-        condition_violated = False
-        for i in other_trio:
-            _height = -dot(n, ground_contacts[i])
-            if _height > height + tol:
-                # Wrong leg combination, check another
-                condition_violated = True
-                break
-
-        if not condition_violated:
+        other_points = [ground_contacts[i] for i in other_trio]
+        if no_other_legs_lower(n, height, other_points, tol):
             # Found one!
             return [p0, p1, p2], n, height
 
     # Nothing met the condition
     return None
+
+
+def no_other_legs_lower(n, height, other_points, tol):
+    for point in other_points:
+        _height = -dot(n, point)
+        if _height > height + tol:
+            return False
+    return True
