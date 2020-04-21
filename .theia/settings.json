@@ -1,0 +1,6 @@
+{
+    "python.pythonPath": "/usr/bin/python3",
+    "editor.autoSave": "on",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
+}
