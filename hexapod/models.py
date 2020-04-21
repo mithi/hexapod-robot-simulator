@@ -128,7 +128,6 @@ class VirtualHexapod:
 
         # Find new orientation of the body (new normal)
         # distance of cog from ground and which legs are on the ground
-
         if assume_ground_targets:
             # We are positive that our assumed target ground contact points
             # are correct then we don't have to test all possible cases
