@@ -89,4 +89,4 @@ Running on http://127.0.0.1:8050/
 
 - [@mithi](https://github.com/mithi/)
 - [@philippeitis](https://github.com/philippeitis/)
-- [@mikong](https://github.com/mikong)
+- [@mikong](https://github.com/mikong/)
