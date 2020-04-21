@@ -1,7 +1,6 @@
 """
-❗❗❗
-This is a more general algorithm to account for the cases that are
-not handled correctly by the other ground_contact_solver.
+❗❗❗This is a more general algorithm to account for the cases
+that are not handled correctly by the other ground_contact_solver.
 This will only be used by the kinematics-page of the app.
 This algorithm can be optimized or replaced if a more elegant
 algorithm is available.
