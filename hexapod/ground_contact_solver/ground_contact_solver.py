@@ -36,20 +36,13 @@ def compute_orientation_properties(legs, tol=1):
       - Normal vector of the plane defined by these legs
       - Distance of this plane to center of gravity
     """
-    trio = three_ids_of_ground_contacts(legs)
+    trio, n, height = find_ground_plane_properties(legs)
 
     # This pose is unstable, The hexapod has no balance
     if trio is None:
         return [], None, None
 
-    p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
-    n = get_normal_given_three_points(p0, p1, p2)
-
-    # Note: using p0, p1 or p2 should yield the same result
-    # height from cog to ground
-    height = -dot(n, p0)
-
-    # Get all contacts of the same height
+    # get all the legs on the ground
     legs_on_ground = []
 
     for leg in legs:
@@ -60,17 +53,15 @@ def compute_orientation_properties(legs, tol=1):
     return legs_on_ground, n, height
 
 
-def three_ids_of_ground_contacts(legs, tol=1):
+def find_ground_plane_properties(legs, tol=1):
     """
     Return three legs forming a stable position from legs,
     or None if no three legs satisfy this requirement.
-
-    This function takes the legs of the hexapod
-    and finds three legs on the ground that form a stable position
-    returns the leg ids of those three legs
-    return None if no stable position found
+    It also returns the normal vector of the plane
+    defined by the three ground contacts, and the
+    computed distance of the hexapod body to the ground plane
     """
-    trios = set_of_trios_from_six()
+    trios = list(combinations(range(6), 3))
     ground_contacts = [leg.ground_contact() for leg in legs]
 
     # (2, 3, 5) is a trio from the set [0, 1, 2, 3, 4, 5]
@@ -115,7 +106,8 @@ def three_ids_of_ground_contacts(legs, tol=1):
                 break
 
         if not condition_violated:
-            return trio  # Found one!
+            # Found one!
+            return [p0, p1, p2], n, height
 
     # Nothing met the condition
     return None
@@ -123,7 +115,7 @@ def three_ids_of_ground_contacts(legs, tol=1):
 
 def get_corresponding_ground_contacts(ids, legs):
     """
-    Given three leg ids and the list of legs get the points
+   #Given three leg ids and the list of legs get the points
     contacting the ground of those three legs.
     """
     return [legs[i].ground_contact() for i in ids]
