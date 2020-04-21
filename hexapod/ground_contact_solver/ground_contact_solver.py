@@ -1,4 +1,20 @@
 """
+❗❗❗A more general algorithm for computing the robot's orientation.
+This algorithm rests upon the assumption that it
+knows which point of the each leg is in contact with the ground.
+This assumption seems to be true for all possible cases for
+leg-patterns page and inverse-kinematics page.
+
+But this is not true for all possible
+angle combinations (18 angles) that can be defined in
+the kinematics page.
+
+This module is used for the leg-patterns page,
+and the inverse-kinematics page.
+
+The other module will be used for the kinematics page.
+❗❗❗
+
 This module is responsible for the following:
 1. determining which legs of the hexapod is on the ground
 2. Computing the normal vector of the triangle defined by at least three legs on the ground
@@ -9,12 +25,8 @@ ie this height is distance between the cog and the plane defined by ground conta
 """
 from math import isclose
 from itertools import combinations
-from hexapod.points import (
-    Point,
-    dot,
-    get_normal_given_three_points,
-    is_point_inside_triangle,
-)
+from hexapod.points import dot, get_normal_given_three_points
+from hexapod.ground_contact_solver.helpers import is_stable
 
 
 def compute_orientation_properties(legs, tol=1):
@@ -24,20 +36,13 @@ def compute_orientation_properties(legs, tol=1):
       - Normal vector of the plane defined by these legs
       - Distance of this plane to center of gravity
     """
-    trio = three_ids_of_ground_contacts(legs)
+    trio, n, height = find_ground_plane_properties(legs)
 
     # This pose is unstable, The hexapod has no balance
     if trio is None:
         return [], None, None
 
-    p0, p1, p2 = get_corresponding_ground_contacts(trio, legs)
-    n = get_normal_given_three_points(p0, p1, p2)
-
-    # Note: using p0, p1 or p2 should yield the same result
-    # height from cog to ground
-    height = -dot(n, p0)
-
-    # Get all contacts of the same height
+    # get all the legs on the ground
     legs_on_ground = []
 
     for leg in legs:
@@ -48,17 +53,15 @@ def compute_orientation_properties(legs, tol=1):
     return legs_on_ground, n, height
 
 
-def three_ids_of_ground_contacts(legs, tol=1):
+def find_ground_plane_properties(legs, tol=1):
     """
     Return three legs forming a stable position from legs,
     or None if no three legs satisfy this requirement.
-
-    This function takes the legs of the hexapod
-    and finds three legs on the ground that form a stable position
-    returns the leg ids of those three legs
-    return None if no stable position found
+    It also returns the normal vector of the plane
+    defined by the three ground contacts, and the
+    computed distance of the hexapod body to the ground plane
     """
-    trios = set_of_trios_from_six()
+    trios = list(combinations(range(6), 3))
     ground_contacts = [leg.ground_contact() for leg in legs]
 
     # (2, 3, 5) is a trio from the set [0, 1, 2, 3, 4, 5]
@@ -67,7 +70,7 @@ def three_ids_of_ground_contacts(legs, tol=1):
     for trio, other_trio in zip(trios, reversed(trios)):
         p0, p1, p2 = [ground_contacts[i] for i in trio]
 
-        if not check_stability(p0, p1, p2):
+        if not is_stable(p0, p1, p2):
             continue
 
         # Get the vector normal to plane defined by these points
@@ -94,43 +97,18 @@ def three_ids_of_ground_contacts(legs, tol=1):
         # height should be the most largest since
         # the plane defined by this trio is on the ground
         # the other legs ground contact cannot be lower than the ground
-        condition_violated = False
-        for i in other_trio:
-            _height = -dot(n, ground_contacts[i])
-            if _height > height + tol:
-                # Wrong leg combination, check another
-                condition_violated = True
-                break
-
-        if not condition_violated:
-            return trio  # Found one!
+        other_points = [ground_contacts[i] for i in other_trio]
+        if no_other_legs_lower(n, height, other_points, tol):
+            # Found one!
+            return [p0, p1, p2], n, height
 
     # Nothing met the condition
     return None
 
 
-def get_corresponding_ground_contacts(ids, legs):
-    """
-    Given three leg ids and the list of legs get the points
-    contacting the ground of those three legs.
-    """
-    return [legs[i].ground_contact() for i in ids]
-
-
-def set_of_trios_from_six():
-    """
-    Get all combinations of a three-item-group given six items.
-    20 combinations total
-    """
-    return list(combinations(range(6), 3))
-
-
-def check_stability(a, b, c):
-    """
-    Check if the points a, b, c form a stable triangle.
-
-    If the center of gravity p (0, 0) on xy plane
-    is inside projection (in the xy plane) of
-    the triangle defined by point a, b, c, then this is stable
-    """
-    return is_point_inside_triangle(Point(0, 0, 0), a, b, c)
+def no_other_legs_lower(n, height, other_points, tol):
+    for point in other_points:
+        _height = -dot(n, point)
+        if _height > height + tol:
+            return False
+    return True

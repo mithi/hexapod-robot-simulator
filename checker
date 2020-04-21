@@ -3,4 +3,4 @@ black .
 python -m pytest
 python -m py_compile ./*/*.py ./*.py ./*/*/*.py
 flake8 ./*/*.py ./*.py ./*/*/*.py
-pylint ./*.py */*.py */*/*.py --reports=y --ignore=page_kinematics.py,ik_solver.py,tests --disable=broad-except,too-few-public-methods,attribute-defined-outside-init,too-many-locals,too-many-instance-attributes,too-many-arguments,bad-continuation,missing-class-docstring,missing-module-docstring,missing-function-docstring,invalid-name,duplicate-code
+pylint ./*.py */*.py */*/*.py --reports=y --ignore=page_kinematics.py,ik_solver.py --disable=broad-except,too-few-public-methods,attribute-defined-outside-init,too-many-locals,too-many-instance-attributes,too-many-arguments,bad-continuation,missing-class-docstring,missing-module-docstring,missing-function-docstring,invalid-name,duplicate-code

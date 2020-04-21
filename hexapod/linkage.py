@@ -123,6 +123,9 @@ class Linkage:
     def ground_contact(self):
         return self.ground_contact_point
 
+    def get_point(self, i):
+        return self.all_points[i]
+
     def change_pose(self, alpha, beta, gamma):
         self.alpha = alpha
         self.beta = beta
@@ -161,6 +164,7 @@ class Linkage:
 
     def compute_ground_contact(self):
         # ❗IMPORTANT: Verify if this assumption is correct
+        # ❗VERIFIED: This assumption is indeed wrong
         ground_contact = self.all_points[3]
         for point in reversed(self.all_points):
             if point.z < ground_contact.z:
