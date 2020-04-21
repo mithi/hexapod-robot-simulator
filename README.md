@@ -59,12 +59,13 @@ Running on http://127.0.0.1:8050/
   - [`Linkage`](./hexapod/linkage.py)
   - [`VirtualHexapod`](./hexapod/models.py)
 - The [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md) used for this project
-- [How to find the orientation of the hexapod and its distance from the ground](./hexapod/ground_contact_solver/ground_contact_solver.py) given we know which of the three points of each leg could contact the ground
-- How to find the orientation of the hexapod and its distance from the ground if we don't know which of points of which legs are could be contact with the ground [(wip)]((./hexapod/ground_contact_solver/ground_contact_solver2.py))
-- [How to make the hexapod step on the correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py#L15)
+- How to find the orientation of the hexapod and its distance from the ground
+  -[Algorithm (#1)](./hexapod/ground_contact_solver/ground_contact_solver.py) given we know which of the three points of each leg could contact the ground
+  -[Algorithm (#2)](./hexapod/ground_contact_solver/ground_contact_solver2.py) given we don't know which of points of which legs could be in contact with the ground
+- [How to make the hexapod step on the correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py)
 - How to determine if the hexapod should twist and by how much
-  - `find_if_might_twist
-  - `find_twist_frame`
+  - [`find_if_might_twist`](./hexapod/models.py#L248)
+  - [`find_twist_frame`](./hexapod/models.py#L273)
 
 ## 🕷️ Screenshots
 
@@ -79,8 +80,6 @@ Running on http://127.0.0.1:8050/
 - This implementation uses matrices, **NOT** quaternions. I'm aware that quaternions is far superior in every single way. In the (un)forseeable future, maybe?
 
 - Honestly, [My IK algorithm](./hexapod/ik_solver/README.md) is just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It's just the most intuitive that I can think of. I'm open to hearing other ways to approach this. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
-
-- The [algorithm](./hexapod/ground_contact_solver/) to figure out the orientation of the hexapod and its distance from the ground needs improvement. Again, I'm open to ideas. The legs could also criss-cross, I don't know how to go about this.
 
 - I believe that the idea that it's best if we are kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
 
