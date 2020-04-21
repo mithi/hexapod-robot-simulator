@@ -111,19 +111,3 @@ def find_ground_plane_properties(legs, tol=1):
 
     # Nothing met the condition
     return None
-
-
-def get_corresponding_ground_contacts(ids, legs):
-    """
-   #Given three leg ids and the list of legs get the points
-    contacting the ground of those three legs.
-    """
-    return [legs[i].ground_contact() for i in ids]
-
-
-def set_of_trios_from_six():
-    """
-    Get all combinations of a three-item-group given six items.
-    20 possible combinations in total
-    """
-    return list(combinations(range(6), 3))
