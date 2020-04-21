@@ -59,9 +59,9 @@ Running on http://127.0.0.1:8050/
   - [`Linkage`](./hexapod/linkage.py)
   - [`VirtualHexapod`](./hexapod/models.py)
 - The [Inverse Kinematics Algorithm](./hexapod/ik_solver/README.md) used for this project
-- How to find the orientation of the hexapod and its distance from the ground given we know all the orientations of the six legs with respect to the robot's body.
-  - [Algorithm (#1)](./hexapod/ground_contact_solver/ground_contact_solver.py) given we know which of the three points of each leg could contact the ground
-  - [Algorithm (#2)](./hexapod/ground_contact_solver/ground_contact_solver2.py) given we don't know which of points of which legs could be in contact with the ground
+- How to find the orientation of the hexapod with respect to the ground given we know all the orientations of the six legs with respect to the robot's body.
+  - [Algorithm 1](./hexapod/ground_contact_solver/ground_contact_solver.py) when we know which of the three points of each leg could contact the ground
+  - [Algorithm 2](./hexapod/ground_contact_solver/ground_contact_solver2.py) when  we **don't** know which of points of which legs could be in contact with the ground
 - [How to make the hexapod step on the correct target ground contacts](./hexapod/ik_solver/recompute_hexapod.py)
 - How to determine if the hexapod should twist and by how much
   - [`find_if_might_twist`](./hexapod/models.py#L248)
@@ -81,7 +81,7 @@ Running on http://127.0.0.1:8050/
 
 - Honestly, [My IK algorithm](./hexapod/ik_solver/README.md) is just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It's just the most intuitive that I can think of. I'm open to hearing other ways to approach this. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
 
-- I would also love to here new ideas on how to improve the algorithms to find the orientation of the hexapod given we know the orientation of the legs with respect to the body. [Current algorithms here](./hexapod/ground_contact_solver/)
+- I would also love to here new ideas on how to improve the [algorithms currently used]((./hexapod/ground_contact_solver/)) to find the orientation of the hexapod given we know the orientation of the legs with respect to the body.
 
 - I believe that the idea that it's best if we are kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
 
