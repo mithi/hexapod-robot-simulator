@@ -13,6 +13,7 @@ from hexapod.points import (
 # en.wikipedia.org/wiki/Barycentric_coordinate_system
 def is_stable(p1, p2, p3, tol=0.001):
     """
+    Determines stability of the pose.
     Determine if projection of 3D point p
     onto the plane defined by p1, p2, p3
     is within a triangle defined by p1, p2, p3.

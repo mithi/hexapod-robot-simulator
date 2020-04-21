@@ -1,5 +1,5 @@
 """
-❗❗❗
+❗❗❗A more general algorithm for computing the robot's orientation.
 This algorithm rests upon the assumption that it
 knows which point of the each leg is in contact with the ground.
 This assumption seems to be true for all possible cases for
