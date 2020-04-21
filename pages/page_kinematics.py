@@ -64,7 +64,7 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
     hexapod = VirtualHexapod(dimensions)
 
     try:
-        hexapod.update(poses)
+        hexapod.update(poses, assume_ground_targets=False)
     except Exception as alert:
         return figure, helpers.make_alert_message(alert)
 

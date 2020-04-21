@@ -17,6 +17,19 @@ def assert_ik_solver(ik_function, case):
     assert_poses_equal(result_poses, case.correct_poses, case.description)
 
 
+def assert_ik_points(case, assume_ground_targets):
+    hexapod = VirtualHexapod(case.given_dimensions)
+    hexapod_ik = deepcopy(hexapod)
+    hexapod_k = deepcopy(hexapod)
+
+    poses, _ = ik_solver2.inverse_kinematics_update(hexapod, case.given_ik_parameters)
+
+    hexapod_ik.update(poses, assume_ground_targets)
+    hexapod_k.update(case.correct_poses, assume_ground_targets)
+
+    assert_two_hexapods_equal(hexapod_ik, hexapod_k, case.description)
+
+
 def test_sample_ik():
     for case in CASES:
         assert_ik_solver(ik_solver2.inverse_kinematics_update, case)
@@ -27,18 +40,8 @@ def test_sample_ik():
 
 def test_points_ik2():
     for case in CASES:
-        hexapod = VirtualHexapod(case.given_dimensions)
-        hexapod_ik = deepcopy(hexapod)
-        hexapod_k = deepcopy(hexapod)
-
-        poses, _ = ik_solver2.inverse_kinematics_update(
-            hexapod, case.given_ik_parameters
-        )
-
-        hexapod_ik.update(poses)
-        hexapod_k.update(case.correct_poses)
-
-        assert_two_hexapods_equal(hexapod_ik, hexapod_k, case.description)
+        assert_ik_points(case, True)
+        assert_ik_points(case, False)
 
 
 def test_shared_set_points():
