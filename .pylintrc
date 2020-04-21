@@ -60,18 +60,7 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=broad-except,
-        too-few-public-methods,
-        attribute-defined-outside-init,
-        too-many-locals,too-many-instance-attributes,
-        too-many-arguments,
-        bad-continuation,
-        missing-class-docstring,
-        missing-module-docstring,
-        missing-function-docstring,
-        invalid-name,
-        duplicate-code,
-        print-statement,
+disable=print-statement,
         parameter-unpacking,
         unpacking-in-except,
         old-raise-syntax,
