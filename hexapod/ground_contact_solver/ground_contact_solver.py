@@ -1,4 +1,20 @@
 """
+❗❗❗
+This algorithm rests upon the assumption that it
+knows which point of the each leg is in contact with the ground.
+This assumption seems to be true for all possible cases for
+leg-patterns page and inverse-kinematics page.
+
+But this is not true for all possible
+angle combinations (18 angles) that can be defined in
+the kinematics page.
+
+This module is used for the leg-patterns page,
+and the inverse-kinematics page.
+
+The other module will be used for the kinematics page.
+❗❗❗
+
 This module is responsible for the following:
 1. determining which legs of the hexapod is on the ground
 2. Computing the normal vector of the triangle defined by at least three legs on the ground
@@ -9,12 +25,8 @@ ie this height is distance between the cog and the plane defined by ground conta
 """
 from math import isclose
 from itertools import combinations
-from hexapod.points import (
-    Point,
-    dot,
-    get_normal_given_three_points,
-    is_point_inside_triangle,
-)
+from hexapod.points import dot, get_normal_given_three_points
+from hexapod.ground_contact_solver.helpers import is_stable
 
 
 def compute_orientation_properties(legs, tol=1):
@@ -67,7 +79,7 @@ def three_ids_of_ground_contacts(legs, tol=1):
     for trio, other_trio in zip(trios, reversed(trios)):
         p0, p1, p2 = [ground_contacts[i] for i in trio]
 
-        if not check_stability(p0, p1, p2):
+        if not is_stable(p0, p1, p2):
             continue
 
         # Get the vector normal to plane defined by these points
@@ -120,17 +132,6 @@ def get_corresponding_ground_contacts(ids, legs):
 def set_of_trios_from_six():
     """
     Get all combinations of a three-item-group given six items.
-    20 combinations total
+    20 possible combinations in total
     """
     return list(combinations(range(6), 3))
-
-
-def check_stability(a, b, c):
-    """
-    Check if the points a, b, c form a stable triangle.
-
-    If the center of gravity p (0, 0) on xy plane
-    is inside projection (in the xy plane) of
-    the triangle defined by point a, b, c, then this is stable
-    """
-    return is_point_inside_triangle(Point(0, 0, 0), a, b, c)

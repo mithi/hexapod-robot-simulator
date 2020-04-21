@@ -7,9 +7,9 @@ import json
 import numpy as np
 from settings import PRINT_MODEL_ON_UPDATE
 from hexapod.linkage import Linkage
-from hexapod.ground_contact_solver.ground_contact_solver import (
-    compute_orientation_properties,
-)
+import hexapod.ground_contact_solver.ground_contact_solver as gc
+import hexapod.ground_contact_solver.ground_contact_solver2 as gc2
+
 from hexapod.templates.pose_template import HEXAPOD_POSE
 from hexapod.points import (
     Point,
@@ -116,7 +116,7 @@ class VirtualHexapod:
         self._init_legs()
         self._init_local_frame()
 
-    def update(self, poses):
+    def update(self, poses, assume_ground_targets=True):
         self.body_rotation_frame = None
         might_twist = find_if_might_twist(self, poses)
         old_contacts = deepcopy(self.ground_contacts)
@@ -128,7 +128,13 @@ class VirtualHexapod:
 
         # Find new orientation of the body (new normal)
         # distance of cog from ground and which legs are on the ground
-        legs, n_axis, height = compute_orientation_properties(self.legs)
+
+        if assume_ground_targets:
+            # We are positive that our assumed target ground contact points
+            # are correct then we don't have to test all possible cases
+            legs, n_axis, height = gc.compute_orientation_properties(self.legs)
+        else:
+            legs, n_axis, height = gc2.compute_orientation_properties(self.legs)
 
         if n_axis is None:
             raise Exception("❗Pose Unstable. COG not inside support polygon.")
