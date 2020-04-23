@@ -23,37 +23,32 @@ the hexapod's neutral position
 3. Determining the height of the center of gravity (cog) wrt to the ground.
 ie this height is distance between the cog and the plane defined by ground contacts.
 """
-from math import isclose
-from itertools import combinations
 from hexapod.points import dot, get_normal_given_three_points
-from hexapod.ground_contact_solver.helpers import is_stable
+from hexapod.ground_contact_solver.shared import (
+    is_stable,
+    is_lower,
+    find_legs_on_ground,
+    LEG_TRIOS,
+)
 
 
-def compute_orientation_properties(legs, tol=1):
+def compute_orientation_properties(legs):
     """
     Returns:
       - Which legs are on the ground
       - Normal vector of the plane defined by these legs
       - Distance of this plane to center of gravity
     """
-    trio, n, height = find_ground_plane_properties(legs)
+    n, height = find_ground_plane_properties(legs)
 
-    # This pose is unstable, The hexapod has no balance
-    if trio is None:
+    # this pose is unstable, The hexapod has no balance
+    if n is None:
         return [], None, None
 
-    # get all the legs on the ground
-    legs_on_ground = []
-
-    for leg in legs:
-        _height = -dot(n, leg.ground_contact())
-        if isclose(height, _height, abs_tol=tol):
-            legs_on_ground.append(leg)
-
-    return legs_on_ground, n, height
+    return find_legs_on_ground(legs, n, height), n, height
 
 
-def find_ground_plane_properties(legs, tol=1):
+def find_ground_plane_properties(legs):
     """
     Return three legs forming a stable position from legs,
     or None if no three legs satisfy this requirement.
@@ -61,13 +56,12 @@ def find_ground_plane_properties(legs, tol=1):
     defined by the three ground contacts, and the
     computed distance of the hexapod body to the ground plane
     """
-    trios = list(combinations(range(6), 3))
     ground_contacts = [leg.ground_contact() for leg in legs]
 
     # (2, 3, 5) is a trio from the set [0, 1, 2, 3, 4, 5]
     # the corresponding other_trio of (2, 3, 5) is (0, 1, 4)
     # order is not important ie (2, 3, 5) is the same as (5, 3, 2)
-    for trio, other_trio in zip(trios, reversed(trios)):
+    for trio in LEG_TRIOS:
         p0, p1, p2 = [ground_contacts[i] for i in trio]
 
         if not is_stable(p0, p1, p2):
@@ -94,21 +88,22 @@ def find_ground_plane_properties(legs, tol=1):
         # using p0, p1 or p2 should yield the same result
         height = -dot(n, p0)
 
-        # height should be the most largest since
+        # height should be the highest since
         # the plane defined by this trio is on the ground
         # the other legs ground contact cannot be lower than the ground
+        other_trio = [i for i in range(6) if i not in trio]
         other_points = [ground_contacts[i] for i in other_trio]
-        if no_other_legs_lower(n, height, other_points, tol):
+        if no_other_legs_lower(n, height, other_points):
             # Found one!
-            return [p0, p1, p2], n, height
+            return n, height
 
     # Nothing met the condition
-    return None
+    return None, None
 
 
-def no_other_legs_lower(n, height, other_points, tol):
+def no_other_legs_lower(n, height, other_points):
     for point in other_points:
-        _height = -dot(n, point)
-        if _height > height + tol:
+        if is_lower(point, height, n):
             return False
+
     return True

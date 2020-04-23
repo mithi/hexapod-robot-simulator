@@ -38,9 +38,13 @@ def test_sample_ik():
         assert_ik_solver(ik_solver.inverse_kinematics_update, case)
 
 
-def test_points_ik2():
+def test_points_ik2_assume_ground_targets():
     for case in CASES:
         assert_ik_points(case, True)
+
+
+def test_points_ik2_dont_assume_ground_targets():
+    for case in CASES:
         assert_ik_points(case, False)
 
 

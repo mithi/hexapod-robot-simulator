@@ -27,38 +27,45 @@ For each combination:
     5. If no condition is violated, then this is good, return this!
         (height, n_axis, 3 ground contacts)
 """
-from math import isclose
-from itertools import combinations
-from hexapod.ground_contact_solver.helpers import is_stable
+import random
+from hexapod.ground_contact_solver.shared import (
+    is_stable,
+    is_lower,
+    find_legs_on_ground,
+    SOME_LEG_TRIOS,
+    ADJACENT_LEG_TRIOS,
+)
 from hexapod.points import get_normal_given_three_points, dot
 
-TOL = 1.0
+OTHER_POINTS_MAP = {1: (2, 3), 2: (3, 1), 3: (1, 2)}
 
-
-def all_joint_id_combinations():
-    joints_combination_list = []
-    # joint coxia point 1, femur point 2, foot_tip 3
-    for i in range(3, 0, -1):
-        for j in range(3, 0, -1):
-            for k in range(3, 0, -1):
-                joints_combination_list.append([i, j, k])
-
-    return joints_combination_list
-
-
-OTHER_POINTS_MAP = {1: [2, 3], 2: [3, 1], 3: [1, 2]}
+JOINT_TRIOS = []
+for i in range(3, 0, -1):
+    for j in range(3, 0, -1):
+        for k in range(3, 0, -1):
+            JOINT_TRIOS.append((i, j, k))
 
 
 def compute_orientation_properties(legs):
-    leg_trios = list(combinations(range(6), 3))
-    joint_trios = all_joint_id_combinations()
+    """
+    Returns:
+      - Which legs are on the ground
+      - Normal vector of the plane defined by these legs
+      - Distance of this plane to center of gravity
+    """
+    # prefer leg combinations where legs are not adjacent to each other
+    # introduce some randomness so we are not bias in
+    # choosing on stable position over another
+    shuffled_some_leg_trios = random.sample(SOME_LEG_TRIOS, len(SOME_LEG_TRIOS))
+    leg_trios = shuffled_some_leg_trios + ADJACENT_LEG_TRIOS
 
-    for leg_trio, other_leg_trio in zip(leg_trios, reversed(leg_trios)):
+    for leg_trio in leg_trios:
 
-        three_legs = [legs[i] for i in leg_trio]
+        other_leg_trio = [i for i in range(6) if i not in leg_trio]
         other_three_legs = [legs[i] for i in other_leg_trio]
+        three_legs = [legs[i] for i in leg_trio]
 
-        for joint_trio in joint_trios:
+        for joint_trio in JOINT_TRIOS:
 
             p0, p1, p2 = [legs[i].get_point(j) for i, j in zip(leg_trio, joint_trio)]
 
@@ -80,32 +87,18 @@ def compute_orientation_properties(legs):
     return [], None, None
 
 
-def other_leg_joints_break_condition(other_three_legs, n, height):
-    for leg in other_three_legs:
-        for i in range(1, 4):
-            height_to_test = -dot(n, leg.get_point(i))
-            if height_to_test > height + TOL:
-                return True
-    return False
-
-
 def same_leg_joints_break_condition(three_legs, three_point_ids, n, height):
     for leg, point_id in zip(three_legs, three_point_ids):
         for other_point_id in OTHER_POINTS_MAP[point_id]:
-            other_point = leg.get_point(other_point_id)
-            height_to_test = -dot(n, other_point)
-            if height_to_test > height + TOL:
+            point = leg.get_point(other_point_id)
+            if is_lower(point, height, n):
                 return True
     return False
 
 
-def find_legs_on_ground(legs, n, height):
-    legs_on_ground = []
-    for leg in legs:
-        for point in reversed(leg.all_points[1:]):
-            _height = -dot(n, point)
-            if isclose(height, _height, abs_tol=TOL):
-                legs_on_ground.append(leg)
-                break
-
-    return legs_on_ground
+def other_leg_joints_break_condition(other_three_legs, n, height):
+    for leg in other_three_legs:
+        for point in leg.all_points[1:]:
+            if is_lower(point, height, n):
+                return True
+    return False

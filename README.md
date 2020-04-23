@@ -48,7 +48,8 @@ Running on http://127.0.0.1:8050/
 
 ## ⚠️ Known Issues
 
-- [ ] ❗[Priorities](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3APRIORITY)
+- [ ] ❗[Priority](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3APRIORITY)
+- [ ] ❗[Good First Issue](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 - [ ] ❗[Help Wanted](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 - [ ] ❗[Bugs](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 - [ ] ❗[All](https://github.com/mithi/hexapod-robot-simulator/issues)
@@ -79,9 +80,7 @@ Running on http://127.0.0.1:8050/
 
 - This implementation uses matrices, **NOT** quaternions. I'm aware that quaternions is far superior in every single way. In the (un)forseeable future, maybe?
 
-- Honestly, [My IK algorithm](./hexapod/ik_solver/README.md) is just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It's just the most intuitive that I can think of. I'm open to hearing other ways to approach this. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
-
-- I would also love to here new ideas on how to improve the [algorithms currently used](./hexapod/ground_contact_solver/) to find the orientation of the hexapod given we know the orientation of the legs with respect to the body.
+- Honestly, [My IK algorithm](./hexapod/ik_solver/README.md) is just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It's just the most intuitive that I can think of. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
 
 - I believe that the idea that it's best if we are kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
 
