@@ -53,10 +53,11 @@ def compute_orientation_properties(legs):
       - Normal vector of the plane defined by these legs
       - Distance of this plane to center of gravity
     """
-    # prefer combinations of legs where not all legs are adjacent
+    # prefer leg combinations where legs are not adjacent to each other
     # introduce some randomness so we are not bias in
     # choosing on stable position over another
-    leg_trios = random.sample(SOME_LEG_TRIOS, len(SOME_LEG_TRIOS)) + ADJACENT_LEG_TRIOS
+    shuffled_some_leg_trios = random.sample(SOME_LEG_TRIOS, len(SOME_LEG_TRIOS))
+    leg_trios =  shuffled_some_leg_trios + ADJACENT_LEG_TRIOS
 
     for leg_trio in leg_trios:
 
