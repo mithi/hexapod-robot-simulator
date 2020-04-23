@@ -32,7 +32,7 @@ from hexapod.ground_contact_solver.shared import (
 )
 
 
-def compute_orientation_properties(legs, tol=1):
+def compute_orientation_properties(legs):
     """
     Returns:
       - Which legs are on the ground
