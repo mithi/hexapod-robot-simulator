@@ -27,38 +27,65 @@ For each combination:
     5. If no condition is violated, then this is good, return this!
         (height, n_axis, 3 ground contacts)
 """
+import random
 from math import isclose
-from itertools import combinations
 from hexapod.ground_contact_solver.helpers import is_stable
 from hexapod.points import get_normal_given_three_points, dot
 
 TOL = 1.0
 
+# Prioritize legs that are not adjacent to each other
+SOME_LEG_TRIOS = [
+    (0, 1, 3),
+    (0, 1, 4),
+    (0, 2, 3),
+    (0, 2, 4),
+    (0, 2, 5),
+    (0, 3, 4),
+    (0, 3, 5),
+    (1, 2, 4),
+    (1, 2, 5),
+    (1, 3, 4),
+    (1, 3, 5),
+    (1, 4, 5),
+    (2, 3, 5),
+    (2, 4, 5),
+]
 
-def all_joint_id_combinations():
-    joints_combination_list = []
-    # joint coxia point 1, femur point 2, foot_tip 3
-    for i in range(3, 0, -1):
-        for j in range(3, 0, -1):
-            for k in range(3, 0, -1):
-                joints_combination_list.append([i, j, k])
+ADJACENT_LEG_TRIOS = [
+    (0, 1, 2),
+    (1, 2, 3),
+    (2, 3, 4),
+    (3, 4, 5),
+    (0, 4, 5),
+    (0, 1, 5),
+]
 
-    return joints_combination_list
+# trios = list(combinations(range(6), 3))
+OTHER_POINTS_MAP = {1: (2, 3), 2: (3, 1), 3: (1, 2)}
 
-
-OTHER_POINTS_MAP = {1: [2, 3], 2: [3, 1], 3: [1, 2]}
+JOINT_TRIOS = []
+for i in range(3, 0, -1):
+    for j in range(3, 0, -1):
+        for k in range(3, 0, -1):
+            JOINT_TRIOS.append((i, j, k))
 
 
 def compute_orientation_properties(legs):
-    leg_trios = list(combinations(range(6), 3))
-    joint_trios = all_joint_id_combinations()
+    # prefer combinations of legs where not all legs are adjacent
+    # introduce some randomness so we are not bias in
+    # choosing on stable position over another
+    leg_trios = random.sample(SOME_LEG_TRIOS, len(SOME_LEG_TRIOS)) + ADJACENT_LEG_TRIOS
+    # leg_trios = list(combinations(range(6), 3))
 
-    for leg_trio, other_leg_trio in zip(leg_trios, reversed(leg_trios)):
+    for leg_trio in leg_trios:
+
+        other_leg_trio = [i for i in filter(lambda x: x not in leg_trio, range(6))]
 
         three_legs = [legs[i] for i in leg_trio]
         other_three_legs = [legs[i] for i in other_leg_trio]
 
-        for joint_trio in joint_trios:
+        for joint_trio in JOINT_TRIOS:
 
             p0, p1, p2 = [legs[i].get_point(j) for i, j in zip(leg_trio, joint_trio)]
 
