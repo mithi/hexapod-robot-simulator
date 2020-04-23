@@ -86,10 +86,9 @@ def compute_orientation_properties(legs):
 
     for leg_trio in leg_trios:
 
-        other_leg_trio = [i for i in filter(lambda x: x not in leg_trio, range(6))]
-
-        three_legs = [legs[i] for i in leg_trio]
+        other_leg_trio = [i for i in range(6) if i not in leg_trio]
         other_three_legs = [legs[i] for i in other_leg_trio]
+        three_legs = [legs[i] for i in leg_trio]
 
         for joint_trio in JOINT_TRIOS:
 
