@@ -57,7 +57,7 @@ def compute_orientation_properties(legs):
     # introduce some randomness so we are not bias in
     # choosing on stable position over another
     shuffled_some_leg_trios = random.sample(SOME_LEG_TRIOS, len(SOME_LEG_TRIOS))
-    leg_trios =  shuffled_some_leg_trios + ADJACENT_LEG_TRIOS
+    leg_trios = shuffled_some_leg_trios + ADJACENT_LEG_TRIOS
 
     for leg_trio in leg_trios:
 
