@@ -88,7 +88,7 @@ def find_ground_plane_properties(legs):
         # using p0, p1 or p2 should yield the same result
         height = -dot(n, p0)
 
-        # height should be the most largest since
+        # height should be the highest since
         # the plane defined by this trio is on the ground
         # the other legs ground contact cannot be lower than the ground
         other_trio = [i for i in range(6) if i not in trio]
