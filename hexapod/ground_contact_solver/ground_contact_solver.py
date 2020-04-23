@@ -1,5 +1,7 @@
 """
-❗❗❗A more general algorithm for computing the robot's orientation.
+❗❗❗An algorithm for computing the robot's orientation 
+assuming probably ground contacts are known.
+
 This algorithm rests upon the assumption that it
 knows which point of the each leg is in contact with the ground.
 This assumption seems to be true for all possible cases for
@@ -7,7 +9,7 @@ leg-patterns page and inverse-kinematics page.
 
 But this is not true for all possible
 angle combinations (18 angles) that can be defined in
-the kinematics page.
+the kinematics page. 
 
 This module is used for the leg-patterns page,
 and the inverse-kinematics page.
