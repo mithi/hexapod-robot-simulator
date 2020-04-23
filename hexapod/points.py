@@ -52,10 +52,12 @@ class Point:
     def __str__(self):
         return repr(self)
 
-    def __eq__(self, other):
+    def __eq__(self, other, percent_tol=0.0075):
         if not isinstance(other, Point):
             return False
-        equal_val = np.allclose(self.vec, other.vec, atol=0.01)
+
+        tol = length(self) * percent_tol
+        equal_val = np.allclose(self.vec, other.vec, atol=tol)
         equal_name = self.name == other.name
         return equal_val and equal_name
 
