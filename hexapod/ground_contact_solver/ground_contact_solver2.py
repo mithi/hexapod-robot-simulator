@@ -72,6 +72,12 @@ for i in range(3, 0, -1):
 
 
 def compute_orientation_properties(legs):
+    """
+    Returns:
+      - Which legs are on the ground
+      - Normal vector of the plane defined by these legs
+      - Distance of this plane to center of gravity
+    """
     # prefer combinations of legs where not all legs are adjacent
     # introduce some randomness so we are not bias in
     # choosing on stable position over another
