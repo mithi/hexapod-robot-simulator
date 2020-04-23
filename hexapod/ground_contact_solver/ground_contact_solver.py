@@ -28,7 +28,7 @@ from hexapod.ground_contact_solver.shared import (
     is_stable,
     is_lower,
     find_legs_on_ground,
-    LEG_TRIOS
+    LEG_TRIOS,
 )
 
 

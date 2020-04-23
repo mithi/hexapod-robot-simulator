@@ -35,6 +35,7 @@ ADJACENT_LEG_TRIOS = [
 
 LEG_TRIOS = SOME_LEG_TRIOS + ADJACENT_LEG_TRIOS
 
+
 # math.stackexchange.com/questions/544946/
 #   determine-if-projection-of-3d-point-onto-plane-is-within-a-triangle
 # gamedev.stackexchange.com/questions/23743/
