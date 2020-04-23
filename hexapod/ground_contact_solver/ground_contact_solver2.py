@@ -28,40 +28,15 @@ For each combination:
         (height, n_axis, 3 ground contacts)
 """
 import random
-from math import isclose
-from hexapod.ground_contact_solver.helpers import is_stable
+from hexapod.ground_contact_solver.helpers import (
+    is_stable,
+    is_lower,
+    find_legs_on_ground,
+    SOME_LEG_TRIOS,
+    ADJACENT_LEG_TRIOS,
+)
 from hexapod.points import get_normal_given_three_points, dot
 
-TOL = 1.0
-
-# Prioritize legs that are not adjacent to each other
-SOME_LEG_TRIOS = [
-    (0, 1, 3),
-    (0, 1, 4),
-    (0, 2, 3),
-    (0, 2, 4),
-    (0, 2, 5),
-    (0, 3, 4),
-    (0, 3, 5),
-    (1, 2, 4),
-    (1, 2, 5),
-    (1, 3, 4),
-    (1, 3, 5),
-    (1, 4, 5),
-    (2, 3, 5),
-    (2, 4, 5),
-]
-
-ADJACENT_LEG_TRIOS = [
-    (0, 1, 2),
-    (1, 2, 3),
-    (2, 3, 4),
-    (3, 4, 5),
-    (0, 4, 5),
-    (0, 1, 5),
-]
-
-# trios = list(combinations(range(6), 3))
 OTHER_POINTS_MAP = {1: (2, 3), 2: (3, 1), 3: (1, 2)}
 
 JOINT_TRIOS = []
@@ -82,7 +57,6 @@ def compute_orientation_properties(legs):
     # introduce some randomness so we are not bias in
     # choosing on stable position over another
     leg_trios = random.sample(SOME_LEG_TRIOS, len(SOME_LEG_TRIOS)) + ADJACENT_LEG_TRIOS
-    # leg_trios = list(combinations(range(6), 3))
 
     for leg_trio in leg_trios:
 
@@ -112,32 +86,18 @@ def compute_orientation_properties(legs):
     return [], None, None
 
 
-def other_leg_joints_break_condition(other_three_legs, n, height):
-    for leg in other_three_legs:
-        for point in leg.all_points[1:]:
-            height_to_test = -dot(n, point)
-            if height_to_test > height + TOL:
-                return True
-    return False
-
-
 def same_leg_joints_break_condition(three_legs, three_point_ids, n, height):
     for leg, point_id in zip(three_legs, three_point_ids):
         for other_point_id in OTHER_POINTS_MAP[point_id]:
-            other_point = leg.get_point(other_point_id)
-            height_to_test = -dot(n, other_point)
-            if height_to_test > height + TOL:
+            point = leg.get_point(other_point_id)
+            if is_lower(point, height, n):
                 return True
     return False
 
 
-def find_legs_on_ground(legs, n, height):
-    legs_on_ground = []
-    for leg in legs:
-        for point in reversed(leg.all_points[1:]):
-            _height = -dot(n, point)
-            if isclose(height, _height, abs_tol=TOL):
-                legs_on_ground.append(leg)
-                break
-
-    return legs_on_ground
+def other_leg_joints_break_condition(other_three_legs, n, height):
+    for leg in other_three_legs:
+        for point in leg.all_points[1:]:
+            if is_lower(point, height, n):
+                return True
+    return False
