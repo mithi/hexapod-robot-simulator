@@ -36,10 +36,10 @@ def compute_orientation_properties(legs, tol=1):
       - Normal vector of the plane defined by these legs
       - Distance of this plane to center of gravity
     """
-    trio, n, height = find_ground_plane_properties(legs)
+    n, height = find_ground_plane_properties(legs)
 
-    # This pose is unstable, The hexapod has no balance
-    if trio is None:
+    # this pose is unstable, The hexapod has no balance
+    if n is None:
         return [], None, None
 
     # get all the legs on the ground
@@ -100,10 +100,10 @@ def find_ground_plane_properties(legs, tol=1):
         other_points = [ground_contacts[i] for i in other_trio]
         if no_other_legs_lower(n, height, other_points, tol):
             # Found one!
-            return [p0, p1, p2], n, height
+            return n, height
 
     # Nothing met the condition
-    return None
+    return None, None
 
 
 def no_other_legs_lower(n, height, other_points, tol):
