@@ -101,7 +101,7 @@ def find_ground_plane_properties(legs):
     return None, None
 
 
-def no_other_legs_lower(n, height, other_points, tol=1):
+def no_other_legs_lower(n, height, other_points):
     for point in other_points:
         if is_lower(point, height, n):
             return False
