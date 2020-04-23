@@ -28,7 +28,7 @@ For each combination:
         (height, n_axis, 3 ground contacts)
 """
 import random
-from hexapod.ground_contact_solver.helpers import (
+from hexapod.ground_contact_solver.shared import (
     is_stable,
     is_lower,
     find_legs_on_ground,

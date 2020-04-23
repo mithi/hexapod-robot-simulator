@@ -24,7 +24,7 @@ the hexapod's neutral position
 ie this height is distance between the cog and the plane defined by ground contacts.
 """
 from hexapod.points import dot, get_normal_given_three_points
-from hexapod.ground_contact_solver.helpers import (
+from hexapod.ground_contact_solver.shared import (
     is_stable,
     is_lower,
     find_legs_on_ground,
