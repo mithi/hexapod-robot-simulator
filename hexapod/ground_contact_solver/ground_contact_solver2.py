@@ -109,8 +109,8 @@ def compute_orientation_properties(legs):
 
 def other_leg_joints_break_condition(other_three_legs, n, height):
     for leg in other_three_legs:
-        for i in range(1, 4):
-            height_to_test = -dot(n, leg.get_point(i))
+        for point in leg.all_points[1:]:
+            height_to_test = -dot(n, point)
             if height_to_test > height + TOL:
                 return True
     return False
