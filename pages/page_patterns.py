@@ -1,55 +1,35 @@
 import json
-import dash_html_components as html
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Output
 from app import app
 from hexapod.models import VirtualHexapod
-from hexapod.const import BASE_PLOTTER, BASE_FIGURE
-from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
+from hexapod.const import BASE_PLOTTER
 from widgets.leg_patterns_ui import SECTION_LEG_POSE_SLIDERS, LEG_SLIDERS_INPUTS
-from pages import helpers
-from pages.shared import (
-    INPUT_DIMENSIONS_JSON,
-    SECTION_HIDDEN_BODY_DIMENSIONS,
-    make_page_layout,
+from pages import helpers, shared
+
+# ......................
+# Page layout
+# ......................
+
+GRAPH_NAME = "graph-patterns"
+ID_MESSAGE_SECTION = "message-patterns"
+ID_PARAMETERS_SECTION = "parameters-patterns"
+
+sidebar = shared.make_standard_sidebar(
+    ID_MESSAGE_SECTION, ID_PARAMETERS_SECTION, SECTION_LEG_POSE_SLIDERS
 )
-
-# *********************
-# *  LAYOUT           *
-# *********************
-GRAPH_NAME = "graph-hexapod-patterns"
-ID_MESSAGE_DISPLAY_SECTION = "display-message-patterns"
-SECTION_MESSAGE_DISPLAY = html.Div(id=ID_MESSAGE_DISPLAY_SECTION)
-ID_POSES_SECTION = "hexapod-poses-values-patterns"
-SECTION_HIDDEN_JOINT_POSES = html.Div(id=ID_POSES_SECTION, style={"display": "none"})
-
-SECTION_CONTROLS = [
-    SECTION_DIMENSION_CONTROL,
-    SECTION_LEG_POSE_SLIDERS,
-    SECTION_MESSAGE_DISPLAY,
-    SECTION_HIDDEN_BODY_DIMENSIONS,
-    SECTION_HIDDEN_JOINT_POSES,
-]
-
-layout = make_page_layout(GRAPH_NAME, SECTION_CONTROLS)
-
-# *********************
-# *  CALLBACKS        *
-# *********************
+layout = shared.make_standard_page_layout(GRAPH_NAME, sidebar)
 
 # ......................
 # Update page
 # ......................
-OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
-INPUT_POSES_JSON = Input(ID_POSES_SECTION, "children")
-OUTPUTS = [Output(GRAPH_NAME, "figure"), OUTPUT_MESSAGE_DISPLAY]
-INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
-STATES = [State(GRAPH_NAME, "relayoutData"), State(GRAPH_NAME, "figure")]
+
+outputs, inputs, states = shared.make_standard_page_inputs_outputs_states(
+    GRAPH_NAME, ID_PARAMETERS_SECTION, ID_MESSAGE_SECTION,
+)
 
 
-@app.callback(OUTPUTS, INPUTS, STATES)
+@app.callback(outputs, inputs, states)
 def update_patterns_page(dimensions_json, poses_json, relayout_data, figure):
-    if figure is None:
-        return BASE_FIGURE, ""
 
     dimensions = helpers.load_dimensions(dimensions_json)
     poses = json.loads(poses_json)
@@ -65,12 +45,14 @@ def update_patterns_page(dimensions_json, poses_json, relayout_data, figure):
     return figure, ""
 
 
-OUTPUT = Output(ID_POSES_SECTION, "children")
-INPUTS = LEG_SLIDERS_INPUTS
-
 # ......................
 # Update parameters
 # ......................
-@app.callback(OUTPUT, INPUTS)
+
+output_parameter = Output(ID_PARAMETERS_SECTION, "children")
+input_parameters = LEG_SLIDERS_INPUTS
+
+
+@app.callback(output_parameter, input_parameters)
 def update_poses_alpha_beta_gamma(alpha, beta, gamma):
     return json.dumps(helpers.make_pose(alpha, beta, gamma))

@@ -1,17 +1,10 @@
 import json
-import dash_html_components as html
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 from app import app
 from settings import WHICH_POSE_CONTROL_UI
 from hexapod.models import VirtualHexapod
-from hexapod.const import BASE_PLOTTER, BASE_FIGURE, NAMES_LEG, NAMES_JOINT
-from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
-from pages import helpers
-from pages.shared import (
-    INPUT_DIMENSIONS_JSON,
-    SECTION_HIDDEN_BODY_DIMENSIONS,
-    make_page_layout,
-)
+from hexapod.const import BASE_PLOTTER, NAMES_LEG, NAMES_JOINT
+from pages import helpers, shared
 
 if WHICH_POSE_CONTROL_UI == 1:
     from widgets.pose_control.generic_daq_slider_ui import SECTION_POSE_CONTROL
@@ -20,44 +13,33 @@ elif WHICH_POSE_CONTROL_UI == 2:
 else:
     from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 
-# *********************
-# *  LAYOUT           *
-# *********************
-GRAPH_NAME = "graph-hexapod-kinematics"
-ID_MESSAGE_DISPLAY_SECTION = "display-message-kinematics"
-SECTION_MESSAGE_DISPLAY = html.Div(id=ID_MESSAGE_DISPLAY_SECTION)
-ID_POSES_SECTION = "hexapod-poses-values-kinematics"
-SECTION_HIDDEN_JOINT_POSES = html.Div(id=ID_POSES_SECTION, style={"display": "none"})
+# ......................
+# Page layout
+# ......................
 
-SECTION_CONTROLS = [
-    SECTION_DIMENSION_CONTROL,
-    SECTION_POSE_CONTROL,
-    SECTION_MESSAGE_DISPLAY,
-    SECTION_HIDDEN_BODY_DIMENSIONS,
-    SECTION_HIDDEN_JOINT_POSES,
-]
+GRAPH_NAME = "graph-kinematics"
+ID_MESSAGE_SECTION = "message-kinematics"
+ID_PARAMETERS_SECTION = "parameters-kinematics"
 
-layout = make_page_layout(GRAPH_NAME, SECTION_CONTROLS)
+sidebar = shared.make_standard_sidebar(
+    ID_MESSAGE_SECTION, ID_PARAMETERS_SECTION, SECTION_POSE_CONTROL
+)
+
+layout = shared.make_standard_page_layout(GRAPH_NAME, sidebar)
 
 # fmt: off
-# *********************
-# *  CALLBACKS        *
-# *********************
 
 # ......................
 # Update page
 # ......................
-OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
-INPUT_POSES_JSON = Input(ID_POSES_SECTION, "children")
-OUTPUTS = [Output(GRAPH_NAME, "figure"), OUTPUT_MESSAGE_DISPLAY]
-INPUTS = [INPUT_DIMENSIONS_JSON, INPUT_POSES_JSON]
-STATES = [State(GRAPH_NAME, "relayoutData"), State(GRAPH_NAME, "figure")]
+
+outputs, inputs, states = shared.make_standard_page_inputs_outputs_states(
+    GRAPH_NAME, ID_PARAMETERS_SECTION, ID_MESSAGE_SECTION
+)
 
 
-@app.callback(OUTPUTS, INPUTS, STATES)
+@app.callback(outputs, inputs, states)
 def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
-    if figure is None:
-        return BASE_FIGURE, ""
 
     dimensions = helpers.load_dimensions(dimensions_json)
     poses = json.loads(poses_json)
@@ -76,6 +58,7 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
 # ......................
 # Update Parameters
 # ......................
+
 def leg_inputs(leg_name):
     return [
         Input(f"input-{leg_name}-{joint_name}", "value") for joint_name in NAMES_JOINT
@@ -89,11 +72,11 @@ def input_poses():
     return inputs_poses
 
 
-OUTPUT_POSES = Output(ID_POSES_SECTION, "children")
-INPUTS_POSES = input_poses()
+output_parameter = Output(ID_PARAMETERS_SECTION, "children")
+input_parameters = input_poses()
 
 
-@app.callback(OUTPUT_POSES, INPUTS_POSES)
+@app.callback(output_parameter, input_parameters)
 def update_hexapod_poses(
     rmc, rmf, rmt,
     rfc, rff, rft,

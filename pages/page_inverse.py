@@ -1,62 +1,41 @@
 import json
-import dash_html_components as html
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Output
 from app import app
 from settings import RECOMPUTE_HEXAPOD
 from hexapod.models import VirtualHexapod
-from hexapod.const import BASE_PLOTTER, BASE_FIGURE
+from hexapod.const import BASE_PLOTTER
 from hexapod.ik_solver.ik_solver2 import inverse_kinematics_update
 from hexapod.ik_solver.recompute_hexapod import recompute_hexapod
-from widgets.dimensions_ui import SECTION_DIMENSION_CONTROL
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
-from pages import helpers
-from pages.shared import (
-    INPUT_DIMENSIONS_JSON,
-    SECTION_HIDDEN_BODY_DIMENSIONS,
-    make_page_layout,
+from pages import helpers, shared
+
+# ......................
+# Page layout
+# ......................
+
+GRAPH_NAME = "graph-inverse"
+ID_MESSAGE_SECTION = "message-inverse"
+ID_PARAMETERS_SECTION = "parameters-inverse"
+
+sidebar = shared.make_standard_sidebar(
+    ID_MESSAGE_SECTION, ID_PARAMETERS_SECTION, SECTION_IK
 )
 
-# *********************
-# *  LAYOUT           *
-# *********************
-GRAPH_NAME = "graph-hexapod-inverse"
-ID_MESSAGE_DISPLAY_SECTION = "display-message-inverse"
-SECTION_MESSAGE_DISPLAY = html.Div(id=ID_MESSAGE_DISPLAY_SECTION)
-ID_IK_PARAMETERS_JSON = "ik-parameters"
-SECTION_HIDDEN_IK_PARAMETERS = html.Div(
-    id=ID_IK_PARAMETERS_JSON, style={"display": "none"}
-)
+layout = shared.make_standard_page_layout(GRAPH_NAME, sidebar)
 
-SECTION_CONTROLS = [
-    SECTION_DIMENSION_CONTROL,
-    SECTION_IK,
-    SECTION_MESSAGE_DISPLAY,
-    SECTION_HIDDEN_BODY_DIMENSIONS,
-    SECTION_HIDDEN_IK_PARAMETERS,
-]
-
-layout = make_page_layout(GRAPH_NAME, SECTION_CONTROLS)
-
-# *********************
-# *  CALLBACKS        *
-# *********************
+# fmt: off
 
 # ......................
 # Update page
 # ......................
-OUTPUT_MESSAGE_DISPLAY = Output(ID_MESSAGE_DISPLAY_SECTION, "children")
-OUTPUTS = [
-    Output(GRAPH_NAME, "figure"),
-    OUTPUT_MESSAGE_DISPLAY,
-]
-INPUTS = [INPUT_DIMENSIONS_JSON, Input(ID_IK_PARAMETERS_JSON, "children")]
-STATES = [State(GRAPH_NAME, "relayoutData"), State(GRAPH_NAME, "figure")]
+
+outputs, inputs, states = shared.make_standard_page_inputs_outputs_states(
+    GRAPH_NAME, ID_PARAMETERS_SECTION, ID_MESSAGE_SECTION
+)
 
 
-@app.callback(OUTPUTS, INPUTS, STATES)
+@app.callback(outputs, inputs, states)
 def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figure):
-    if figure is None:
-        return BASE_FIGURE, ""
 
     dimensions = helpers.load_dimensions(dimensions_json)
     ik_parameters = json.loads(ik_parameters_json)
@@ -81,10 +60,12 @@ def update_inverse_page(dimensions_json, ik_parameters_json, relayout_data, figu
 # ......................
 # Update parameters
 # ......................
-OUTPUT = Output(ID_IK_PARAMETERS_JSON, "children")
+
+output_parameter = Output(ID_PARAMETERS_SECTION, "children")
+input_parameters = IK_INPUTS
 
 
-@app.callback(OUTPUT, IK_INPUTS)
+@app.callback(output_parameter, input_parameters)
 def update_ik_parameters(
     hip_stance, leg_stance, percent_x, percent_y, percent_z, rot_x, rot_y, rot_z
 ):
