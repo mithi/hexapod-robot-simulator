@@ -6,6 +6,7 @@ from hexapod.const import BASE_PLOTTER
 from widgets.leg_patterns_ui import SECTION_LEG_POSE_SLIDERS, LEG_SLIDERS_INPUTS
 from pages import helpers, shared
 
+
 # ......................
 # Page layout
 # ......................
@@ -18,6 +19,7 @@ sidebar = shared.make_standard_sidebar(
     ID_MESSAGE_SECTION, ID_PARAMETERS_SECTION, SECTION_LEG_POSE_SLIDERS
 )
 layout = shared.make_standard_page_layout(GRAPH_NAME, sidebar)
+
 
 # ......................
 # Update page

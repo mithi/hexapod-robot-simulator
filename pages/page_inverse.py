@@ -9,6 +9,7 @@ from hexapod.ik_solver.recompute_hexapod import recompute_hexapod
 from widgets.ik_ui import SECTION_IK, IK_INPUTS
 from pages import helpers, shared
 
+
 # ......................
 # Page layout
 # ......................
@@ -23,7 +24,6 @@ sidebar = shared.make_standard_sidebar(
 
 layout = shared.make_standard_page_layout(GRAPH_NAME, sidebar)
 
-# fmt: off
 
 # ......................
 # Update page

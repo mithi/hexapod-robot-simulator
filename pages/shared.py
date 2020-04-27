@@ -11,6 +11,7 @@ from settings import (
 from widgets.dimensions_ui import DIMENSION_INPUTS, SECTION_DIMENSION_CONTROL
 from hexapod.const import BASE_FIGURE
 
+
 # ......................
 # Update hexapod dimensions callback
 # ......................

@@ -13,6 +13,7 @@ elif WHICH_POSE_CONTROL_UI == 2:
 else:
     from widgets.pose_control.generic_input_ui import SECTION_POSE_CONTROL
 
+
 # ......................
 # Page layout
 # ......................
@@ -27,7 +28,6 @@ sidebar = shared.make_standard_sidebar(
 
 layout = shared.make_standard_page_layout(GRAPH_NAME, sidebar)
 
-# fmt: off
 
 # ......................
 # Update page
@@ -59,6 +59,7 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
 # Update Parameters
 # ......................
 
+
 def leg_inputs(leg_name):
     return [
         Input(f"input-{leg_name}-{joint_name}", "value") for joint_name in NAMES_JOINT
@@ -75,6 +76,7 @@ def input_poses():
 output_parameter = Output(ID_PARAMETERS_SECTION, "children")
 input_parameters = input_poses()
 
+# fmt: off
 
 @app.callback(output_parameter, input_parameters)
 def update_hexapod_poses(
@@ -86,12 +88,13 @@ def update_hexapod_poses(
     rbc, rbf, rbt,
 ):
 
-    return json.dumps(
-        {0: {"coxia": rmc or 0, "femur": rmf or 0, "tibia": rmt or 0, "name": "right-middle", "id": 0, },
-         1: {"coxia": rfc or 0, "femur": rff or 0, "tibia": rft or 0, "name": "right-front", "id": 1, },
-         2: {"coxia": lfc or 0, "femur": lff or 0, "tibia": lft or 0, "name": "left-front", "id": 2, },
-         3: {"coxia": lmc or 0, "femur": lmf or 0, "tibia": lmt or 0, "name": "left-middle", "id": 3, },
-         4: {"coxia": lbc or 0, "femur": lbf or 0, "tibia": lbt or 0, "name": "left-back", "id": 4, },
-         5: {"coxia": rbc or 0, "femur": rbf or 0, "tibia": rbt or 0, "name": "right-back", "id": 5, }, },
-    )
+    return json.dumps({
+        0: {"coxia": rmc or 0, "femur": rmf or 0, "tibia": rmt or 0, "name": "right-middle", "id": 0},
+        1: {"coxia": rfc or 0, "femur": rff or 0, "tibia": rft or 0, "name": "right-front", "id": 1},
+        2: {"coxia": lfc or 0, "femur": lff or 0, "tibia": lft or 0, "name": "left-front", "id": 2},
+        3: {"coxia": lmc or 0, "femur": lmf or 0, "tibia": lmt or 0, "name": "left-middle", "id": 3},
+        4: {"coxia": lbc or 0, "femur": lbf or 0, "tibia": lbt or 0, "name": "left-back", "id": 4},
+        5: {"coxia": rbc or 0, "femur": rbf or 0, "tibia": rbt or 0, "name": "right-back", "id": 5},
+    })
+
 # fmt: on
