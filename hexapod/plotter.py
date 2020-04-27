@@ -70,7 +70,7 @@ class HexapodPlotter:
         fig["layout"]["scene"]["yaxis"]["range"] = AXIS_RANGE
         fig["layout"]["scene"]["zaxis"]["range"] = [z_start, (RANGE - z_start) * 2]
 
-        axis_scale = hexapod.front/ 2
+        axis_scale = hexapod.front / 2
 
         # Draw the hexapod local frame
         cog = hexapod.body.cog

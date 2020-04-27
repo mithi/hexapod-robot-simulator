@@ -235,9 +235,11 @@ class VirtualHexapod:
         self.y_axis.update_point_wrt(frame)
         self.z_axis.update_point_wrt(frame)
 
+
 # ..........................................
 # Helper functions
 # ..........................................
+
 def get_hip_angle(leg_id, poses):
     if leg_id in poses:
         return poses[leg_id]["coxia"]
