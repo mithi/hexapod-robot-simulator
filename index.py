@@ -21,9 +21,10 @@ div_header = html.Div(
     [
         html.A(html.H6("👾"), href=URL_REPO, target="_blank", style=icon_link_style),
         html.A(html.H6("☕"), href=URL_KOFI, target="_blank", style=icon_link_style),
-        dcc.Link(html.H6("●"), href="/", style=icon_link_style),
+        dcc.Link(html.H6("●"), href="/leg-patterns", style=icon_link_style),
         dcc.Link(html.H6("●"), href="/inverse-kinematics", style=icon_link_style),
         dcc.Link(html.H6("●"), href="/kinematics", style=icon_link_style),
+        dcc.Link(html.H6("●"), href="/", style=icon_link_style),
     ],
     style={"display": "flex", "flex-direction": "row"},
 )
@@ -35,13 +36,13 @@ div_nav = html.Div(
         html.Br(),
         html.A("☕ Buy Mithi coffee", href=URL_KOFI, target="_blank",),
         html.Br(),
-        dcc.Link("● Root", href="/"),
+        dcc.Link("● Leg Patterns", href="/leg-patterns"),
         html.Br(),
         dcc.Link("● Inverse Kinematics", href="/inverse-kinematics"),
         html.Br(),
         dcc.Link("● Kinematics", href="/kinematics"),
         html.Br(),
-        dcc.Link("● Leg Patterns", href="/leg-patterns"),
+        dcc.Link("● Root", href="/"),
     ]
 )
 

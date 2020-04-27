@@ -240,6 +240,7 @@ class VirtualHexapod:
 # Helper functions
 # ..........................................
 
+
 def get_hip_angle(leg_id, poses):
     if leg_id in poses:
         return poses[leg_id]["coxia"]
