@@ -78,6 +78,7 @@ input_parameters = input_poses()
 
 # fmt: off
 
+
 @app.callback(output_parameter, input_parameters)
 def update_hexapod_poses(
     rmc, rmf, rmt,

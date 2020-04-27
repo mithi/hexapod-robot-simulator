@@ -8,12 +8,12 @@ from widgets.sectioning import make_section_type3
 
 HEADER = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
 INPUT_DIMENSIONS_IDs = [
-    "input-length-front",
-    "input-length-side",
-    "input-length-middle",
-    "input-length-coxia",
-    "input-length-femur",
-    "input-length-tibia",
+    "widget-dimension-front",
+    "widget-dimension-side",
+    "widget-dimension-middle",
+    "widget-dimension-coxia",
+    "widget-dimension-femur",
+    "widget-dimension-tibia",
 ]
 DIMENSION_INPUTS = [Input(input_id, "value") for input_id in INPUT_DIMENSIONS_IDs]
 
@@ -29,12 +29,12 @@ def make_positive_number_input(_name, _value):
     )
 
 
-front_input = make_positive_number_input("input-length-front", 100)
-side_input = make_positive_number_input("input-length-side", 100)
-middle_input = make_positive_number_input("input-length-middle", 100)
-coxia_input = make_positive_number_input("input-length-coxia", 100)
-femur_input = make_positive_number_input("input-length-femur", 100)
-tibia_input = make_positive_number_input("input-length-tibia", 100)
+front_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[0], 100)
+side_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[1], 100)
+middle_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[2], 100)
+coxia_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[3], 100)
+femur_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[4], 100)
+tibia_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[5], 100)
 
 
 def _code(name):

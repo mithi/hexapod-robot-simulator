@@ -185,6 +185,11 @@ class VirtualHexapod:
 
         self.update(pose)
 
+    def sum_of_dimensions(self):
+        f, m, s = self.front, self.mid, self.side
+        a, b, c = self.coxia, self.femur, self.tibia
+        return f + m + s + a + b + c
+
     def _store_attributes(self, dimensions):
         self.body_rotation_frame = None
         self.dimensions = dimensions
@@ -234,6 +239,7 @@ class VirtualHexapod:
 # ..........................................
 # Helper functions
 # ..........................................
+
 def get_hip_angle(leg_id, poses):
     if leg_id in poses:
         return poses[leg_id]["coxia"]

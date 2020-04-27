@@ -6,35 +6,34 @@ from style_settings import GLOBAL_PAGE_STYLE
 from app import app
 from pages import page_inverse, page_kinematics, page_patterns, page_landing
 
+
+URL_KOFI = "https://ko-fi.com/minimithi"
+URL_REPO = "https://github.com/mithi/hexapod-robot-simulator"
 server = app.server
+
 # --------------
-# Navigation bar partial
+# Navigation bar partials
 # --------------
 
-header = dcc.Markdown(
-    f"""
-#### [👾][1] [☕][2] [●][3] [●](/kinematics) [●](/leg-patterns) [●](/)
-[1]: https://github.com/mithi/hexapod-robot-simulator
-[2]: https://ko-fi.com/minimithi
-[3]: /inverse-kinematics
-[4]: /kinematics
-[5]: /leg-patterns
-[6]: /
-"""
+icon_link_style = {"margin": "0 0 0 0.5em"}
+
+div_header = html.Div(
+    [
+        html.A(html.H6("👾"), href=URL_REPO, target="_blank", style=icon_link_style),
+        html.A(html.H6("☕"), href=URL_KOFI, target="_blank", style=icon_link_style),
+        dcc.Link(html.H6("●"), href="/", style=icon_link_style),
+        dcc.Link(html.H6("●"), href="/inverse-kinematics", style=icon_link_style),
+        dcc.Link(html.H6("●"), href="/kinematics", style=icon_link_style),
+    ],
+    style={"display": "flex", "flex-direction": "row"},
 )
 
 div_nav = html.Div(
     [
         html.Br(),
-        html.A(
-            "👾 Source Code",
-            href="https://github.com/mithi/hexapod-robot-simulator",
-            target="_blank",
-        ),
+        html.A("👾 Source Code", href=URL_REPO, target="_blank",),
         html.Br(),
-        html.A(
-            "☕ Buy Mithi coffee", href="https://ko-fi.com/minimithi", target="_blank",
-        ),
+        html.A("☕ Buy Mithi coffee", href=URL_KOFI, target="_blank",),
         html.Br(),
         dcc.Link("● Root", href="/"),
         html.Br(),
@@ -51,7 +50,7 @@ div_nav = html.Div(
 # --------------
 app.layout = html.Div(
     [
-        header,
+        div_header,
         dcc.Location(id="url", refresh=False),
         html.Div(id="page-content"),
         div_nav,

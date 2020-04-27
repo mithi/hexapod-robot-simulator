@@ -11,6 +11,18 @@ class HexapodPlotter:
         pass
 
     @staticmethod
+    def update(fig, hexapod):
+        HexapodPlotter._draw_hexapod(fig, hexapod)
+        HexapodPlotter._draw_scene(fig, hexapod)
+
+    @staticmethod
+    def change_camera_view(fig, camera):
+        # camera = { 'up': {'x': 0, 'y': 0, 'z': 0},
+        #        'center': {'x': 0, 'y': 0, 'z': 0},
+        #           'eye': {'x': 0, 'y': 0, 'z': 0)}}
+        fig["layout"]["scene"]["camera"] = camera
+
+    @staticmethod
     def _draw_hexapod(fig, hexapod):
         # Body
         points = hexapod.body.vertices + [hexapod.body.vertices[0]]
@@ -50,9 +62,7 @@ class HexapodPlotter:
     @staticmethod
     def _draw_scene(fig, hexapod):
         # Change range of view for all axes
-        f, m, s = hexapod.front, hexapod.mid, hexapod.side
-        a, b, c = hexapod.coxia, hexapod.femur, hexapod.tibia
-        RANGE = f + m + s + a + b + c
+        RANGE = hexapod.sum_of_dimensions()
         AXIS_RANGE = [-RANGE, RANGE]
 
         z_start = -10
@@ -60,7 +70,7 @@ class HexapodPlotter:
         fig["layout"]["scene"]["yaxis"]["range"] = AXIS_RANGE
         fig["layout"]["scene"]["zaxis"]["range"] = [z_start, (RANGE - z_start) * 2]
 
-        axis_scale = f / 2
+        axis_scale = hexapod.front / 2
 
         # Draw the hexapod local frame
         cog = hexapod.body.cog
@@ -92,15 +102,3 @@ class HexapodPlotter:
         fig["data"][16]["x"] = [0, 0]
         fig["data"][16]["y"] = [0, 0]
         fig["data"][16]["z"] = [0, axis_scale]
-
-    @staticmethod
-    def update(fig, hexapod):
-        HexapodPlotter._draw_hexapod(fig, hexapod)
-        HexapodPlotter._draw_scene(fig, hexapod)
-
-    @staticmethod
-    def change_camera_view(fig, camera):
-        # camera = { 'up': {'x': 0, 'y': 0, 'z': 0},
-        #        'center': {'x': 0, 'y': 0, 'z': 0},
-        #           'eye': {'x': 0, 'y': 0, 'z': 0)}}
-        fig["layout"]["scene"]["camera"] = camera
