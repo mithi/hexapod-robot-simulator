@@ -9,15 +9,15 @@ from hexapod.const import (
     NAMES_LEG,
 )
 
-new_poses = deepcopy(BASE_POSE)
-poses_mgs_header = f"""
+NEW_POSES = deepcopy(BASE_POSE)
+POSES_MSG_HEADER = f"""
 +----------------+------------+------------+------------+
 | leg name       | coxia      | femur      | tibia      |
 +----------------+------------+------------+------------+"""
-poses_msg_last_row = "\n+----------------+------------+------------+------------+"
+POSES_MSG_LAST_ROW = "\n+----------------+------------+------------+------------+"
 
 
-def make_pose(alpha, beta, gamma, poses=new_poses):
+def make_pose(alpha, beta, gamma, poses=NEW_POSES):
 
     for k, _ in poses.items():
         poses[k] = {
@@ -27,7 +27,7 @@ def make_pose(alpha, beta, gamma, poses=new_poses):
             "femur": beta,
             "tibia": gamma,
         }
-    return new_poses
+    return poses
 
 
 def change_camera_view(figure, relayout_data):
@@ -63,7 +63,7 @@ def make_monospace(text):
 
 
 def make_poses_message(poses):
-    message = poses_mgs_header
+    message = POSES_MSG_HEADER
 
     for pose in poses.values():
         name = pose["name"]
@@ -73,7 +73,7 @@ def make_poses_message(poses):
         row = f"\n| {name:14} | {coxia:<+10.2f} | {femur:<+10.2f} | {tibia:<+10.2f} |"
         message += row
 
-    return make_monospace(message + poses_msg_last_row)
+    return make_monospace(message + POSES_MSG_LAST_ROW)
 
 
 def make_alert_message(alert):
