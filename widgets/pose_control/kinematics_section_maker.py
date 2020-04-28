@@ -1,19 +1,44 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from widgets.sectioning import make_section_type3, make_section_type2
+from widgets.section_maker import make_section_type3, make_section_type2
+from widgets.pose_control.components import HEADER
 
-HEADER = html.Label(dcc.Markdown("**KINEMATICS CONTROL**"))
+
+def make_section(joint_widgets, add_joint_names=False, style_to_use=None):
+    names = [
+        "left-front",
+        "right-front",
+        "left-middle",
+        "right-middle",
+        "left-back",
+        "right-back",
+    ]
+
+    lf, rf, lm, rm, lb, rb = [
+        make_leg_section(name, joint_widgets, add_joint_names) for name in names
+    ]
+
+    widget_sections = html.Div(
+        [
+            make_section_type2(lf, rf),
+            make_section_type2(lm, rm),
+            make_section_type2(lb, rb),
+        ],
+        style=style_to_use or {},
+    )
+
+    return html.Div([HEADER, widget_sections])
 
 
 def code(name):
     return dcc.Markdown(f"`{name}`")
 
 
-def make_leg_section(name, joint_inputs, add_joint_names=False):
+def make_leg_section(name, joint_widgets, add_joint_names=False):
     header = html.Label(dcc.Markdown(f"( `{name.upper()}` )"))
-    coxia = joint_inputs[name]["coxia"]
-    femur = joint_inputs[name]["femur"]
-    tibia = joint_inputs[name]["tibia"]
+    coxia = joint_widgets[name]["coxia"]
+    femur = joint_widgets[name]["femur"]
+    tibia = joint_widgets[name]["tibia"]
 
     if add_joint_names:
         section = make_section_type3(
@@ -23,22 +48,3 @@ def make_leg_section(name, joint_inputs, add_joint_names=False):
         section = make_section_type3(coxia, femur, tibia)
 
     return html.Div([header, section])
-
-
-def make_section_pose_control(joint_inputs, add_joint_names=False, style_to_use=None):
-    lf = make_leg_section("left-front", joint_inputs, add_joint_names)
-    rf = make_leg_section("right-front", joint_inputs, add_joint_names)
-    lm = make_leg_section("left-middle", joint_inputs, add_joint_names)
-    rm = make_leg_section("right-middle", joint_inputs, add_joint_names)
-    lb = make_leg_section("left-back", joint_inputs, add_joint_names)
-    rb = make_leg_section("right-back", joint_inputs, add_joint_names)
-    sliders = html.Div(
-        [
-            make_section_type2(lf, rf),
-            make_section_type2(lm, rm),
-            make_section_type2(lb, rb),
-        ],
-        style=style_to_use or {},
-    )
-
-    return html.Div([HEADER, sliders])

@@ -12,22 +12,17 @@ from settings import (
 )
 from style_settings import SLIDER_THEME, SLIDER_HANDLE_COLOR, SLIDER_COLOR
 
-HEADER = html.Label(dcc.Markdown("**LEG POSE CONTROL**"))
-LEG_SLIDERS_IDs = ["slider-alpha", "slider-beta", "slider-gamma"]
-LEG_SLIDERS_INPUTS = [Input(i, "value") for i in LEG_SLIDERS_IDs]
 
-
-def make_slider(name, max_angle):
-    _, angle = name.split("-")
+def make_slider(slider_id, name, max_angle):
 
     handle_style = {
         "showCurrentValue": True,
         "color": SLIDER_HANDLE_COLOR,
-        "label": angle,
+        "label": name,
     }
 
     daq_slider = dash_daq.Slider(  # pylint: disable=not-callable
-        id=name,
+        id=slider_id,
         min=-max_angle,
         max=max_angle,
         value=1.5,
@@ -42,7 +37,18 @@ def make_slider(name, max_angle):
     return html.Div(daq_slider, style={"padding": "2em"})
 
 
-slider_alpha = make_slider("slider-alpha", ALPHA_MAX_ANGLE)
-slider_beta = make_slider("slider-beta", BETA_MAX_ANGLE)
-slider_gamma = make_slider("slider-gamma", GAMMA_MAX_ANGLE)
-SECTION_LEG_POSE_SLIDERS = html.Div([HEADER, slider_alpha, slider_beta, slider_gamma])
+# ................................
+# COMPONENTS
+# ................................
+
+HEADER = html.Label(dcc.Markdown("**LEG POSE CONTROL**"))
+WIDGET_NAMES = ["alpha", "beta", "gamma"]
+PATTERNS_WIDGET_IDS = [f"widget-{name}" for name in WIDGET_NAMES]
+PATTERNS_CALLBACK_INPUTS = [Input(i, "value") for i in PATTERNS_WIDGET_IDS]
+
+max_angles = [ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE]
+widgets = [
+    make_slider(id, name, angle)
+    for id, name, angle in zip(PATTERNS_WIDGET_IDS, WIDGET_NAMES, max_angles)
+]
+PATTERNS_WIDGETS_SECTION = html.Div([HEADER] + widgets)

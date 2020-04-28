@@ -4,21 +4,10 @@ import dash_html_components as html
 from dash.dependencies import Input
 from settings import INPUT_DIMENSIONS_RESOLUTION
 from style_settings import NUMBER_INPUT_STYLE
-from widgets.sectioning import make_section_type3
-
-HEADER = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
-INPUT_DIMENSIONS_IDs = [
-    "widget-dimension-front",
-    "widget-dimension-side",
-    "widget-dimension-middle",
-    "widget-dimension-coxia",
-    "widget-dimension-femur",
-    "widget-dimension-tibia",
-]
-DIMENSION_INPUTS = [Input(input_id, "value") for input_id in INPUT_DIMENSIONS_IDs]
+from widgets.section_maker import make_section_type3
 
 
-def make_positive_number_input(_name, _value):
+def make_number_widget(_name, _value):
     return dcc.Input(
         id=_name,
         type="number",
@@ -29,37 +18,39 @@ def make_positive_number_input(_name, _value):
     )
 
 
-front_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[0], 100)
-side_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[1], 100)
-middle_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[2], 100)
-coxia_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[3], 100)
-femur_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[4], 100)
-tibia_input = make_positive_number_input(INPUT_DIMENSIONS_IDs[5], 100)
-
-
 def _code(name):
     return dcc.Markdown(f"`{name}`")
 
 
+# ................................
+# COMPONENTS
+# ................................
+
+HEADER = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
+WIDGET_NAMES = ["front", "side", "middle", "coxia", "femur", "tibia"]
+DIMENSION_WIDGET_IDS = [f"widget-dimension-{name}" for name in WIDGET_NAMES]
+DIMENSION_CALLBACK_INPUTS = [Input(id, "value") for id in DIMENSION_WIDGET_IDS]
+
+widgets = [make_number_widget(widget_id, 100) for widget_id in DIMENSION_WIDGET_IDS]
 sections = [
     make_section_type3(
-        front_input,
-        middle_input,
-        side_input,
-        _code("front"),
-        _code("middle"),
-        _code("side"),
+        widgets[0],
+        widgets[1],
+        widgets[2],
+        _code(WIDGET_NAMES[0]),
+        _code(WIDGET_NAMES[1]),
+        _code(WIDGET_NAMES[2]),
     ),
     make_section_type3(
-        coxia_input,
-        femur_input,
-        tibia_input,
-        _code("coxia"),
-        _code("femur"),
-        _code("tibia"),
+        widgets[3],
+        widgets[4],
+        widgets[5],
+        _code(WIDGET_NAMES[3]),
+        _code(WIDGET_NAMES[4]),
+        _code(WIDGET_NAMES[5]),
     ),
 ]
 
-SECTION_DIMENSION_CONTROL = html.Div(
+DIMENSIONS_WIDGETS_SECTION = html.Div(
     [HEADER, html.Div(sections, style={"display": "flex"}), html.Br()]
 )

@@ -22,33 +22,33 @@ max_angles = {
 }
 
 
-# input id format:
-# 'input' + '-' +  leg_x + '-' +  leg_y + '-' leg_joint
+# widget id format:
+# 'widget' + '-' +  leg_x + '-' +  leg_y + '-' leg_joint
 # leg_x = ['left', 'right']
 # leg_y = ['front', 'middle', 'back']
 # leg_joint = ['coxia', 'femur', 'tibia']
 # input dictionary structure
-# JOINT_INPUTS['left-front']['coxia'] =  INPUT_COMPONENT
-# JOINT_INPUTS['right-middle']['femur'] = INPUT_COMPONENT
-def make_all_joint_inputs(joint_input_function):
-    all_joint_inputs = {}
+# all_joint_widgets['left-front']['coxia'] =  joint_widget
+# all_joint_widgets['right-middle']['femur'] = joint_widget
+def make_all_joint_widgets(joint_input_function):
+    all_joint_widgets = {}
 
     for leg_name in NAMES_LEG:
-        leg_joint_inputs = {}
+        leg_joint_widget = {}
 
         for joint_name in NAMES_JOINT:
-            input_name = "input-{}-{}".format(leg_name, joint_name)
-            leg_joint_inputs[joint_name] = joint_input_function(
-                input_name, max_angles[joint_name]
+            widget_id = "widget-{}-{}".format(leg_name, joint_name)
+            leg_joint_widget[joint_name] = joint_input_function(
+                widget_id, max_angles[joint_name]
             )
 
-        all_joint_inputs[leg_name] = leg_joint_inputs
+        all_joint_widgets[leg_name] = leg_joint_widget
 
-    return all_joint_inputs
+    return all_joint_widgets
 
 
-def make_joint_daq_slider_input(name, max_angle):
-    _, _, _, angle = name.split("-")
+def make_daq_slider(widget_id, max_angle):
+    _, _, _, angle = widget_id.split("-")
 
     handle_style = {
         "showCurrentValue": True,
@@ -57,7 +57,7 @@ def make_joint_daq_slider_input(name, max_angle):
     }
 
     return dash_daq.Slider(  # pylint: disable=not-callable
-        id=name,
+        id=widget_id,
         min=-max_angle,
         max=max_angle,
         value=1.5,
@@ -71,16 +71,16 @@ def make_joint_daq_slider_input(name, max_angle):
     )
 
 
-def make_joint_slider_input(name, max_angle):
+def make_slider(widget_id, max_angle):
     slider_marks = {tick: str(tick) for tick in [-45, 0, 45]}
     return dcc.Slider(
-        id=name, min=-max_angle, max=max_angle, marks=slider_marks, value=0, step=5
+        id=widget_id, min=-max_angle, max=max_angle, marks=slider_marks, value=0, step=5
     )
 
 
-def make_joint_number_input(name, max_angle):
+def make_number_widget(widget_id, max_angle):
     return dcc.Input(
-        id=name,
+        id=widget_id,
         type="number",
         value=0.0,
         min=-max_angle,

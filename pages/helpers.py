@@ -1,10 +1,15 @@
 from copy import deepcopy
 import json
 import dash_core_components as dcc
-from hexapod.const import BASE_PLOTTER
-from hexapod.const import HEXAPOD_POSE, NAMES_LEG, BASE_DIMENSIONS
+from hexapod.const import (
+    BASE_PLOTTER,
+    BASE_POSE,
+    BASE_IK_PARAMS,
+    BASE_DIMENSIONS,
+    NAMES_LEG,
+)
 
-new_poses = deepcopy(HEXAPOD_POSE)
+new_poses = deepcopy(BASE_POSE)
 poses_mgs_header = f"""
 +----------------+------------+------------+------------+
 | leg name       | coxia      | femur      | tibia      |
@@ -33,13 +38,24 @@ def change_camera_view(figure, relayout_data):
     return figure
 
 
-def load_dimensions(dimensions_json):
+def load_params(params_json, params_type):
     try:
-        dimensions = json.loads(dimensions_json)
+        params = json.loads(params_json)
     except Exception as e:
-        print(f"Error loading dimension_json. {e} | {dimensions_json}")
-        dimensions = BASE_DIMENSIONS
-    return dimensions
+        print(f"Error loading json of type {params_type}. {e} | {params_json}")
+
+        if params_type == "dims":
+            return BASE_DIMENSIONS
+        if params_type == "pose":
+            return BASE_POSE
+        if params_type == "ik":
+            return BASE_IK_PARAMS
+
+        raise Exception(
+            f'params_type must be "dims", "pose" or "ik", not {params_type}'
+        )
+
+    return params
 
 
 def make_monospace(text):
