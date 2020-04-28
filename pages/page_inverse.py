@@ -18,7 +18,7 @@ GRAPH_ID = "graph-inverse"
 MESSAGE_SECTION_ID = "message-inverse"
 PARAMETERS_SECTION_ID = "parameters-inverse"
 
-sidebar = shared.make_standard_sidebar(
+sidebar = shared.make_standard_page_sidebar(
     MESSAGE_SECTION_ID, PARAMETERS_SECTION_ID, IK_WIDGETS_SECTION
 )
 

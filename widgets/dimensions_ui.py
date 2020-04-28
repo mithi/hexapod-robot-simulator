@@ -2,6 +2,7 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
+from texts import DIMENSIONS_WIDGETS_HEADER
 from settings import INPUT_DIMENSIONS_RESOLUTION
 from style_settings import NUMBER_INPUT_STYLE
 from widgets.section_maker import make_section_type3
@@ -26,7 +27,7 @@ def _code(name):
 # COMPONENTS
 # ................................
 
-HEADER = html.Label(dcc.Markdown("**HEXAPOD ROBOT DIMENSIONS**"))
+HEADER = html.Label(dcc.Markdown(f"**{DIMENSIONS_WIDGETS_HEADER}**"))
 WIDGET_NAMES = ["front", "side", "middle", "coxia", "femur", "tibia"]
 DIMENSION_WIDGET_IDS = [f"widget-dimension-{name}" for name in WIDGET_NAMES]
 DIMENSION_CALLBACK_INPUTS = [Input(id, "value") for id in DIMENSION_WIDGET_IDS]

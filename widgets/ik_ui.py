@@ -3,6 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
 import dash_daq
+from texts import IK_WIDGETS_HEADER
 from style_settings import (
     SLIDER_THEME,
     SLIDER_HANDLE_COLOR,
@@ -72,7 +73,7 @@ def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE):
 # COMPONENTS
 # ................................
 
-HEADER = html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**"))
+HEADER = html.Label(dcc.Markdown(f"**{IK_WIDGETS_HEADER}**"))
 IK_WIDGETS_IDS = [
     "widget-start-hip-stance",
     "widget-start-leg-stance",

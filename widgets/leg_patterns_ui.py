@@ -3,6 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input
 import dash_daq
+from texts import PATTERNS_WIDGETS_HEADER
 from settings import (
     ALPHA_MAX_ANGLE,
     BETA_MAX_ANGLE,
@@ -41,7 +42,7 @@ def make_slider(slider_id, name, max_angle):
 # COMPONENTS
 # ................................
 
-HEADER = html.Label(dcc.Markdown("**LEG POSE CONTROL**"))
+HEADER = html.Label(dcc.Markdown(f"**{PATTERNS_WIDGETS_HEADER}**"))
 WIDGET_NAMES = ["alpha", "beta", "gamma"]
 PATTERNS_WIDGET_IDS = [f"widget-{name}" for name in WIDGET_NAMES]
 PATTERNS_CALLBACK_INPUTS = [Input(i, "value") for i in PATTERNS_WIDGET_IDS]
