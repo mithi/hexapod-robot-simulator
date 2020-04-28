@@ -3,6 +3,10 @@ DARKMODE = True
 DARK_CSS_PATH = "https://codepen.io/mithi-the-encoder/pen/BaoBOKa.css"
 LIGHT_CSS_PATH = "https://codepen.io/mithi-the-encoder/pen/eYpObwK.css"
 
+EXTERNAL_STYLESHEETS = [DARK_CSS_PATH]
+if not DARKMODE:
+    EXTERNAL_STYLESHEETS = [LIGHT_CSS_PATH]
+
 
 # ***************************************
 # GLOBAL PAGE STYLE

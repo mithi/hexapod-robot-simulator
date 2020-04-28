@@ -20,11 +20,11 @@ DIMENSIONS_SECTION_ID = "hexapod-dimensions-values"
 DIMENSIONS_HIDDEN_SECTION = html.Div(
     id=DIMENSIONS_SECTION_ID, style={"display": "none"}
 )
-DIMS_JSON_SECTION_CALLBACK_INPUT = Input(DIMENSIONS_SECTION_ID, "children")
-DIMS_JSON_SECTION_CALLBACK_OUTPUT = Output(DIMENSIONS_SECTION_ID, "children")
+DIMS_JSON_CALLBACK_INPUT = Input(DIMENSIONS_SECTION_ID, "children")
+DIMS_JSON_CALLBACK_OUTPUT = Output(DIMENSIONS_SECTION_ID, "children")
 
 
-@app.callback(DIMS_JSON_SECTION_CALLBACK_OUTPUT, DIMENSION_CALLBACK_INPUTS)
+@app.callback(DIMS_JSON_CALLBACK_OUTPUT, DIMENSION_CALLBACK_INPUTS)
 def update_hexapod_dimensions_shared(front, side, middle, coxia, femur, tibia):
     dimensions = {
         "front": front or 0,
@@ -63,7 +63,7 @@ def make_standard_page_layout(graph_name, section_controls):
 # ......................
 
 
-def make_standard_sidebar(
+def make_standard_page_sidebar(
     message_section_id, parameters_hidden_section_id, parameter_widgets_section
 ):
     parameters_hidden_section = html.Div(
@@ -85,13 +85,11 @@ def make_standard_sidebar(
 # .....................
 
 
-def make_standard_page_callback_params(
-    graph_name, parameters_section_id, message_section_id
-):
+def make_standard_page_callback_params(graph_id, params_section_id, message_section_id):
 
-    output_message_display = Output(message_section_id, "children")
-    input_parameters_json = Input(parameters_section_id, "children")
-    outputs = [Output(graph_name, "figure"), output_message_display]
-    inputs = [DIMS_JSON_SECTION_CALLBACK_INPUT, input_parameters_json]
-    states = [State(graph_name, "relayoutData"), State(graph_name, "figure")]
+    message_callback_output = Output(message_section_id, "children")
+    params_json_callback_input = Input(params_section_id, "children")
+    outputs = [Output(graph_id, "figure"), message_callback_output]
+    inputs = [DIMS_JSON_CALLBACK_INPUT, params_json_callback_input]
+    states = [State(graph_id, "relayoutData"), State(graph_id, "figure")]
     return outputs, inputs, states

@@ -15,7 +15,7 @@ GRAPH_ID = "graph-patterns"
 MESSAGE_SECTION_ID = "message-patterns"
 PARAMETERS_SECTION_ID = "parameters-pattens"
 
-sidebar = shared.make_standard_sidebar(
+sidebar = shared.make_standard_page_sidebar(
     MESSAGE_SECTION_ID, PARAMETERS_SECTION_ID, PATTERNS_WIDGETS_SECTION
 )
 

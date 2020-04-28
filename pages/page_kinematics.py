@@ -22,7 +22,7 @@ GRAPH_ID = "graph-kinematics"
 MESSAGE_SECTION_ID = "message-kinematics"
 PARAMETERS_SECTION_ID = "parameters-kinematics"
 
-sidebar = shared.make_standard_sidebar(
+sidebar = shared.make_standard_page_sidebar(
     MESSAGE_SECTION_ID, PARAMETERS_SECTION_ID, KINEMATICS_WIDGETS_SECTION
 )
 
