@@ -4,7 +4,7 @@ from dash.dependencies import Output, Input, State
 import dash_html_components as html
 from app import app
 from settings import (
-    UI_CONTROLS_WIDTH,
+    UI_SIDEBAR_WIDTH,
     UI_GRAPH_WIDTH,
     UI_GRAPH_HEIGHT,
 )
@@ -43,18 +43,15 @@ def update_hexapod_dimensions_shared(front, side, middle, coxia, femur, tibia):
 # ......................
 
 
-def make_standard_page_layout(graph_name, section_controls):
-    layout = html.Div(
-        [
-            html.Div(section_controls, style={"width": UI_CONTROLS_WIDTH}),
-            dcc.Graph(
-                id=graph_name,
-                figure=BASE_FIGURE,
-                style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
-            ),
-        ],
-        style={"display": "flex"},
+def make_standard_page_layout(graph_id, sidebar_sections):
+    sidebar = html.Div(sidebar_sections, style={"width": UI_SIDEBAR_WIDTH})
+    graph = dcc.Graph(
+        id=graph_id,
+        figure=BASE_FIGURE,
+        style={"width": UI_GRAPH_WIDTH, "height": UI_GRAPH_HEIGHT},
     )
+
+    layout = html.Div([sidebar, graph], style={"display": "flex"})
     return layout
 
 
@@ -64,19 +61,19 @@ def make_standard_page_layout(graph_name, section_controls):
 
 
 def make_standard_page_sidebar(
-    message_section_id, parameters_hidden_section_id, parameter_widgets_section
+    message_section_id, params_hidden_section_id, params_widgets_section
 ):
-    parameters_hidden_section = html.Div(
-        id=parameters_hidden_section_id, style={"display": "none"}
+    params_hidden_section = html.Div(
+        id=params_hidden_section_id, style={"display": "none"}
     )
     message_section = html.Div(id=message_section_id)
 
     return [
         DIMENSIONS_WIDGETS_SECTION,
-        parameter_widgets_section,
+        params_widgets_section,
         message_section,
         DIMENSIONS_HIDDEN_SECTION,
-        parameters_hidden_section,
+        params_hidden_section,
     ]
 
 
