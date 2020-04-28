@@ -3,7 +3,7 @@ from dash.dependencies import Output
 from app import app
 from hexapod.models import VirtualHexapod
 from hexapod.const import BASE_PLOTTER
-from widgets.leg_patterns_ui import SECTION_LEG_POSE_SLIDERS, LEG_SLIDERS_INPUTS
+from widgets.leg_patterns_ui import PATTERNS_WIDGETS_SECTION, PATTERNS_CALLBACK_INPUTS
 from pages import helpers, shared
 
 
@@ -11,30 +11,31 @@ from pages import helpers, shared
 # Page layout
 # ......................
 
-GRAPH_NAME = "graph-patterns"
-ID_MESSAGE_SECTION = "message-patterns"
-ID_PARAMETERS_SECTION = "parameters-patterns"
+GRAPH_ID = "graph-patterns"
+MESSAGE_SECTION_ID = "message-patterns"
+PARAMETERS_SECTION_ID = "parameters-pattens"
 
 sidebar = shared.make_standard_sidebar(
-    ID_MESSAGE_SECTION, ID_PARAMETERS_SECTION, SECTION_LEG_POSE_SLIDERS
+    MESSAGE_SECTION_ID, PARAMETERS_SECTION_ID, PATTERNS_WIDGETS_SECTION
 )
-layout = shared.make_standard_page_layout(GRAPH_NAME, sidebar)
+
+layout = shared.make_standard_page_layout(GRAPH_ID, sidebar)
 
 
 # ......................
 # Update page
 # ......................
 
-outputs, inputs, states = shared.make_standard_page_inputs_outputs_states(
-    GRAPH_NAME, ID_PARAMETERS_SECTION, ID_MESSAGE_SECTION,
+outputs, inputs, states = shared.make_standard_page_callback_params(
+    GRAPH_ID, PARAMETERS_SECTION_ID, MESSAGE_SECTION_ID
 )
 
 
 @app.callback(outputs, inputs, states)
 def update_patterns_page(dimensions_json, poses_json, relayout_data, figure):
 
-    dimensions = helpers.load_dimensions(dimensions_json)
-    poses = json.loads(poses_json)
+    dimensions = helpers.load_params(dimensions_json, "dims")
+    poses = helpers.load_params(poses_json, "pose")
     hexapod = VirtualHexapod(dimensions)
 
     try:
@@ -51,8 +52,8 @@ def update_patterns_page(dimensions_json, poses_json, relayout_data, figure):
 # Update parameters
 # ......................
 
-output_parameter = Output(ID_PARAMETERS_SECTION, "children")
-input_parameters = LEG_SLIDERS_INPUTS
+output_parameter = Output(PARAMETERS_SECTION_ID, "children")
+input_parameters = PATTERNS_CALLBACK_INPUTS
 
 
 @app.callback(output_parameter, input_parameters)

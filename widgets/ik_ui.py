@@ -17,18 +17,12 @@ from settings import (
     SLIDER_ANGLE_RESOLUTION,
 )
 
-HEADER = html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**"))
-IK_INPUT_IDs = [
-    "input-start-hip-stance",
-    "input-start-leg-stance",
-    "input-end-percent-x",
-    "input-end-percent-y",
-    "input-end-percent-z",
-    "input-end-rot-x",
-    "input-end-rot-y",
-    "input-end-rot-z",
-]
-IK_INPUTS = [Input(input_id, "value") for input_id in IK_INPUT_IDs]
+
+def make_row(divs):
+    widget_style = {"padding": "1.0em 0 0 4.0em"}
+    row_style = {"display": "flex", "flex-direction": "row"}
+    widgets = [html.Div(div, style=widget_style) for div in divs]
+    return html.Div(widgets, style=row_style)
 
 
 def make_translate_slider(name, slider_label):
@@ -74,28 +68,39 @@ def make_rotate_slider(name, slider_label, max_angle=BODY_MAX_ANGLE):
     )
 
 
-div_sh = make_rotate_slider(
-    "input-start-hip-stance", "start\nhip.stance", HIP_STANCE_MAX_ANGLE
+# ................................
+# COMPONENTS
+# ................................
+
+HEADER = html.Label(dcc.Markdown("**INVERSE KINEMATICS CONTROL**"))
+IK_WIDGETS_IDS = [
+    "widget-start-hip-stance",
+    "widget-start-leg-stance",
+    "widget-percent-x",
+    "widget-percent-y",
+    "widget-percent-z",
+    "widget-rot-x",
+    "widget-rot-y",
+    "widget-rot-z",
+]
+IK_CALLBACK_INPUTS = [Input(input_id, "value") for input_id in IK_WIDGETS_IDS]
+
+w_hips = make_rotate_slider(
+    IK_WIDGETS_IDS[0], "start\nhip.stance", HIP_STANCE_MAX_ANGLE
 )
-div_sl = make_rotate_slider(
-    "input-start-leg-stance", "start\nleg.stance", LEG_STANCE_MAX_ANGLE
+w_legs = make_rotate_slider(
+    IK_WIDGETS_IDS[1], "start\nleg.stance", LEG_STANCE_MAX_ANGLE
 )
 
-div_rx = make_rotate_slider("input-end-rot-x", "rot.x")
-div_ry = make_rotate_slider("input-end-rot-y", "rot.y")
-div_rz = make_rotate_slider("input-end-rot-z", "rot.z")
+w_tx = make_translate_slider(IK_WIDGETS_IDS[2], "percent.x")
+w_ty = make_translate_slider(IK_WIDGETS_IDS[3], "percent.y")
+w_tz = make_translate_slider(IK_WIDGETS_IDS[4], "percent.z")
 
-div_ex = make_translate_slider("input-end-percent-x", "percent.x")
-div_ey = make_translate_slider("input-end-percent-y", "percent.y")
-div_ez = make_translate_slider("input-end-percent-z", "percent.z")
+w_rx = make_rotate_slider(IK_WIDGETS_IDS[5], "rot.x")
+w_ry = make_rotate_slider(IK_WIDGETS_IDS[6], "rot.y")
+w_rz = make_rotate_slider(IK_WIDGETS_IDS[7], "rot.z")
 
-ik_style = {"padding": "1.0em 0 0 4.0em"}
-divs1 = [div_sh, div_ex, div_ey, div_ez]
-divs2 = [div_sl, div_rx, div_ry, div_rz]
-sliders_row1 = [html.Div(div, style=ik_style) for div in divs1]
-sliders_row2 = [html.Div(div, style=ik_style) for div in divs2]
+row1 = make_row([w_hips, w_tx, w_ty, w_tz])
+row2 = make_row([w_legs, w_rx, w_ry, w_rz])
 
-section_style = {"display": "flex", "flex-direction": "row"}
-section_row1 = html.Div(sliders_row1, style=section_style)
-section_row2 = html.Div(sliders_row2, style=section_style)
-SECTION_IK = html.Div([HEADER, section_row1, section_row2])
+IK_WIDGETS_SECTION = html.Div([HEADER, row1, row2])
