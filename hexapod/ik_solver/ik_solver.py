@@ -18,7 +18,7 @@ from hexapod.ik_solver.helpers import (
     might_print_points,
 )
 from hexapod.points import (
-    Point,
+    Vector,
     length,
     add_vectors,
     scalar_multiply,
@@ -60,7 +60,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
     if body_contact_shoved_on_ground(hexapod):
         raise Exception(BODY_ON_GROUND_ALERT_MSG)
 
-    x_axis = Point(1, 0, 0)
+    x_axis = Vector(1, 0, 0)
     legs_up_in_the_air = []
 
     for i in range(hexapod.LEG_COUNT):
@@ -83,15 +83,15 @@ def inverse_kinematics_update(hexapod, ik_parameters):
         # *******************
         # 1. Compute p0, p1 and (possible) p3 wrt leg frame
         # *******************
-        p0 = Point(0, 0, 0)
-        p1 = Point(hexapod.coxia, 0, 0)
+        p0 = Vector(0, 0, 0)
+        p1 = Vector(hexapod.coxia, 0, 0)
 
         # Find p3 aka foot tip (ground contact) with respect to the local leg frame
         rho = angle_between(unit_coxia_vector, body_to_foot_vector)
         body_to_foot_length = length(body_to_foot_vector)
         p3x = body_to_foot_length * np.cos(np.radians(rho))
         p3z = -body_to_foot_length * np.sin(np.radians(rho))
-        p3 = Point(p3x, 0, p3z)
+        p3 = Vector(p3x, 0, p3z)
 
         # *******************
         # 2. Compute p2, beta, gamma and final p3 wrt leg frame
@@ -119,7 +119,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
             z_ = hexapod.femur * np.sin(np.radians(beta))
             x_ = p1.x + hexapod.femur * np.cos(np.radians(beta))
 
-            p2 = Point(x_, 0, z_)
+            p2 = Vector(x_, 0, z_)
             femur_vector = vector_from_to(p1, p2)
             tibia_vector = vector_from_to(p2, p3)
             gamma = 90 - angle_between(femur_vector, tibia_vector)
@@ -149,7 +149,7 @@ def inverse_kinematics_update(hexapod, ik_parameters):
 
             # Find beta and gamma
             gamma = 0.0
-            leg_x_axis = Point(1, 0, 0)
+            leg_x_axis = Vector(1, 0, 0)
             beta = angle_between(leg_x_axis, femur_vector)
             if femur_vector.z < 0:
                 beta = -beta

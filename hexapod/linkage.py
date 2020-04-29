@@ -59,7 +59,7 @@
 from copy import deepcopy
 import numpy as np
 from hexapod.points import (
-    Point,
+    Vector,
     frame_yrotate_xtranslate,
     frame_zrotate_xytranslate,
 )
@@ -92,7 +92,7 @@ class Linkage:
         beta=0,
         gamma=0,
         coxia_axis=0,
-        new_origin=Point(0, 0, 0),
+        new_origin=Vector(0, 0, 0),
         name=None,
         id_number=None,
     ):
@@ -143,7 +143,7 @@ class Linkage:
         )
 
         # find points wrt to body contact point
-        p0 = Point(0, 0, 0)
+        p0 = Vector(0, 0, 0)
         p1 = p0.get_point_wrt(frame_01)
         p2 = p0.get_point_wrt(frame_02)
         p3 = p0.get_point_wrt(frame_03)
@@ -174,7 +174,7 @@ class Linkage:
 
     def __str__(self):
         leg_string = f"{self!r}\n"
-        leg_string += f"Points of {self.name} leg:\n"
+        leg_string += f"Vectors of {self.name} leg:\n"
 
         for point in self.all_points:
             leg_string += f"  {point}\n"

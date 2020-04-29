@@ -15,7 +15,7 @@ def assert_hexapod_points_equal(
     hexapod, correct_body_points, correct_leg_points, description
 ):
     def msg(a, b):
-        return f"Unequal Points\nexpected: {a}\n....found: {b}\n(case: {description})"
+        return f"Unequal Vectors\nexpected: {a}\n....found: {b}\n(case: {description})"
 
     for point_a, point_b in zip(correct_body_points, hexapod.body.all_points):
         assert point_a.__eq__(point_b, percent_tol=0.0075), msg(point_a, point_b)
@@ -27,7 +27,7 @@ def assert_hexapod_points_equal(
 
 def assert_two_hexapods_equal(hexapod1, hexapod2, description):
     def msg(a, b):
-        return f"Unequal Points\n1: {a}\n2:{b}\n(case: {description})"
+        return f"Unequal Vectors\n1: {a}\n2:{b}\n(case: {description})"
 
     for point_a, point_b in zip(hexapod1.body.all_points, hexapod2.body.all_points):
         assert point_a.__eq__(point_b, percent_tol=0.0075), msg(point_a, point_b)
