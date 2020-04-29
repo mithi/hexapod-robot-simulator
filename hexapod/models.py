@@ -12,7 +12,7 @@ import hexapod.ground_contact_solver.ground_contact_solver2 as gc2
 
 from hexapod.templates.pose_template import HEXAPOD_POSE
 from hexapod.points import (
-    Point,
+    Vector,
     frame_to_align_vector_a_to_b,
     frame_rotxyz,
     rotz,
@@ -75,15 +75,15 @@ class Hexagon:
         self.m = m
         self.s = s
 
-        self.cog = Point(0, 0, 0, name="center-of-gravity")
-        self.head = Point(0, s, 0, name="head")
+        self.cog = Vector(0, 0, 0, name="center-of-gravity")
+        self.head = Vector(0, s, 0, name="head")
         self.vertices = [
-            Point(m, 0, 0, name=Hexagon.VERTEX_NAMES[0]),
-            Point(f, s, 0, name=Hexagon.VERTEX_NAMES[1]),
-            Point(-f, s, 0, name=Hexagon.VERTEX_NAMES[2]),
-            Point(-m, 0, 0, name=Hexagon.VERTEX_NAMES[3]),
-            Point(-f, -s, 0, name=Hexagon.VERTEX_NAMES[4]),
-            Point(f, -s, 0, name=Hexagon.VERTEX_NAMES[5]),
+            Vector(m, 0, 0, name=Hexagon.VERTEX_NAMES[0]),
+            Vector(f, s, 0, name=Hexagon.VERTEX_NAMES[1]),
+            Vector(-f, s, 0, name=Hexagon.VERTEX_NAMES[2]),
+            Vector(-m, 0, 0, name=Hexagon.VERTEX_NAMES[3]),
+            Vector(-f, -s, 0, name=Hexagon.VERTEX_NAMES[4]),
+            Vector(f, -s, 0, name=Hexagon.VERTEX_NAMES[5]),
         ]
 
         self.all_points = self.vertices + [self.cog, self.head]
@@ -139,7 +139,7 @@ class VirtualHexapod:
             raise Exception("❗Pose Unstable. COG not inside support polygon.")
 
         # Tilt and shift the hexapod based on new normal
-        frame = frame_to_align_vector_a_to_b(n_axis, Point(0, 0, 1))
+        frame = frame_to_align_vector_a_to_b(n_axis, Vector(0, 0, 1))
         self.rotate_and_shift(frame, height)
         self._update_local_frame(frame)
 
@@ -225,9 +225,9 @@ class VirtualHexapod:
             leg.update_leg_wrt(frame, height)
 
     def _init_local_frame(self):
-        self.x_axis = Point(1, 0, 0, name="hexapod x axis")
-        self.y_axis = Point(0, 1, 0, name="hexapod y axis")
-        self.z_axis = Point(0, 0, 1, name="hexapod z axis")
+        self.x_axis = Vector(1, 0, 0, name="hexapod x axis")
+        self.y_axis = Vector(0, 1, 0, name="hexapod y axis")
+        self.z_axis = Vector(0, 0, 1, name="hexapod z axis")
 
     def _update_local_frame(self, frame):
         # Update the x, y, z axis centered at cog of hexapod
@@ -310,8 +310,8 @@ def find_twist_frame(old_ground_contacts, new_ground_contacts):
     new = new_contacts[same_point_name]
 
     # Get the projection of these points in the ground
-    old_vector = Point(old.x, old.y, 0)
-    new_vector = Point(new.x, new.y, 0)
+    old_vector = Vector(old.x, old.y, 0)
+    new_vector = Vector(new.x, new.y, 0)
 
     twist_frame = _twist(new_vector, old_vector)
 

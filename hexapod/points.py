@@ -1,4 +1,4 @@
-# This module contains the Point class
+# This module contains the Vector class
 # and functions for manipulating vectors
 # and finding properties and relationships of vectors
 # computing reference frames
@@ -8,7 +8,7 @@ import numpy as np
 from settings import DEBUG_MODE
 
 
-class Point:
+class Vector:
     __slots__ = ("x", "y", "z", "name")
 
     def __init__(self, x, y, z, name=None):
@@ -25,7 +25,7 @@ class Point:
         """
         p = np.array([self.x, self.y, self.z, 1])
         p = np.matmul(reference_frame, p)
-        return Point(p[0], p[1], p[2], name)
+        return Vector(p[0], p[1], p[2], name)
 
     def update_point_wrt(self, reference_frame, z=0):
         p = np.array([self.x, self.y, self.z, 1])
@@ -47,13 +47,14 @@ class Point:
         return self.x, self.y, self.z
 
     def __repr__(self):
-        return f"Point(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f}, name='{self.name}')"
+        s = "Vector(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f}, name='{self.name}')"
+        return s
 
     def __str__(self):
         return repr(self)
 
     def __eq__(self, other, percent_tol=0.0075):
-        if not isinstance(other, Point):
+        if not isinstance(other, Vector):
             return False
 
         tol = length(self) * percent_tol
@@ -197,11 +198,11 @@ def _return_sin_and_cos(theta):
 
 # get vector pointing from point a to point b
 def vector_from_to(a, b):
-    return Point(b.x - a.x, b.y - a.y, b.z - a.z)
+    return Vector(b.x - a.x, b.y - a.y, b.z - a.z)
 
 
 def scale(v, d):
-    return Point(v.x / d, v.y / d, v.z / d)
+    return Vector(v.x / d, v.y / d, v.z / d)
 
 
 def dot(a, b):
@@ -212,7 +213,7 @@ def cross(a, b):
     x = a.y * b.z - a.z * b.y
     y = a.z * b.x - a.x * b.z
     z = a.x * b.y - a.y * b.x
-    return Point(x, y, z)
+    return Vector(x, y, z)
 
 
 def length(v):
@@ -220,15 +221,15 @@ def length(v):
 
 
 def add_vectors(a, b):
-    return Point(a.x + b.x, a.y + b.y, a.z + b.z)
+    return Vector(a.x + b.x, a.y + b.y, a.z + b.z)
 
 
 def subtract_vectors(a, b):
-    return Point(a.x - b.x, a.y - b.y, a.z - b.z)
+    return Vector(a.x - b.x, a.y - b.y, a.z - b.z)
 
 
 def scalar_multiply(p, s):
-    return Point(s * p.x, s * p.y, s * p.z)
+    return Vector(s * p.x, s * p.y, s * p.z)
 
 
 def get_unit_vector(v):

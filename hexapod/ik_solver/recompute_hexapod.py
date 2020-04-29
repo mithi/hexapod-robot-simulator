@@ -4,7 +4,7 @@ from hexapod.models import VirtualHexapod, Hexagon
 from hexapod.points import (
     angle_between,
     is_counter_clockwise,
-    Point,
+    Vector,
     rotz,
     vector_from_to,
     length,
@@ -91,7 +91,7 @@ def find_two_same_leg_ids(old_contacts, new_contacts):
 
 def find_twist_to_recompute_hexapod(a, b):
     twist = angle_between(a, b)
-    z_axis = Point(0, 0, -1)
+    z_axis = Vector(0, 0, -1)
     is_ccw = is_counter_clockwise(a, b, z_axis)
     if is_ccw:
         twist = -twist
@@ -101,7 +101,7 @@ def find_twist_to_recompute_hexapod(a, b):
 
 
 def should_be_on_ground_msg(point):
-    return f"Point should be on the ground:\n{point}, z != 0"
+    return f"Vector should be on the ground:\n{point}, z != 0"
 
 
 def might_sanity_check_points(new_p1, new_p2, old_p1, old_p2, new_vector, old_vector):

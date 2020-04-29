@@ -1,6 +1,6 @@
 from math import isclose
 from hexapod.points import (
-    Point,
+    Vector,
     dot,
     cross,
     vector_from_to,
@@ -48,7 +48,7 @@ def is_stable(p1, p2, p3, tol=0.001):
     onto the plane defined by p1, p2, p3
     is within a triangle defined by p1, p2, p3.
     """
-    p = Point(0, 0, 0)
+    p = Vector(0, 0, 0)
     u = vector_from_to(p1, p2)
     v = vector_from_to(p1, p3)
     n = cross(u, v)

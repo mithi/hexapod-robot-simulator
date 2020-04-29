@@ -17,7 +17,7 @@ from hexapod.ik_solver.helpers import (
     might_print_points,
 )
 from hexapod.points import (
-    Point,
+    Vector,
     length,
     add_vectors,
     scalar_multiply,
@@ -85,7 +85,7 @@ class IKSolver:
     def __init__(self, hexapod, ik_parameters):
         self.hexapod = hexapod
         self.params = ik_parameters
-        self.leg_x_axis = Point(1, 0, 0)
+        self.leg_x_axis = Vector(1, 0, 0)
         self.update_body_and_ground_contact_points()
         self.poses = deepcopy(HEXAPOD_POSE)
 
@@ -149,15 +149,15 @@ class IKSolver:
             raise Exception(COXIA_ON_GROUND_ALERT_MSG)
 
     def compute_local_p0_p1_p3(self):
-        self.p0 = Point(0, 0, 0)
-        self.p1 = Point(self.hexapod.coxia, 0, 0)
+        self.p0 = Vector(0, 0, 0)
+        self.p1 = Vector(self.hexapod.coxia, 0, 0)
 
         # Find p3 aka foot tip (ground contact) with respect to the local leg frame
         rho = angle_between(self.unit_coxia_vector, self.body_to_foot_vector)
         body_to_foot_length = length(self.body_to_foot_vector)
         p3x = body_to_foot_length * np.cos(np.radians(rho))
         p3z = -body_to_foot_length * np.sin(np.radians(rho))
-        self.p3 = Point(p3x, 0, p3z)
+        self.p3 = Vector(p3x, 0, p3z)
 
     def compute_beta_gamma_local_p2(self):
         # These values are needed to compute
@@ -194,7 +194,7 @@ class IKSolver:
         z_ = self.hexapod.femur * np.sin(np.radians(self.beta))
         x_ = self.p1.x + self.hexapod.femur * np.cos(np.radians(self.beta))
 
-        self.p2 = Point(x_, 0, z_)
+        self.p2 = Vector(x_, 0, z_)
         femur_vector = vector_from_to(self.p1, self.p2)
         tibia_vector = vector_from_to(self.p2, self.p3)
         self.gamma = 90 - angle_between(femur_vector, tibia_vector)

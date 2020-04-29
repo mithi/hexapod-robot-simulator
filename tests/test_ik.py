@@ -1,7 +1,7 @@
 from copy import deepcopy
 from hexapod.const import BASE_DIMENSIONS
 from hexapod.models import VirtualHexapod
-from hexapod.points import Point
+from hexapod.points import Vector
 from hexapod.ik_solver import ik_solver, ik_solver2
 from hexapod.ik_solver.shared import update_hexapod_points
 
@@ -50,10 +50,10 @@ def test_points_ik2_dont_assume_ground_targets():
 
 def test_shared_set_points():
     points = [
-        Point(1, 2, 3, "a"),
-        Point(1, 2, 3, "b"),
-        Point(1, 2, 3, "c"),
-        Point(1, 2, 3, "d"),
+        Vector(1, 2, 3, "a"),
+        Vector(1, 2, 3, "b"),
+        Vector(1, 2, 3, "c"),
+        Vector(1, 2, 3, "d"),
     ]
 
     vh = VirtualHexapod(BASE_DIMENSIONS)
