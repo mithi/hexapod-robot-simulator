@@ -47,7 +47,8 @@ class Vector:
         return self.x, self.y, self.z
 
     def __repr__(self):
-        return f"Vector(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f}, name='{self.name}')"
+        s = "Vector(x={self.x:>+8.2f}, y={self.y:>+8.2f}, z={self.z:>+8.2f}, name='{self.name}')"
+        return s
 
     def __str__(self):
         return repr(self)
