@@ -1,9 +1,7 @@
 import dash_html_components as html
+from texts import URL_IMG_LANDING
 
-img = html.Img(
-    src="https://mithi.github.io/robotics-blog/v2-hexapod-1.gif",
-    style={"width": "100%", "height": "auto"},
-)
+img = html.Img(src=URL_IMG_LANDING, style={"width": "100%", "height": "auto"},)
 
 layout = html.Div(
     [

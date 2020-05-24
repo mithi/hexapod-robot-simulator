@@ -19,7 +19,7 @@ POSES_MSG_LAST_ROW = "\n+----------------+------------+------------+------------
 
 def make_pose(alpha, beta, gamma, poses=NEW_POSES):
 
-    for k, _ in poses.items():
+    for k in poses.keys():
         poses[k] = {
             "id": k,
             "name": NAMES_LEG[k],

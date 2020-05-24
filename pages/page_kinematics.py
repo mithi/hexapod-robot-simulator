@@ -56,7 +56,7 @@ def update_kinematics_page(dimensions_json, poses_json, relayout_data, figure):
 
 
 # ......................
-# Update Parameters
+# Update parameters
 # ......................
 
 
@@ -67,7 +67,7 @@ input_parameters = KINEMATICS_CALLBACK_INPUTS
 
 
 @app.callback(output_parameter, input_parameters)
-def update_hexapod_poses(
+def update_poses(
     rmc, rmf, rmt,
     rfc, rff, rft,
     lfc, lff, lft,

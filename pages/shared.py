@@ -16,16 +16,16 @@ from hexapod.const import BASE_FIGURE
 # Update hexapod dimensions callback
 # ......................
 
-DIMENSIONS_SECTION_ID = "hexapod-dimensions-values"
+DIMENSIONS_HIDDEN_SECTION_ID = "hexapod-dimensions-values"
 DIMENSIONS_HIDDEN_SECTION = html.Div(
-    id=DIMENSIONS_SECTION_ID, style={"display": "none"}
+    id=DIMENSIONS_HIDDEN_SECTION_ID, style={"display": "none"}
 )
-DIMS_JSON_CALLBACK_INPUT = Input(DIMENSIONS_SECTION_ID, "children")
-DIMS_JSON_CALLBACK_OUTPUT = Output(DIMENSIONS_SECTION_ID, "children")
+DIMS_JSON_CALLBACK_INPUT = Input(DIMENSIONS_HIDDEN_SECTION_ID, "children")
+DIMS_JSON_CALLBACK_OUTPUT = Output(DIMENSIONS_HIDDEN_SECTION_ID, "children")
 
 
 @app.callback(DIMS_JSON_CALLBACK_OUTPUT, DIMENSION_CALLBACK_INPUTS)
-def update_hexapod_dimensions_shared(front, side, middle, coxia, femur, tibia):
+def update_dimensions(front, side, middle, coxia, femur, tibia):
     dimensions = {
         "front": front or 0,
         "side": side or 0,
@@ -78,7 +78,7 @@ def make_standard_page_sidebar(
 
 
 # ......................
-# Make input and outputs states for page callback
+# Make outputs, inputs, and states for page update callbacks
 # .....................
 
 

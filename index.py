@@ -33,7 +33,7 @@ div_header = html.Div(
     style={"display": "flex", "flex-direction": "row"},
 )
 
-div_nav = html.Div(
+div_footer = html.Div(
     [
         html.A("👾 Source Code", href=URL_REPO, target="_blank"),
         html.Br(),
@@ -58,7 +58,7 @@ app.layout = html.Div(
         div_header,
         dcc.Location(id="url", refresh=False),
         html.Div(id="page-content"),
-        div_nav,
+        div_footer,
     ],
     style=GLOBAL_PAGE_STYLE,
 )

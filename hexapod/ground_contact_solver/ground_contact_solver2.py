@@ -25,7 +25,6 @@ For each combination:
     4. For each of the three other legs, check all points (3 points of each leg)
         if so, next. (9 points total)
     5. If no condition is violated, then this is good, return this!
-        (height, n_axis, 3 ground contacts)
 """
 import random
 from hexapod.ground_contact_solver.shared import (
@@ -55,7 +54,7 @@ def compute_orientation_properties(legs):
     """
     # prefer leg combinations where legs are not adjacent to each other
     # introduce some randomness so we are not bias in
-    # choosing on stable position over another
+    # choosing one stable position over another
     shuffled_some_leg_trios = random.sample(SOME_LEG_TRIOS, len(SOME_LEG_TRIOS))
     leg_trios = shuffled_some_leg_trios + ADJACENT_LEG_TRIOS
 
