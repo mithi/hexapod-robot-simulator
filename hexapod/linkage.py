@@ -190,7 +190,7 @@ class Linkage:
   alpha={self.alpha},
   beta={self.beta},
   gamma={self.gamma},
-  new_axis={self.coxia_axis},
+  coxia_axis={self.coxia_axis},
   id_number={self.id},
   name='{self.name}',
   new_origin={self.new_origin},
