@@ -7,8 +7,8 @@
 
 # Announcement
 
-- I'm currently rewriting this Javascript to be [it's a fully client-side app](http://github.com/mithi/hexapod). It's 80 percent done. All computations would be done on the browser, zero round-trip delays, so it should be extremely fast. I've also realized a lot of ways to improve the code in the process of rewriting, so
-I'll be incorporating those to this project as well. While the functionality won't change, there will be significant changes in the implementation.
+- I'm currently [rewriting this Javascript](http://github.com/mithi/hexapod), it will be fully client-side app. It's 80 percent done. All computations would be done on the browser, zero round-trip delays, so it should be extremely fast. I've also realized a lot of ways to improve the code in the process of rewriting, so
+I'll be incorporating those to this project as well, in the (hopefully near) future. While the functionality won't change, there will be significant changes in the implementation.
 
 # Features
 
