@@ -40,7 +40,7 @@ def recompute_hexapod(dimensions, ik_parameters, poses):
     old_vector = vector_from_to(old_p1, old_p2)
     new_vector = vector_from_to(new_p1, new_p2)
 
-    translate_vector = vector_from_to(new_p1, old_p1)
+    #Removed unused assignment
     _, twist_frame = find_twist_to_recompute_hexapod(new_vector, old_vector)
     new_hexapod.rotate_and_shift(twist_frame, 0)
 
