@@ -1,14 +1,20 @@
-# [☕](https://ko-fi.com/minimithi) [![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg)](https://codeclimate.com/github/mithi/hexapod-robot-simulator) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) [![HitCount](https://hits.dwyl.com/mithi/hexapod-robot-simulator.svg)](https://hits.dwyl.com/mithi/hexapod-robot-simulator) [![Build Status](https://travis-ci.com/mithi/hexapod-robot-simulator.svg?branch=master)](https://travis-ci.com/github/mithi/hexapod-robot-simulator)
+[![Build Status](https://travis-ci.com/mithi/hexapod-robot-simulator.svg?branch=master)](https://travis-ci.com/github/mithi/hexapod-robot-simulator)
+[![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg)](https://codeclimate.com/github/mithi/hexapod-robot-simulator)
+[![](https://img.shields.io/codeclimate/tech-debt/mithi/hexapod-robot-simulator)](https://codeclimate.com/github/mithi/hexapod-robot-simulator/trends/technical_debt)
+[![HitCount](https://hits.dwyl.com/mithi/hexapod-robot-simulator.svg)](https://hits.dwyl.com/mithi/hexapod-robot-simulator) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat)](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) 
+[![first-timers-only](https://img.shields.io/badge/first--timers--only-friendly-blueviolet.svg?style=flat)](https://www.firsttimersonly.com/)
 
 # Mithi's Hexapod Robot Simulator
 
 - A bare minimum browser-based hexapod robot simulator built from first principles 🕷️
 - If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi). 💕
+[![](https://img.shields.io/badge/Buy%20me%20a%20-coffee!-orange)](https://ko-fi.com/minimithi)
 
 # Announcement
 
-- I'm currently [rewriting this Javascript](http://github.com/mithi/hexapod), it will be fully client-side app. It's 80 percent done. All computations would be done on the browser, zero round-trip delays, so it should be extremely fast. I've also realized a lot of ways to improve the code in the process of rewriting, so
-I'll be incorporating those to this project as well, in the (hopefully near) future. While the functionality won't change, there will be significant changes in the implementation.
+- Here's my [rewrite in Javascript (WIP)](http://github.com/mithi/hexapod), a fully client-side app. I've also realized a lot of ways to improve the code in the process of rewriting, I'm planning to incorporate those learnings to this project as well, in the (hopefully near) future. While the functionality won't change, I'm planning to change the implementation significantly.
 
 # Features
 
@@ -55,11 +61,16 @@ Running on http://127.0.0.1:8050/
 
 ## ⚠️ Known Issues
 
-- [ ] ❗[Priority](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3APRIORITY)
 - [ ] ❗[Good First Issue](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 - [ ] ❗[Help Wanted](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 - [ ] ❗[Bugs](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 - [ ] ❗[All](https://github.com/mithi/hexapod-robot-simulator/issues)
+
+## Screenshots
+
+| ![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-screenshot.png)|
+|---|
+| ![IK](https://mithi.github.io/robotics-blog/v2-ik-screenshot.png)|
 
 ## Conventions and Algorithms
 
@@ -74,22 +85,16 @@ Running on http://127.0.0.1:8050/
 - How to determine if the hexapod should twist and by how much
   - [`find_if_might_twist`](./hexapod/models.py#L248)
   - [`find_twist_frame`](./hexapod/models.py#L273)
-
-## Screenshots
-
-| ![Kinematics](https://mithi.github.io/robotics-blog/v2-kinematics-screenshot.png)|
-|---|
-| ![IK](https://mithi.github.io/robotics-blog/v2-ik-screenshot.png)|
-
+  
 ## Notes
 
-- Now live on https://hexapod-robot-simulator.herokuapp.com ! **BUT** (and a big one) I highly suggest that you run it locally. When run locally, it's pretty speedy! On the other hand, the link above is barely usable. Might convert this to to be a fully client-side Javascript app later, maybe?
+- Now live on https://hexapod-robot-simulator.herokuapp.com ! **BUT** (and a big one) I highly suggest that you run it locally. When run locally, it's pretty speedy! On the other hand, the link above is barely usable. 
 
 - This implementation uses matrices, **NOT** quaternions. I'm aware that quaternions is far superior in every single way. In the (un)forseeable future, maybe?
 
-- Honestly, [My IK algorithm](./hexapod/ik_solver/README.md) is just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It's just the most intuitive that I can think of. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
+- Honestly, [my Inverse Kinematics algorithm](./hexapod/ik_solver/README.md) and [orientation algorithm](./hexapod/ground_contact_solver) is just something I came up with based on what I remember back in college plus browsing through the [Mathematics Stack Exchange](https://math.stackexchange.com/). It's just the most intuitive that I can think of. If you want something closer to the state-of-the-art, maybe checkout [Unity's Fast IK](https://assetstore.unity.com/packages/tools/animation/fast-ik-139972) or [ROS IKFast](http://wiki.ros.org/Industrial/Tutorials/Create_a_Fast_IK_Solution).
 
-- I believe that the idea that it's best if we are kind to one another shouldn't be controversial. And I shouldn't be afraid to say that. [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
+- Don't be mean! [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://www.contributor-covenant.org/)
 
 ## 🤗 Contributors
 
@@ -97,3 +102,14 @@ Running on http://127.0.0.1:8050/
 - [@philippeitis](https://github.com/philippeitis/)
 - [@mikong](https://github.com/mikong/)
 - [@guilyx](https://github.com/guilyx)
+
+![](https://img.shields.io/github/last-commit/mithi/hexapod-robot-simulator)
+![](https://img.shields.io/github/commit-activity/y/mithi/hexapod-robot-simulator)
+![](https://img.shields.io/github/languages/code-size/mithi/hexapod-robot-simulator?color=yellow)
+![](https://img.shields.io/github/repo-size/mithi/hexapod-robot-simulator?color=violet)
+![](https://tokei.rs/b1/github/mithi/hexapod-robot-simulator?category=blanks)
+![](https://tokei.rs/b1/github/mithi/hexapod-robot-simulator?category=lines)
+![](https://tokei.rs/b1/github/mithi/hexapod-robot-simulator?category=files)
+![](https://tokei.rs/b1/github/mithi/hexapod-robot-simulator?category=comments)
+![](https://tokei.rs/b1/github/mithi/hexapod-robot-simulator?category=code)
+![](https://img.shields.io/github/languages/top/mithi/hexapod-robot-simulator)
