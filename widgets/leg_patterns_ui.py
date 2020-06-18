@@ -47,7 +47,14 @@ WIDGET_NAMES = ["alpha", "beta", "gamma"]
 PATTERNS_WIDGET_IDS = [f"widget-{name}" for name in WIDGET_NAMES]
 PATTERNS_CALLBACK_INPUTS = [Input(i, "value") for i in PATTERNS_WIDGET_IDS]
 
+
 max_angles = [ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE]
+
+def check_input(max_angles,PATTERNS_CALLBACK_INPUTS):
+    for i in range(3):
+        if max_angles[i]<PATTERNS_CALLBACK_INPUTS[i] :
+            raise Exception("angle out of bound")
+check_input(max_angles,PATTERNS_CALLBACK_INPUTS)    
 widgets = [
     make_slider(id, name, angle)
     for id, name, angle in zip(PATTERNS_WIDGET_IDS, WIDGET_NAMES, max_angles)
