@@ -1,21 +1,24 @@
+[![](https://img.shields.io/badge/Buy%20me%20-coffee!-orange.svg?logo=buy-me-a-coffee&color=795548)](https://ko-fi.com/minimithi)
 [![Build Status](https://travis-ci.com/mithi/hexapod-robot-simulator.svg?branch=master)](https://travis-ci.com/github/mithi/hexapod-robot-simulator) 
 [![codecov](https://codecov.io/gh/mithi/hexapod-robot-simulator/branch/master/graph/badge.svg)](https://codecov.io/gh/mithi/hexapod-robot-simulator)
 [![Code Climate](https://codeclimate.com/github/mithi/hexapod-robot-simulator/badges/gpa.svg)](https://codeclimate.com/github/mithi/hexapod-robot-simulator)
 [![](https://img.shields.io/codeclimate/tech-debt/mithi/hexapod-robot-simulator)](https://codeclimate.com/github/mithi/hexapod-robot-simulator/trends/technical_debt)
-[![HitCount](https://hits.dwyl.com/mithi/hexapod-robot-simulator.svg)](https://hits.dwyl.com/mithi/hexapod-robot-simulator) 
+[![HitCount](https://hits.dwyl.com/mithi/hexapod-robot-simulator.svg)](https://hits.dwyl.com/mithi/hexapod-robot-simulator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat)](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) 
+[![PRs welcome!](https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat)](https://github.com/mithi/hexapod-robot-simulator/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) 
 [![first-timers-only](https://img.shields.io/badge/first--timers--only-friendly-blueviolet.svg?style=flat)](https://www.firsttimersonly.com/)
 
 # Mithi's Hexapod Robot Simulator
 
 - A bare minimum browser-based hexapod robot simulator built from first principles 🕷️
 - If you like this project, consider [buying me a few ☕ cups of coffee](https://ko-fi.com/minimithi). 💕
-[![](https://img.shields.io/badge/Buy%20me%20a%20-coffee!-orange)](https://ko-fi.com/minimithi)
 
 # Announcement
 
-- Here's my [rewrite in Javascript (WIP)](http://github.com/mithi/hexapod), a fully client-side app. I've also realized a lot of ways to improve the code in the process of rewriting, I'm planning to incorporate those learnings to this project as well, in the (hopefully near) future. While the functionality won't change, I'm planning to change the implementation significantly.
+- Check out my [rewrite in Javascript](http://github.com/mithi/hexapod)
+- Now live at: https://hexapod.netlify.app/
+- It's like 10000000x faster!
 
 # Features
 
