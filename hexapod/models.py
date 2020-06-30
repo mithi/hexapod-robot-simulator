@@ -5,7 +5,7 @@ from pprint import pprint
 from math import atan2, degrees, isclose
 import json
 import numpy as np
-from settings import PRINT_MODEL_ON_UPDATE
+from settings import PRINT_MODEL_ON_UPDATE, ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
 from hexapod.linkage import Linkage
 import hexapod.ground_contact_solver.ground_contact_solver as gc
 import hexapod.ground_contact_solver.ground_contact_solver2 as gc2
@@ -124,7 +124,10 @@ class VirtualHexapod:
         # Update leg poses
         for pose in poses.values():
             i = pose["id"]
-            self.legs[i].change_pose(pose["coxia"], pose["femur"], pose["tibia"])
+            if(poses_within_range(pose)):
+                self.legs[i].change_pose(pose["coxia"], pose["femur"], pose["tibia"])
+            else:
+                raise Exception(f"❗Some of the values in {poses} are not within range")
 
         # Find new orientation of the body (new normal)
         # distance of cog from ground and which legs are on the ground
@@ -239,6 +242,12 @@ class VirtualHexapod:
 # ..........................................
 # Helper functions
 # ..........................................
+
+def poses_within_range(pose):
+    # Check if any angle value in poses is out of range
+    if(pose["coxia"] < 0 or pose["coxia"] > ALPHA_MAX_ANGLE or pose["femur"] < 0 or pose["femur"] > BETA_MAX_ANGLE or pose["tibia"] < 0 or pose["tibia"] > GAMMA_MAX_ANGLE):
+        return False
+    return True
 
 
 def get_hip_angle(leg_id, poses):
