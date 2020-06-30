@@ -245,7 +245,7 @@ class VirtualHexapod:
 
 def poses_within_range(pose):
     # Check if any angle value in poses is out of range
-    coxia_in_range = pose["coxia"] < 0 or pose["coxia"] > ALPHA_MAX_ANGLE 
+    coxia_in_range = pose["coxia"] < 0 or pose["coxia"] > ALPHA_MAX_ANGLE
     femur_in_range = pose["femur"] < 0 or pose["femur"] > BETA_MAX_ANGLE
     tibia_in_range = pose["tibia"] < 0 or pose["tibia"] > GAMMA_MAX_ANGLE
     if(coxia_in_range or femur_in_range or tibia_in_range):
