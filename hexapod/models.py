@@ -275,6 +275,7 @@ def poses_within_range(poses):
 
     return all_in_range == 0
 
+
 def get_hip_angle(leg_id, poses):
     if leg_id in poses:
         return poses[leg_id]["coxia"]
