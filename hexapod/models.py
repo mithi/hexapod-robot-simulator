@@ -272,7 +272,6 @@ def poses_within_range(poses):
         _angle_range_exception(gamma_in_range, gamma, "gamma", leg_name, GAMMA_MAX_ANGLE, all_in_range)
 
     return all_in_range == 0
-    
 
 def get_hip_angle(leg_id, poses):
     if leg_id in poses:
