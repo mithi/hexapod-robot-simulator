@@ -119,7 +119,7 @@ class VirtualHexapod:
     def update(self, poses, assume_ground_targets=True):
         if not poses_within_range(poses):
             return
-            
+
         self.body_rotation_frame = None
         might_twist = find_if_might_twist(self, poses)
         old_contacts = deepcopy(self.ground_contacts)
@@ -251,7 +251,7 @@ def poses_within_range(poses):
         # Raise an exception if angle not in range
         if not angle_in_range:
             all_in_range += 1
-            msg = f"{leg_name} leg's {angle_name} = {angle} is not within [-{max_angle}, {max_angle}]"
+            msg = f"leg {leg_name} {angle_name}={angle} is not within [-{max_angle}, {max_angle}]"
             raise Exception(msg)
 
     # This should be zero after checking if all angles are within range, otherwise at
