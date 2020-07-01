@@ -152,8 +152,6 @@ class VirtualHexapod:
                 self.rotate_and_shift(twist_frame)
 
             might_print_hexapod(self, poses)
-        else:
-            raise Exception(f"❗Some of the values in {poses} are not within range")
 
     def detach_body_rotate_and_translate(self, rx, ry, rz, tx, ty, tz):
         # Detach the body of the hexapod from the legs
