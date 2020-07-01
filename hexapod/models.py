@@ -117,43 +117,43 @@ class VirtualHexapod:
         self._init_local_frame()
 
     def update(self, poses, assume_ground_targets=True):
-        self.body_rotation_frame = None
-        might_twist = find_if_might_twist(self, poses)
-        old_contacts = deepcopy(self.ground_contacts)
+        if(poses_within_range(poses)):
+            self.body_rotation_frame = None
+            might_twist = find_if_might_twist(self, poses)
+            old_contacts = deepcopy(self.ground_contacts)
 
-        # Update leg poses
-        for pose in poses.values():
-            i = pose["id"]
-            if(poses_within_range(pose)):
+            # Update leg poses
+            for pose in poses.values():
+                i = pose["id"]
                 self.legs[i].change_pose(pose["coxia"], pose["femur"], pose["tibia"])
+
+            # Find new orientation of the body (new normal)
+            # distance of cog from ground and which legs are on the ground
+            if assume_ground_targets:
+                # We are positive that our assumed target ground contact points
+                # are correct then we don't have to test all possible cases
+                legs, n_axis, height = gc.compute_orientation_properties(self.legs)
             else:
-                raise Exception(f"❗Some of the values in {poses} are not within range")
+                legs, n_axis, height = gc2.compute_orientation_properties(self.legs)
 
-        # Find new orientation of the body (new normal)
-        # distance of cog from ground and which legs are on the ground
-        if assume_ground_targets:
-            # We are positive that our assumed target ground contact points
-            # are correct then we don't have to test all possible cases
-            legs, n_axis, height = gc.compute_orientation_properties(self.legs)
+            if n_axis is None:
+                raise Exception("❗Pose Unstable. COG not inside support polygon.")
+
+            # Tilt and shift the hexapod based on new normal
+            frame = frame_to_align_vector_a_to_b(n_axis, Vector(0, 0, 1))
+            self.rotate_and_shift(frame, height)
+            self._update_local_frame(frame)
+
+            # Twist around the new normal if you have to
+            self.ground_contacts = [leg.ground_contact() for leg in legs]
+
+            if might_twist:
+                twist_frame = find_twist_frame(old_contacts, self.ground_contacts)
+                self.rotate_and_shift(twist_frame)
+
+            might_print_hexapod(self, poses)
         else:
-            legs, n_axis, height = gc2.compute_orientation_properties(self.legs)
-
-        if n_axis is None:
-            raise Exception("❗Pose Unstable. COG not inside support polygon.")
-
-        # Tilt and shift the hexapod based on new normal
-        frame = frame_to_align_vector_a_to_b(n_axis, Vector(0, 0, 1))
-        self.rotate_and_shift(frame, height)
-        self._update_local_frame(frame)
-
-        # Twist around the new normal if you have to
-        self.ground_contacts = [leg.ground_contact() for leg in legs]
-
-        if might_twist:
-            twist_frame = find_twist_frame(old_contacts, self.ground_contacts)
-            self.rotate_and_shift(twist_frame)
-
-        might_print_hexapod(self, poses)
+            raise Exception(f"❗Some of the values in {poses} are not within range")
 
     def detach_body_rotate_and_translate(self, rx, ry, rz, tx, ty, tz):
         # Detach the body of the hexapod from the legs
@@ -243,15 +243,38 @@ class VirtualHexapod:
 # Helper functions
 # ..........................................
 
-def poses_within_range(pose):
-    # Check if any angle value in poses is out of range
-    coxia_in_range = pose["coxia"] < 0 or pose["coxia"] > ALPHA_MAX_ANGLE
-    femur_in_range = pose["femur"] < 0 or pose["femur"] > BETA_MAX_ANGLE
-    tibia_in_range = pose["tibia"] < 0 or pose["tibia"] > GAMMA_MAX_ANGLE
-    if(coxia_in_range or femur_in_range or tibia_in_range):
-        return False
-    return True
 
+def poses_within_range(poses):
+    """ Return true if all angles of all legs are within range of  [-MAX_ANGLE, MAX_ANGLE]"""
+
+    def _angle_range_exception(angle_in_range, angle, angle_name, leg_name, max_angle, all_in_range):
+        """ Raise an exception if angle not in range """
+        if not angle_in_range:
+            all_in_range += 1
+            msg = f"{leg_name} leg's {angle_name} = {angle} is not within [-{max_angle}, {max_angle}]"
+            raise Exception(msg)
+
+    # This should be zero after checking if all angles are within range, otherwise at
+    # least one angle is out of range.
+    all_in_range = 0
+
+    for leg_name, pose in poses.items():
+
+        # Get angles of leg leg_name
+        alpha, beta, gamma = pose['coxia'], pose['femur'], pose['tibia']
+
+        # Test if angles are within range of  [-MAX_ANGLE, MAX_ANGLE]
+        alpha_in_range = -ALPHA_MAX_ANGLE <= alpha <= ALPHA_MAX_ANGLE
+        beta_in_range = -BETA_MAX_ANGLE <= beta <= BETA_MAX_ANGLE
+        gamma_in_range = -GAMMA_MAX_ANGLE <= gamma <= GAMMA_MAX_ANGLE
+
+        # Raise an exception if angle not in range
+        _angle_range_exception(alpha_in_range, alpha, "alpha", leg_name, ALPHA_MAX_ANGLE, all_in_range)
+        _angle_range_exception(beta_in_range, beta, "beta", leg_name, BETA_MAX_ANGLE, all_in_range)
+        _angle_range_exception(gamma_in_range, gamma, "gamma", leg_name, GAMMA_MAX_ANGLE, all_in_range)
+
+    return all_in_range == 0
+    
 
 def get_hip_angle(leg_id, poses):
     if leg_id in poses:
