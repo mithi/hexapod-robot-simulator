@@ -117,8 +117,7 @@ class VirtualHexapod:
         self._init_local_frame()
 
     def update(self, poses, assume_ground_targets=True):
-        if not poses_within_range(poses):
-            return
+        might_raise_poses_range_error(poses)
 
         self.body_rotation_frame = None
         might_twist = find_if_might_twist(self, poses)
@@ -243,37 +242,31 @@ class VirtualHexapod:
 # Helper functions
 # ..........................................
 
+def might_raise_poses_range_error(poses):
+    angle_limits = {
+        "coxia": ALPHA_MAX_ANGLE,
+        "femur": BETA_MAX_ANGLE,
+        "tibia": GAMMA_MAX_ANGLE,
+    }
 
-def poses_within_range(poses):
-    # Return true if all angles of all legs are within range of  [-MAX_ANGLE, MAX_ANGLE]
+    def _within_range(angle, max_angle):
+        return -max_angle <= angle <= max_angle
 
-    def _angle_range_err(angle_in_range, angle, angle_name, leg_name, max_angle, all_in_range):
-        # Raise an exception if angle not in range
-        if not angle_in_range:
-            all_in_range += 1
-            msg = f"leg {leg_name} {angle_name}={angle} is not within [-{max_angle}, {max_angle}]"
-            raise Exception(msg)
+    def _raise_range_error(leg_name, joint_name, angle, max_angle):
+        identifier = f"{leg_name} leg's {joint_name} angle is {angle}"
+        msg = f"{identifier}. Must be within [-{max_angle}, {max_angle}]"
+        raise Exception(msg)
 
-    # This should be zero after checking if all angles are within range, otherwise at
-    # least one angle is out of range.
-    all_in_range = 0
+    for pose in poses.values():
+        for joint_name in angle_limits.keys():
 
-    for leg_name, pose in poses.items():
+            angle = pose[joint_name]
+            max_angle = angle_limits[joint_name]
 
-        # Get angles of leg leg_name
-        alpha, beta, gamma = pose['coxia'], pose['femur'], pose['tibia']
+            if _within_range(angle, max_angle):
+                continue
 
-        # Test if angles are within range of  [-MAX_ANGLE, MAX_ANGLE]
-        alpha_in_range = -ALPHA_MAX_ANGLE <= alpha <= ALPHA_MAX_ANGLE
-        beta_in_range = -BETA_MAX_ANGLE <= beta <= BETA_MAX_ANGLE
-        gamma_in_range = -GAMMA_MAX_ANGLE <= gamma <= GAMMA_MAX_ANGLE
-
-        # Raise an exception if angle not in range
-        _angle_range_err(alpha_in_range, alpha, "alpha", leg_name, ALPHA_MAX_ANGLE, all_in_range)
-        _angle_range_err(beta_in_range, beta, "beta", leg_name, BETA_MAX_ANGLE, all_in_range)
-        _angle_range_err(gamma_in_range, gamma, "gamma", leg_name, GAMMA_MAX_ANGLE, all_in_range)
-
-    return all_in_range == 0
+            _raise_range_error(pose["name"], joint_name, angle, max_angle)
 
 
 def get_hip_angle(leg_id, poses):
