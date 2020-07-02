@@ -258,7 +258,7 @@ def might_raise_poses_range_error(poses):
         raise Exception(msg)
 
     for pose in poses.values():
-        for joint_name in angle_limits.keys():
+        for joint_name in angle_limits:
 
             angle = pose[joint_name]
             max_angle = angle_limits[joint_name]
