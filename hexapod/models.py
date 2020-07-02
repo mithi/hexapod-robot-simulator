@@ -5,7 +5,7 @@ from pprint import pprint
 from math import atan2, degrees, isclose
 import json
 import numpy as np
-from settings import PRINT_MODEL_ON_UPDATE
+from settings import PRINT_MODEL_ON_UPDATE, ALPHA_MAX_ANGLE, BETA_MAX_ANGLE, GAMMA_MAX_ANGLE
 from hexapod.linkage import Linkage
 import hexapod.ground_contact_solver.ground_contact_solver as gc
 import hexapod.ground_contact_solver.ground_contact_solver2 as gc2
@@ -117,6 +117,8 @@ class VirtualHexapod:
         self._init_local_frame()
 
     def update(self, poses, assume_ground_targets=True):
+        might_raise_poses_range_error(poses)
+
         self.body_rotation_frame = None
         might_twist = find_if_might_twist(self, poses)
         old_contacts = deepcopy(self.ground_contacts)
@@ -239,6 +241,32 @@ class VirtualHexapod:
 # ..........................................
 # Helper functions
 # ..........................................
+
+def might_raise_poses_range_error(poses):
+    angle_limits = {
+        "coxia": ALPHA_MAX_ANGLE,
+        "femur": BETA_MAX_ANGLE,
+        "tibia": GAMMA_MAX_ANGLE,
+    }
+
+    def _within_range(angle, max_angle):
+        return -max_angle <= angle <= max_angle
+
+    def _raise_range_error(leg_name, joint_name, angle, max_angle):
+        identifier = f"{leg_name} leg's {joint_name} angle is {angle}"
+        msg = f"{identifier}. Must be within [-{max_angle}, {max_angle}]"
+        raise Exception(msg)
+
+    for pose in poses.values():
+        for joint_name in angle_limits:
+
+            angle = pose[joint_name]
+            max_angle = angle_limits[joint_name]
+
+            if _within_range(angle, max_angle):
+                continue
+
+            _raise_range_error(pose["name"], joint_name, angle, max_angle)
 
 
 def get_hip_angle(leg_id, poses):
