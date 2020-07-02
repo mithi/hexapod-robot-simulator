@@ -106,6 +106,7 @@ Running on http://127.0.0.1:8050/
 - [@philippeitis](https://github.com/philippeitis/)
 - [@mikong](https://github.com/mikong/)
 - [@guilyx](https://github.com/guilyx)
+- [@markkulube](https://github.com/markkulube)
 
 ![](https://img.shields.io/github/last-commit/mithi/hexapod-robot-simulator)
 ![](https://img.shields.io/github/commit-activity/y/mithi/hexapod-robot-simulator)
