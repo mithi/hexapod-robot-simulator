@@ -1,23 +1,19 @@
-import random
 from selenium import webdriver
-
-# Install the web drivers for selenium to your path if they do not already exist
-import chromedriver_binary
-import geckodriver_autoinstaller
-
 import unittest
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from widgets import leg_patterns_ui, dimensions_ui, ik_ui
+import secrets
 
 # This class tests the UI for the web application.
 # Index.py needs to be run first to start the server before the tests can be conducted.
 class WidgetTests(unittest.TestCase):
 
     def setUp(self):
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Chrome()
         self.browser.implicitly_wait(3)
         self.server = 'http://127.0.0.1:8050/'
         self.timeout = 10
@@ -31,8 +27,7 @@ class WidgetTests(unittest.TestCase):
             WebDriverWait(self.browser, self.timeout).until(title_loaded)
             WebDriverWait(self.browser, self.timeout).until(body_loaded)
         except TimeoutException:
-            print
-            "Timed out waiting for the webpage to load"
+            print("Timed out waiting for the webpage to load")
 
     # Test all hyperlinks for all pages are available and working
     def test_all_links_working(self):
@@ -55,9 +50,9 @@ class WidgetTests(unittest.TestCase):
         leg_dimension_names = dimensions_ui.WIDGET_NAMES
 
         for name in leg_dimension_names:
-            widget = self.browser.find_element_by_id('widget-dimension-'+name)
-            widget.clear()
-            widget.send_keys(random.randint(90, 110))
+            for i in range(3):
+                self.browser.find_element_by_id('widget-dimension-'+name).send_keys(Keys.BACK_SPACE)
+            self.browser.find_element_by_id('widget-dimension-'+name).send_keys(secrets.randbelow(30)+90)
 
     # Tests the UI for changing leg patterns
     def test_leg_patterns_ui(self):
@@ -68,7 +63,7 @@ class WidgetTests(unittest.TestCase):
         for name in widget_names:
             slider = WebDriverWait(self.browser,self.timeout).until(
             EC.element_to_be_clickable((By.ID,"widget-"+name)))
-            random_slide = random.randint(-10,10)
+            random_slide = secrets.randbelow(20)-10
             action = webdriver.ActionChains(self.browser)
             action.move_to_element(slider)
             action.click_and_hold(slider)
@@ -84,7 +79,7 @@ class WidgetTests(unittest.TestCase):
         for widget_id in widget_ids:
             slider = WebDriverWait(self.browser,self.timeout).until(
             EC.element_to_be_clickable((By.ID,widget_id)))
-            random_slide = random.randint(-10,10)
+            random_slide = secrets.randbelow(20)-10
             action = webdriver.ActionChains(self.browser)
             action.move_to_element(slider)
             action.click_and_hold(slider)
