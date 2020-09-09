@@ -1,10 +1,13 @@
 # Disable sudo to speed up the build
-sudo: false
+sudo: required
+addons:
+  chrome: stable
 
 language: python
 python:
   - "3.8.1"
 cache: pip
+
 install:
   - pip install -r requirements.txt
   - pip install codecov
