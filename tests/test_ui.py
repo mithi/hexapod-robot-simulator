@@ -8,12 +8,20 @@ from selenium.webdriver.support.ui import WebDriverWait
 from widgets import leg_patterns_ui, dimensions_ui, ik_ui
 import secrets
 
+        
 # This class tests the UI for the web application.
 # Index.py needs to be run first to start the server before the tests can be conducted.
 class WidgetTests(unittest.TestCase):
 
     def setUp(self):
-        self.browser = webdriver.Chrome()
+        options = webdriver.ChromeOptions()
+        options.add_argument("disable-gpu")
+        options.add_argument("headless")
+        options.add_argument("no-default-browser-check")
+        options.add_argument("no-first-run")
+        options.add_argument("no-sandbox")
+
+        self.browser = webdriver.Chrome(options=options)
         self.browser.implicitly_wait(3)
         self.server = 'http://127.0.0.1:8050/'
         self.timeout = 10
