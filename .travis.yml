@@ -11,7 +11,7 @@ cache: pip
 install:
   - pip install -r requirements.txt
   - pip install codecov
-  - wget http://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip
+  - wget https://chromedriver.storage.googleapis.com/85.0.4183.87/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip -d /home/travis/virtualenv/python3.8.1/bin/
   - export CHROME_BIN=chromium-browser
 
