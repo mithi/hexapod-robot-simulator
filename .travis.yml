@@ -1,14 +1,24 @@
 # Disable sudo to speed up the build
-sudo: false
+sudo: required
+addons:
+  chrome: stable
 
 language: python
 python:
   - "3.8.1"
 cache: pip
+
 install:
   - pip install -r requirements.txt
   - pip install codecov
+  - wget https://chromedriver.storage.googleapis.com/85.0.4183.87/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip -d /home/travis/virtualenv/python3.8.1/bin/
+  - export CHROME_BIN=chromium-browser
+
 script:
+script:
+  - whereis google-chrome-stable
+  - whereis chromedriver
   - python -m py_compile ./*/*.py ./*.py ./*/*/*.py
   - flake8 ./*/*.py ./*.py ./*/*/*.py
   - pylint ./*.py */*.py */*/*.py --reports=y --ignore=page_kinematics.py,ik_solver.py --disable=broad-except,too-few-public-methods,attribute-defined-outside-init,too-many-locals,too-many-instance-attributes,too-many-arguments,bad-continuation,missing-class-docstring,missing-module-docstring,missing-function-docstring,invalid-name,duplicate-code
