@@ -20,7 +20,7 @@
 
 # Announcement
 
-You might be interested in checking out my [rewrite in Javascript](http://github.com/mithi/hexapod), live at: https://hexapod.netlify.app/ , which is like 10000000x faster. If you'd like tobuild you're own user interface with Node, you can download the algorithm alone as a package in the npm registry: [Hexapod Kinematics Library](https://github.com/mithi/hexapod-kinematics-library). There is also [a "fork" modified where you can use the app to control a physical hexapod robot](https://github.com/mithi/hexapod-irl) as you can see in the gif below. 
+You might be interested in checking out my [rewrite in Javascript](http://github.com/mithi/hexapod), live at: https://hexapod.netlify.app/ , which is like 10000000x faster. If you'd like to build you're own user interface with Node, you can download the algorithm alone as a package in the npm registry: [Hexapod Kinematics Library](https://github.com/mithi/hexapod-kinematics-library). There is also [a "fork" modified where you can use the app to control a physical hexapod robot](https://github.com/mithi/hexapod-irl) as you can see in the gif below. 
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/1670421/103467765-451a2180-4d8d-11eb-8f94-1a23201595b9.gif" alt="drawing" />
