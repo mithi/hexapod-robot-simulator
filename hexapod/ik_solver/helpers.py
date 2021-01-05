@@ -16,7 +16,7 @@ BODY_ON_GROUND_ALERT_MSG = "Impossible at given height.\nbody contact shoved on 
 
 
 def cant_reach_alert_msg(leg_name, problem):
-    msg = f"Cannot reach target ground point.\n"
+    msg = "Cannot reach target ground point.\n"
     if problem == "femur":
         msg += f"Femur length of {leg_name} leg is too long."
     if problem == "tibia":

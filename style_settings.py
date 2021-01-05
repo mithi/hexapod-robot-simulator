@@ -1,7 +1,7 @@
 DARKMODE = True
 
-DARK_CSS_PATH = "https://codepen.io/mithi-the-encoder/pen/BaoBOKa.css"
-LIGHT_CSS_PATH = "https://codepen.io/mithi-the-encoder/pen/eYpObwK.css"
+DARK_CSS_PATH = "https://mithi.github.io/hexapod-robot-simulator/dark.css"
+LIGHT_CSS_PATH = "https://mithi.github.io/hexapod-robot-simulator/light.css"
 
 EXTERNAL_STYLESHEETS = [DARK_CSS_PATH]
 if not DARKMODE:

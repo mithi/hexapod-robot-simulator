@@ -10,7 +10,7 @@ from hexapod.const import (
 )
 
 NEW_POSES = deepcopy(BASE_POSE)
-POSES_MSG_HEADER = f"""
+POSES_MSG_HEADER = """
 +----------------+------------+------------+------------+
 | leg name       | coxia      | femur      | tibia      |
 +----------------+------------+------------+------------+"""
@@ -53,7 +53,7 @@ def load_params(params_json, params_type):
 
         raise Exception(
             f'params_type must be "dims", "pose" or "ik", not {params_type}'
-        )
+        ) from e
 
     return params
 
