@@ -74,6 +74,7 @@ PAGES = {
     ROOT_PATH: page_landing.layout,
 }
 
+
 # ....................
 # Callback to display page given URL
 # ....................

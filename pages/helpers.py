@@ -10,7 +10,7 @@ from hexapod.const import (
 )
 
 NEW_POSES = deepcopy(BASE_POSE)
-POSES_MSG_HEADER = f"""
+POSES_MSG_HEADER = """
 +----------------+------------+------------+------------+
 | leg name       | coxia      | femur      | tibia      |
 +----------------+------------+------------+------------+"""
