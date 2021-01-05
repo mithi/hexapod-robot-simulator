@@ -53,7 +53,7 @@ def load_params(params_json, params_type):
 
         raise Exception(
             f'params_type must be "dims", "pose" or "ik", not {params_type}'
-        )
+        ) from e
 
     return params
 
