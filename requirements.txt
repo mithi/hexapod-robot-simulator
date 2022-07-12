@@ -18,7 +18,7 @@ Jinja2==2.11.3
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
-numpy==1.19.5
+numpy==1.22.0
 plotly==4.14.1
 pycodestyle==2.6.0
 pyflakes==2.2.0
