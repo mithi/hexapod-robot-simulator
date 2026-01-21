@@ -8,7 +8,7 @@ dash-html-components==1.1.1
 dash-renderer==1.8.3
 dash-table==4.11.1
 flake8==3.8.4
-Flask==1.1.2
+Flask==2.3.2
 Flask-Compress==1.8.0
 future==0.18.3
 gunicorn==20.0.4
